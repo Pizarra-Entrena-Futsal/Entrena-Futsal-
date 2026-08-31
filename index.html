@@ -1,1 +1,158 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizarra Táctica de Futsal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+    header { width: 100%; max-width: 800px; text-align: center; padding: 12px; background: #1e1e1e; font-weight: bold; border-radius: 8px; border-bottom: 3px solid #00e676; margin-bottom: 10px; }
+    .controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; }
+    button { padding: 8px 14px; border: none; border-radius: 6px; background: #00e676; color: #121212; font-weight: bold; cursor: pointer; font-size: 14px; }
+    button.active { background: #ff4081; color: white; }
+    #board-container { position: relative; width: 800px; height: 500px; background: #2e7d32; border-radius: 8px; overflow: hidden; touch-action: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+    .piece { position: absolute; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; user-select: none; cursor: grab; border: 2px solid #fff; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+    .piece:active { cursor: grabbing; scale: 1.1; }
+    .red { background: #e53935; color: #fff; }
+    .blue { background: #1e88e5; color: #fff; }
+    .ball { background: #fff; color: #000; border-color: #000; width: 22px; height: 22px; font-size: 10px; }
+  </style>
+</head>
+<body>
+
+  <header>📋 Pizarra Táctica - @tu_cuenta_instagram</header>
+
+  <div class="controls">
+    <button id="moveBtn" class="active">🖐️ Mover Fichas</button>
+    <button id="drawBtn">✏️ Dibujar</button>
+    <button id="clearBtn">🧹 Borrar Trazos</button>
+    <button id="resetBtn">🔄 Reiniciar Fichas</button>
+  </div>
+
+  <div id="board-container">
+    <canvas id="pitch" width="800" height="500"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('pitch');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('board-container');
+    let isDrawingMode = false;
+    let isDrawing = false;
+
+    // Dibujar Cancha de Futsal
+    function drawPitch() {
+      ctx.clearRect(0, 0, 800, 500);
+      ctx.strokeStyle = "rgba(255,255,255,0.8)";
+      ctx.lineWidth = 3;
+
+      // Línea exterior (Márgenes)
+      ctx.strokeRect(20, 20, 760, 460);
+      // Línea central
+      ctx.beginPath(); ctx.moveTo(400, 20); ctx.lineTo(400, 480); ctx.stroke();
+      // Círculo central
+      ctx.beginPath(); ctx.arc(400, 250, 60, 0, Math.PI * 2); ctx.stroke();
+      // Áreas de 6 metros
+      ctx.beginPath(); ctx.arc(20, 250, 100, -Math.PI/2, Math.PI/2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(780, 250, 100, Math.PI/2, 3*Math.PI/2); ctx.stroke();
+      // Puntos de penalti (6m)
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(140, 250, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(660, 250, 4, 0, Math.PI * 2); ctx.fill();
+    }
+    drawPitch();
+
+    // Dibujo con ratón / táctil
+    canvas.addEventListener('pointerdown', (e) => {
+      if (!isDrawingMode) return;
+      isDrawing = true;
+      ctx.beginPath();
+      const rect = canvas.getBoundingClientRect();
+      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!isDrawing || !isDrawingMode) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#ffeb3b";
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener('pointerup', () => isDrawing = false);
+
+    // Generar Fichas
+    const defaultPositions = [
+      { id: 'R1', type: 'red', label: '1', x: 60, y: 234 },
+      { id: 'R2', type: 'red', label: '2', x: 180, y: 120 },
+      { id: 'R3', type: 'red', label: '3', x: 180, y: 350 },
+      { id: 'R4', type: 'red', label: '4', x: 280, y: 200 },
+      { id: 'R5', type: 'red', label: '5', x: 280, y: 280 },
+      { id: 'B1', type: 'blue', label: '1', x: 710, y: 234 },
+      { id: 'B2', type: 'blue', label: '2', x: 590, y: 120 },
+      { id: 'B3', type: 'blue', label: '3', x: 590, y: 350 },
+      { id: 'B4', type: 'blue', label: '4', x: 490, y: 200 },
+      { id: 'B5', type: 'blue', label: '5', x: 490, y: 280 },
+      { id: 'BALL', type: 'ball', label: '⚽', x: 389, y: 239 }
+    ];
+
+    function renderPieces() {
+      document.querySelectorAll('.piece').forEach(p => p.remove());
+      defaultPositions.forEach(pos => {
+        const div = document.createElement('div');
+        div.className = `piece ${pos.type}`;
+        div.innerText = pos.label;
+        div.style.left = pos.x + 'px';
+        div.style.top = pos.y + 'px';
+        makeDraggable(div);
+        container.appendChild(div);
+      });
+    }
+
+    function makeDraggable(el) {
+      let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+      el.addEventListener('pointerdown', (e) => {
+        if (isDrawingMode) return;
+        active = true;
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+        el.setPointerCapture(e.pointerId);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!active) return;
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+        xOffset = currentX;
+        yOffset = currentY;
+        el.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      });
+
+      el.addEventListener('pointerup', () => active = false);
+    }
+    renderPieces();
+
+    // Controles
+    document.getElementById('moveBtn').onclick = (e) => {
+      isDrawingMode = false;
+      e.target.classList.add('active');
+      document.getElementById('drawBtn').classList.remove('active');
+      canvas.style.zIndex = 1;
+    };
+
+    document.getElementById('drawBtn').onclick = (e) => {
+      isDrawingMode = true;
+      e.target.classList.add('active');
+      document.getElementById('moveBtn').classList.remove('active');
+      canvas.style.zIndex = 3;
+    };
+
+    document.getElementById('clearBtn').onclick = () => drawPitch();
+    document.getElementById('resetBtn').onclick = () => renderPieces();
+  </script>
+</body>
+</html>
