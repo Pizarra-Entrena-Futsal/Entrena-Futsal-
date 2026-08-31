@@ -1,17 +1,27 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pizarra Táctica de Futsal</title>
+  <!-- Librería para exportar la pizarra como imagen -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
-    header { width: 100%; max-width: 800px; text-align: center; padding: 12px; background: #1e1e1e; font-weight: bold; border-radius: 8px; border-bottom: 3px solid #00e676; margin-bottom: 10px; }
+    
+    /* ENCABEZADO CON MARCA Y LOGO */
+    header { width: 100%; max-width: 800px; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px; background: #1e1e1e; border-radius: 8px; border-bottom: 3px solid #00e676; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+    .header-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
+    .header-text { text-align: center; font-size: 16px; font-weight: normal; color: #ccc; }
+    .header-text strong { font-size: 18px; color: #fff; }
+    .header-text .handle { color: #00e676; font-weight: bold; }
+
     .controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; }
-    button { padding: 8px 14px; border: none; border-radius: 6px; background: #00e676; color: #121212; font-weight: bold; cursor: pointer; font-size: 14px; }
+    button { padding: 8px 14px; border: none; border-radius: 6px; background: #00e676; color: #121212; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
+    button:hover { opacity: 0.9; }
     button.active { background: #ff4081; color: white; }
+    #downloadBtn { background: #29b6f6; color: #fff; }
     #board-container { position: relative; width: 800px; height: 500px; background: #2e7d32; border-radius: 8px; overflow: hidden; touch-action: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     canvas { position: absolute; top: 0; left: 0; z-index: 1; }
     .piece { position: absolute; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; user-select: none; cursor: grab; border: 2px solid #fff; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
@@ -23,13 +33,22 @@
 </head>
 <body>
 
-  <header>📋 Pizarra Táctica - @tu_cuenta_instagram</header>
+  <!-- ENCABEZADO CON MARCA Y LOGO -->
+  <header>
+    <img src="logo.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+    <div class="header-text">
+      <strong>Pizarra Táctica Futsal</strong><br>
+      <!-- @entrenafutsal -->
+      <span class="handle">@tu_cuenta_instagram</span>
+    </div>
+  </header>
 
   <div class="controls">
     <button id="moveBtn" class="active">🖐️ Mover Fichas</button>
     <button id="drawBtn">✏️ Dibujar</button>
     <button id="clearBtn">🧹 Borrar Trazos</button>
     <button id="resetBtn">🔄 Reiniciar Fichas</button>
+    <button id="downloadBtn">📷 Descargar Imagen</button>
   </div>
 
   <div id="board-container">
@@ -46,26 +65,26 @@
     // Dibujar Cancha de Futsal
     function drawPitch() {
       ctx.clearRect(0, 0, 800, 500);
-      ctx.strokeStyle = "rgba(255,255,255,0.8)";
+      ctx.strokeStyle = "rgba(255,255,255,0.85)";
       ctx.lineWidth = 3;
 
-      // Línea exterior (Márgenes)
+      // Línea exterior
       ctx.strokeRect(20, 20, 760, 460);
       // Línea central
       ctx.beginPath(); ctx.moveTo(400, 20); ctx.lineTo(400, 480); ctx.stroke();
       // Círculo central
       ctx.beginPath(); ctx.arc(400, 250, 60, 0, Math.PI * 2); ctx.stroke();
-      // Áreas de 6 metros
+      // Áreas 6m
       ctx.beginPath(); ctx.arc(20, 250, 100, -Math.PI/2, Math.PI/2); ctx.stroke();
       ctx.beginPath(); ctx.arc(780, 250, 100, Math.PI/2, 3*Math.PI/2); ctx.stroke();
-      // Puntos de penalti (6m)
+      // Puntos de penalti
       ctx.fillStyle = "#fff";
       ctx.beginPath(); ctx.arc(140, 250, 4, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(660, 250, 4, 0, Math.PI * 2); ctx.fill();
     }
     drawPitch();
 
-    // Dibujo con ratón / táctil
+    // Trazos tácticos
     canvas.addEventListener('pointerdown', (e) => {
       if (!isDrawingMode) return;
       isDrawing = true;
@@ -85,7 +104,7 @@
 
     canvas.addEventListener('pointerup', () => isDrawing = false);
 
-    // Generar Fichas
+    // Posiciones iniciales
     const defaultPositions = [
       { id: 'R1', type: 'red', label: '1', x: 60, y: 234 },
       { id: 'R2', type: 'red', label: '2', x: 180, y: 120 },
@@ -153,6 +172,16 @@
 
     document.getElementById('clearBtn').onclick = () => drawPitch();
     document.getElementById('resetBtn').onclick = () => renderPieces();
+
+    // Descargar pizarra como imagen PNG
+    document.getElementById('downloadBtn').onclick = () => {
+      html2canvas(document.getElementById('board-container')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'jugada-futsal.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    };
   </script>
 </body>
 </html>
