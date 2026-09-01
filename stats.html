@@ -20,7 +20,7 @@
     /* CONTENEDOR PRINCIPAL / TARJETA PARA EXPORTAR */
     #report-card { width: 100%; max-width: 500px; background: #1a1a1a; border-radius: 12px; padding: 16px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 15px; }
 
-    /* MARCADO DE PARTIDO */
+    /* MARCADOR PRINCIPAL */
     .scoreboard { display: flex; justify-content: space-between; align-items: center; background: #262626; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
     .team-input { background: transparent; border: none; border-bottom: 1px dashed #00e676; color: #fff; font-size: 16px; font-weight: bold; text-align: center; width: 110px; outline: none; }
     .score-display { font-size: 32px; font-weight: bold; color: #00e676; letter-spacing: 2px; }
@@ -28,8 +28,8 @@
     /* GRILLA DE METRICAS */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .stat-card { background: #242424; border-radius: 8px; padding: 10px; text-align: center; border-left: 3px solid #00e676; display: flex; flex-direction: column; justify-content: space-between; }
-    .stat-title { font-size: 12px; text-transform: uppercase; color: #aaa; margin-bottom: 4px; font-weight: bold; }
-    .stat-value { font-size: 26px; font-weight: bold; color: #fff; margin: 4px 0; }
+    .stat-title { font-size: 11px; text-transform: uppercase; color: #aaa; margin-bottom: 4px; font-weight: bold; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #fff; margin: 2px 0; }
     
     /* BOTONES RAPIDOS DE CONTROL */
     .btn-group { display: flex; gap: 6px; justify-content: center; margin-top: 4px; }
@@ -43,12 +43,13 @@
     .bar-fill { height: 100%; background: #00e676; width: 0%; transition: width 0.3s; }
 
     /* CONTROLES DE PAGINA */
-    .controls { display: flex; gap: 10px; width: 100%; max-width: 500px; }
-    .btn-main { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; }
-    #downloadBtn { background: #29b6f6; color: #fff; }
-    #resetBtn { background: #ff5252; color: #fff; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; max-width: 500px; }
+    .btn-main { flex: 1; min-width: 140px; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; text-align: center; }
+    #downloadImgBtn { background: #29b6f6; color: #fff; }
+    #downloadExcelBtn { background: #4caf50; color: #fff; }
+    #resetBtn { background: #ff5252; color: #fff; flex: 100%; margin-top: 4px; }
     
-    .footer-watermark { text-align: center; margin-top: 10px; font-size: 11px; color: #666; }
+    .footer-watermark { text-align: center; margin-top: 12px; font-size: 11px; color: #666; }
   </style>
 </head>
 <body>
@@ -136,7 +137,27 @@
         </div>
       </div>
 
-      <!-- Paradas del Arquero -->
+      <!-- Faltas Cometidas -->
+      <div class="stat-card">
+        <div class="stat-title">🚨 Faltas Cometidas</div>
+        <div class="stat-value" id="val-fouls">0</div>
+        <div class="btn-group">
+          <button class="btn-action btn-plus" onclick="changeStat('fouls', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('fouls', -1)">-</button>
+        </div>
+      </div>
+
+      <!-- Faltas Recibidas -->
+      <div class="stat-card">
+        <div class="stat-title">🟨 Faltas Recibidas</div>
+        <div class="stat-value" id="val-foulsDrawn">0</div>
+        <div class="btn-group">
+          <button class="btn-action btn-plus" onclick="changeStat('foulsDrawn', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('foulsDrawn', -1)">-</button>
+        </div>
+      </div>
+
+      <!-- Atajadas Arquero -->
       <div class="stat-card">
         <div class="stat-title">🧤 Atajadas Arquero</div>
         <div class="stat-value" id="val-saves">0</div>
@@ -146,13 +167,43 @@
         </div>
       </div>
 
-      <!-- Faltas Acumuladas -->
+      <!-- Tiros de Esquina -->
       <div class="stat-card">
-        <div class="stat-title">🚨 Faltas Cometidas</div>
-        <div class="stat-value" id="val-fouls">0</div>
+        <div class="stat-title">🚩 Tiros de Esquina</div>
+        <div class="stat-value" id="val-corners">0</div>
         <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('fouls', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('fouls', -1)">-</button>
+          <button class="btn-action btn-plus" onclick="changeStat('corners', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('corners', -1)">-</button>
+        </div>
+      </div>
+
+      <!-- Lateral Alto -->
+      <div class="stat-card">
+        <div class="stat-title">⬆️ Lateral Alto</div>
+        <div class="stat-value" id="val-lateralAlto">0</div>
+        <div class="btn-group">
+          <button class="btn-action btn-plus" onclick="changeStat('lateralAlto', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('lateralAlto', -1)">-</button>
+        </div>
+      </div>
+
+      <!-- Lateral Medio -->
+      <div class="stat-card">
+        <div class="stat-title">↔️ Lateral Medio</div>
+        <div class="stat-value" id="val-lateralMedio">0</div>
+        <div class="btn-group">
+          <button class="btn-action btn-plus" onclick="changeStat('lateralMedio', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('lateralMedio', -1)">-</button>
+        </div>
+      </div>
+
+      <!-- Lateral Bajo -->
+      <div class="stat-card">
+        <div class="stat-title">⬇️ Lateral Bajo</div>
+        <div class="stat-value" id="val-lateralBajo">0</div>
+        <div class="btn-group">
+          <button class="btn-action btn-plus" onclick="changeStat('lateralBajo', 1)">+</button>
+          <button class="btn-action btn-minus" onclick="changeStat('lateralBajo', -1)">-</button>
         </div>
       </div>
 
@@ -172,14 +223,15 @@
     <div class="footer-watermark">Placa generada por @entrenafutsal</div>
   </div>
 
-  <!-- BOTONES DE ACCION EXTERNO (NO SALEN EN LA FOTO) -->
+  <!-- BOTONES DE ACCION EXTERNOS -->
   <div class="controls">
-    <button class="btn-main" id="downloadBtn" onclick="downloadCard()">📷 Descargar Placa</button>
+    <button class="btn-main" id="downloadImgBtn" onclick="downloadCard()">📷 Descargar Placa</button>
+    <button class="btn-main" id="downloadExcelBtn" onclick="exportToCSV()">📥 Descargar Excel</button>
     <button class="btn-main" id="resetBtn" onclick="resetStats()">🔄 Reiniciar Datos</button>
   </div>
 
   <script>
-    // Estado de estadísticas
+    // Estado completo de estadísticas
     const stats = {
       goalsA: 0,
       goalsB: 0,
@@ -188,7 +240,12 @@
       recoveries: 0,
       turnovers: 0,
       saves: 0,
-      fouls: 0
+      fouls: 0,
+      foulsDrawn: 0,
+      corners: 0,
+      lateralAlto: 0,
+      lateralMedio: 0,
+      lateralBajo: 0
     };
 
     function changeStat(key, amount) {
@@ -216,14 +273,13 @@
     }
 
     function resetStats() {
-      if (confirm('¿Quieres reiniciar las estadísticas del partido?')) {
+      if (confirm('¿Quieres reiniciar todas las estadísticas del partido?')) {
         for (const key in stats) stats[key] = 0;
         updateDisplay();
       }
     }
 
     function downloadCard() {
-      // Temporalmente oculta los botones de suma/resta para que la imagen se vea más limpia
       document.querySelectorAll('.btn-group').forEach(el => el.style.visibility = 'hidden');
 
       html2canvas(document.getElementById('report-card')).then(canvas => {
@@ -232,9 +288,34 @@
         link.href = canvas.toDataURL();
         link.click();
 
-        // Mostrar botones de nuevo
         document.querySelectorAll('.btn-group').forEach(el => el.style.visibility = 'visible');
       });
+    }
+
+    // EXPORTACIÓN COMPLETA A EXCEL / CSV
+    function exportToCSV() {
+      const teamA = document.getElementById('teamA').value || 'Mi Equipo';
+      const teamB = document.getElementById('teamB').value || 'Rival';
+      const today = new Date().toLocaleDateString('es-ES');
+      
+      const totalShots = stats.shotsOnTarget + stats.shotsOffTarget + stats.goalsA;
+      const onTargetTotal = stats.shotsOnTarget + stats.goalsA;
+      const accuracy = totalShots > 0 ? Math.round((onTargetTotal / totalShots) * 100) : 0;
+
+      // Encabezados y valores separados por comas
+      let csv = "\uFEFF"; // Compatibilidad UTF-8 para Excel
+      csv += "Fecha;Equipo Local;Goles Local;Equipo Visitante;Goles Visitante;Tiros al Arco;Tiros Fuera;Recuperaciones;Pérdidas;Atajadas;Faltas Cometidas;Faltas Recibidas;Tiros de Esquina;Lateral Alto;Lateral Medio;Lateral Bajo;Efectividad Tiro (%)\n";
+      csv += `"${today}";"${teamA}";${stats.goalsA};"${teamB}";${stats.goalsB};${stats.shotsOnTarget};${stats.shotsOffTarget};${stats.recoveries};${stats.turnovers};${stats.saves};${stats.fouls};${stats.foulsDrawn};${stats.corners};${stats.lateralAlto};${stats.lateralMedio};${stats.lateralBajo};"${accuracy}%"\n`;
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Reporte_${teamA}_vs_${teamB}_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
