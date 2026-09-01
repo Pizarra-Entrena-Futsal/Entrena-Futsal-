@@ -20,10 +20,12 @@
     /* BARRA DE HERRAMIENTAS */
     .controls-panel { width: 100%; max-width: 800px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; }
     .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-tool { background: #333; }
     .btn-tool.active { background: #00e676; color: #121212; }
     .btn-anim { background: #9c27b0; }
     .btn-play { background: #e91e63; }
+    .btn-video { background: #ff5722; }
     .btn-clear { background: #f44336; }
     .btn-download { background: #0288d1; }
 
@@ -74,10 +76,11 @@
     <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Fichas</button>
   </div>
 
-  <!-- PANEL DE ANIMACIÓN PASO A PASO -->
+  <!-- PANEL DE ANIMACIÓN PASO A PASO Y EXPORTACIÓN -->
   <div class="controls-panel">
     <button class="btn btn-anim" onclick="saveFrame()">➕ Guardar Paso</button>
-    <button class="btn btn-play" onclick="playAnimation()">▶️ Reproducir</button>
+    <button class="btn btn-play" id="btnPlay" onclick="playAnimation()">▶️ Reproducir</button>
+    <button class="btn btn-video" id="btnVideo" onclick="exportVideo()">🎥 Descargar Video</button>
     <button class="btn btn-clear" style="background:#555;" onclick="clearAnimation()">🗑️ Limpiar Pasos</button>
     <div class="anim-counter" id="stepCounter">Pasos: 0</div>
     <button class="btn btn-download" onclick="downloadBoard()">📷 Descargar Foto</button>
@@ -116,10 +119,9 @@
     const wrapper = document.getElementById('court-wrapper');
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
-    let currentMode = 'move'; // 'move' o 'draw'
+    let currentMode = 'move';
     let isDrawing = false;
 
-    // Ajustar resolución del canvas
     function resizeCanvas() {
       canvas.width = wrapper.clientWidth;
       canvas.height = wrapper.clientHeight;
@@ -127,7 +129,6 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // MODO MOVER / DIBUJAR
     function setMode(mode) {
       currentMode = mode;
       document.getElementById('modeMove').classList.toggle('active', mode === 'move');
@@ -135,7 +136,7 @@
       canvas.style.pointerEvents = (mode === 'draw') ? 'auto' : 'none';
     }
 
-    // LÓGICA DE DIBUJO
+    // DIBUJO EN CANCHA
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDraw);
@@ -164,7 +165,7 @@
     function stopDraw() { isDrawing = false; }
     function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-    // ARRASTRE DE FICHAS (MOUSE Y TOUCH)
+    // ARRASTRE DE FICHAS
     let activePiece = null;
     let offsetX = 0, offsetY = 0;
 
@@ -176,7 +177,7 @@
     function startDrag(e, element) {
       if (currentMode !== 'move') return;
       activePiece = element || e.target;
-      activePiece.classList.remove('animating'); // Desactivar transiciones suaves mientras se arrastra
+      activePiece.classList.remove('animating');
       const rect = activePiece.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
       offsetY = e.clientY - rect.top;
@@ -193,7 +194,6 @@
       let x = e.clientX - wrapperRect.left - offsetX;
       let y = e.clientY - wrapperRect.top - offsetY;
 
-      // Límites de cancha
       x = Math.max(0, Math.min(x, wrapper.clientWidth - activePiece.clientWidth));
       y = Math.max(0, Math.min(y, wrapper.clientHeight - activePiece.clientHeight));
 
@@ -213,7 +213,6 @@
       document.removeEventListener('touchend', stopDrag);
     }
 
-    // POSICIONES INICIALES
     const initialPositions = {
       r1: { left: '40px', top: '220px' }, r2: { left: '140px', top: '100px' },
       r3: { left: '140px', top: '340px' }, r4: { left: '240px', top: '170px' },
@@ -233,7 +232,7 @@
       });
     }
 
-    // SISTEMA DE ANIMACIÓN PASO A PASO
+    // ANIMACIÓN Y PASOS
     let animationFrames = [];
     let isPlaying = false;
 
@@ -246,7 +245,7 @@
       document.getElementById('stepCounter').innerText = `Pasos: ${animationFrames.length}`;
     }
 
-    function playAnimation() {
+    function playAnimation(callback) {
       if (animationFrames.length === 0 || isPlaying) return;
       isPlaying = true;
 
@@ -258,6 +257,7 @@
       function step() {
         if (currentStep >= animationFrames.length) {
           isPlaying = false;
+          if (callback) callback();
           return;
         }
 
@@ -271,7 +271,7 @@
         }
 
         currentStep++;
-        setTimeout(step, 1000); // Avanza un paso cada 1 segundo
+        setTimeout(step, 1000);
       }
 
       step();
@@ -282,13 +282,66 @@
       document.getElementById('stepCounter').innerText = `Pasos: 0`;
     }
 
-    // DESCARGAR FOTO
     function downloadBoard() {
       html2canvas(wrapper).then(canvas => {
         const link = document.createElement('a');
         link.download = `pizarra-futsal-${new Date().toISOString().slice(0,10)}.png`;
         link.href = canvas.toDataURL();
         link.click();
+      });
+    }
+
+    // GRABACIÓN DE VIDEO DIRECTA
+    function exportVideo() {
+      if (animationFrames.length === 0) {
+        alert('Guarda al menos un paso antes de exportar el video.');
+        return;
+      }
+
+      const btnVideo = document.getElementById('btnVideo');
+      btnVideo.innerText = '⏳ Grabando...';
+      btnVideo.disabled = true;
+
+      // Crear canvas oculto para procesar fotogramas en streaming
+      const recCanvas = document.createElement('canvas');
+      recCanvas.width = wrapper.clientWidth;
+      recCanvas.height = wrapper.clientHeight;
+      const recCtx = recCanvas.getContext('2d');
+
+      const stream = recCanvas.captureStream(30); // 30 FPS
+      let mimeType = 'video/webm';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/mp4';
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      const chunks = [];
+
+      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `animacion-tactica-${new Date().toISOString().slice(0,10)}.${mimeType.includes('mp4') ? 'mp4' : 'webm'}`;
+        a.click();
+
+        btnVideo.innerText = '🎥 Descargar Video';
+        btnVideo.disabled = false;
+      };
+
+      mediaRecorder.start();
+
+      // Dibujar fotogramas continuamente mientras corre la animación
+      const renderInterval = setInterval(() => {
+        html2canvas(wrapper, { canvas: recCanvas, logging: false }).then(() => {});
+      }, 50);
+
+      playAnimation(() => {
+        setTimeout(() => {
+          clearInterval(renderInterval);
+          mediaRecorder.stop();
+        }, 800);
       });
     }
   </script>
