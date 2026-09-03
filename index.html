@@ -3,22 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pizarra Táctica Futsal</title>
+  <title>Pizarra Táctica Futsal - Entrenafutsal</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body { background-color: #121212; color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
     
-    header { width: 100%; max-width: 1020px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .logo { width: 40px; height: 40px; background: #1e88e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #fff; }
-    .brand-title { font-size: 1.1rem; font-weight: bold; }
-    .brand-sub { font-size: 0.8rem; color: #00e676; }
-    .btn-stats { background: #ff9800; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    header {
+      width: 100%;
+      max-width: 1020px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Estilo adaptado para imagen de logo / miniatura */
+    .logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover; /* Evita que la imagen se deforme */
+      background-color: #1e88e5;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: #00e676;
+    }
+
+    .btn-stats {
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
     
-    .toolbar { width: 100%; max-width: 1020px; background: #1e1e1e; border-radius: 10px; padding: 12px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #333; }
-    .tool-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+    .toolbar {
+      width: 100%;
+      max-width: 1020px;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid #333;
+    }
+
+    .tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
     
-    .btn { border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; color: white; transition: all 0.2s; }
+    .btn {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+      transition: all 0.2s;
+    }
+
     .btn-green  { background: #00c853; }
     .btn-orange { background: #f57c00; }
     .btn-red    { background: #e53935; }
@@ -28,20 +113,49 @@
     .btn-pink   { background: #ec407a; }
     .btn-grey   { background: #616161; }
     .btn-cyan   { background: #00acc1; }
-    .btn:hover  { opacity: 0.9; transform: translateY(-1px); }
 
-    .canvas-container { position: relative; width: 1000px; height: 600px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #333; }
-    canvas { background-color: #2e7d32; display: block; }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 1000px;
+      height: 600px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 2px solid #333;
+    }
+
+    canvas {
+      background-color: #2e7d32;
+      display: block;
+    }
     
-    .label-tag { font-size: 0.85rem; color: #ccc; margin-right: 5px; font-weight: 600; }
-    .badge-step { background: #00c853; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; }
+    .label-tag {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-right: 5px;
+      font-weight: 600;
+    }
+
+    .badge-step {
+      background: #00c853;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="brand">
-      <div class="logo">⚽</div>
+      <!-- Cambia tu-logo.png por la ruta de tu imagen -->
+      <img src="tu-logo.png" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/44/1e88e5/ffffff?text=⚽'">
       <div>
         <div class="brand-title">Pizarra Táctica Futsal</div>
         <div class="brand-sub">@entrenafutsal</div>
@@ -134,7 +248,7 @@
       ctx.fillStyle = '#ffffff';
       ctx.fill();
 
-      // Áreas (6 metros)
+      // Áreas
       ctx.beginPath();
       ctx.arc(pad, canvas.height / 2, 100, -Math.PI / 2, Math.PI / 2);
       ctx.stroke();
@@ -155,12 +269,17 @@
       ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 35, 15, 70);
     }
 
-    // Renderizado correcto usando círculos fijos (ctx.arc)
     function drawPlayer(p) {
       ctx.save();
       ctx.translate(p.x, p.y);
+      ctx.rotate((p.angle || 0) * Math.PI / 180);
 
       if (p.role === 'BALL') {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetX = -2;
+        ctx.shadowOffsetY = 3;
+
         ctx.beginPath();
         ctx.arc(0, 0, p.r, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
@@ -173,64 +292,86 @@
         ctx.arc(0, 0, p.r * 0.4, 0, Math.PI * 2);
         ctx.fillStyle = '#1565c0';
         ctx.fill();
+
         ctx.restore();
         return;
       }
 
-      let teamColor = '#00c853';
-      let textColor = '#008e3c';
+      let darkColor = '#0b2467';
+      let shirtColor = '#8cbef2';
+      let innerColor = '#bfe0ff';
 
       if (p.role === 'ARQ') {
-        teamColor = '#121212';
-        textColor = '#121212';
-      } else if (p.team === 'blue') {
-        teamColor = '#1e88e5';
-        textColor = '#1565c0';
+        darkColor = '#121212';
+        shirtColor = '#ffd54f';
+        innerColor = '#ffffff';
+      } else if (p.team === 'green') {
+        darkColor = '#0b4d1b';
+        shirtColor = '#81c784';
+        innerColor = '#c8e6c9';
       }
 
-      // 1. Halo de selección
+      const skinColor = '#e19d62';
+
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = -4;
+      ctx.shadowOffsetY = 5;
+
       if (p.selected) {
         ctx.beginPath();
-        ctx.arc(0, 0, p.r * 1.35, 0, Math.PI * 2);
+        ctx.arc(0, 0, p.r * 1.5, 0, Math.PI * 2);
         ctx.strokeStyle = '#ffeb3b';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3.5;
         ctx.stroke();
       }
 
-      // 2. Nariz / Indicador de perfilado (orientación)
-      const rad = (p.angle || 0) * Math.PI / 180;
-      const bumpDist = p.r * 0.92;
-      const bumpRadius = p.r * 0.35;
-      const bx = Math.cos(rad) * bumpDist;
-      const by = Math.sin(rad) * bumpDist;
+      ctx.shadowColor = 'transparent';
 
+      // Hombros
       ctx.beginPath();
-      ctx.arc(bx, by, bumpRadius, 0, Math.PI * 2);
-      ctx.fillStyle = teamColor;
+      ctx.ellipse(-p.r * 0.35, 0, p.r * 0.65, p.r * 1.2, 0, -Math.PI / 2, Math.PI / 2);
+      ctx.ellipse(-p.r * 0.1, 0, p.r * 0.35, p.r * 0.95, 0, Math.PI / 2, -Math.PI / 2, true);
+      ctx.closePath();
+
+      ctx.fillStyle = shirtColor;
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = darkColor;
       ctx.stroke();
 
-      // 3. Círculo base de la ficha
+      // Manos
+      const handRadius = p.r * 0.28;
+      const hands = [
+        { x: -p.r * 0.25, y: -p.r * 1.15 },
+        { x: -p.r * 0.25, y: p.r * 1.15 }
+      ];
+
+      hands.forEach(h => {
+        ctx.beginPath();
+        ctx.arc(h.x, h.y, handRadius, 0, Math.PI * 2);
+        ctx.fillStyle = skinColor;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = darkColor;
+        ctx.stroke();
+      });
+
+      // Cabeza exterior
       ctx.beginPath();
       ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = teamColor;
+      ctx.fillStyle = darkColor;
       ctx.fill();
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
 
-      // 4. Círculo interior blanco
-      const innerRadius = p.r * 0.58;
+      // Cabeza interior
       ctx.beginPath();
-      ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.arc(0, 0, p.r * 0.76, 0, Math.PI * 2);
+      ctx.fillStyle = innerColor;
       ctx.fill();
 
-      // 5. Número
-      ctx.fillStyle = textColor;
-      ctx.font = `bold ${Math.round(p.r * 0.72)}px Arial, sans-serif`;
+      // Número
+      ctx.fillStyle = darkColor;
+      ctx.font = `bold ${Math.round(p.r * 0.85)}px Arial, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(p.label, 0, 1);
