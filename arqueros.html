@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizarra Táctica de Arqueros - @entrenafutsal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
+    
+    /* ENCABEZADO */
+    header { width: 100%; max-width: 1100px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; }
+    .header-info { display: flex; align-items: center; gap: 12px; }
+    .header-text strong { font-size: 18px; color: #fff; display: block; }
+    .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
+    .nav-btn { background: #0288d1; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; }
+
+    /* LAYOUT PRINCIPAL */
+    .main-container { width: 100%; max-width: 1100px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    
+    /* CONTENEDOR CANVAS */
+    .board-container { flex: 1 1 650px; max-width: 720px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
+    canvas { width: 100%; height: auto; aspect-ratio: 700 / 600; display: block; border-radius: 8px; touch-action: none; cursor: crosshair; }
+
+    /* PANEL LATERAL DE REGISTRO */
+    .sidebar { flex: 1 1 320px; max-width: 360px; display: flex; flex-direction: column; gap: 12px; }
+    .panel-card { background: #1e1e1e; padding: 14px; border-radius: 10px; border: 1px solid #333; }
+    .panel-title { font-size: 14px; font-weight: bold; color: #00e676; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* MATRIZ 3x3 DEL ARCO */
+    .goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+    .zone-btn { background: #2a2a2a; border: 1px solid #00e676; border-radius: 6px; color: #fff; padding: 10px 4px; text-align: center; cursor: pointer; transition: background 0.2s; }
+    .zone-btn:hover { background: #00e676; color: #121212; }
+    .zone-btn .zone-name { font-size: 10px; display: block; opacity: 0.8; }
+    .zone-btn .zone-count { font-size: 16px; font-weight: bold; color: #ffeb3b; }
+
+    /* BOTONES DE CONTROL */
+    .controls-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .btn { padding: 8px 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; color: #fff; background: #333; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.96); }
+    .btn-active { background: #00e676; color: #121212; }
+    .btn-action { background: #ff9800; }
+    .btn-danger { background: #f44336; }
+
+    /* SELECTOR TÉCNICO */
+    .gesture-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip-tag { background: #2b2b2b; border: 1px solid #444; padding: 6px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+    .chip-tag.selected { background: #00e676; color: #121212; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-info">
+      <div class="header-text">
+        <strong>Pizarra Táctica de Arqueros</strong>
+        <span class="handle">@entrenafutsal • Ángulos & Achiques</span>
+      </div>
+    </div>
+    <a href="index.html" class="nav-btn">🏟️ Ir a Cancha Completa</a>
+  </header>
+
+  <div class="main-container">
+    
+    <!-- ÁREA DE DIBUJO Y ÁNGULOS -->
+    <div class="board-container">
+      <!-- CONTROLES SUPERIORES -->
+      <div class="controls-row">
+        <button class="btn btn-active" id="btnLines" onclick="toggleLines()">📐 Ángulos y Bisectriz: ON</button>
+        <button class="btn" onclick="rotateArquero(45)">↻ Girar Arquero</button>
+        <button class="btn btn-danger" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
+      </div>
+
+      <canvas id="gkCanvas" width="700" height="600"></canvas>
+    </div>
+
+    <!-- PANEL LATERAL DE MÉTRICAS -->
+    <div class="sidebar">
+      
+      <!-- CUADRÍCULA 3x3 DEL ARCO -->
+      <div class="panel-card">
+        <div class="panel-title">🎯 Registro de Impacto (Arco 3x3)</div>
+        <div class="goal-grid">
+          <div class="zone-btn" onclick="addZoneHit('z1')"><span class="zone-name">Izq Sup</span><span class="zone-count" id="z1">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z2')"><span class="zone-name">Centro Sup</span><span class="zone-count" id="z2">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z3')"><span class="zone-name">Der Sup</span><span class="zone-count" id="z3">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z4')"><span class="zone-name">Med Izq</span><span class="zone-count" id="z4">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z5')"><span class="zone-name">Centro</span><span class="zone-count" id="z5">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z6')"><span class="zone-name">Med Der</span><span class="zone-count" id="z6">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z7')"><span class="zone-name">Rasa Izq</span><span class="zone-count" id="z7">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z8')"><span class="zone-name">Rasa Centro</span><span class="zone-count" id="z8">0</span></div>
+          <div class="zone-btn" onclick="addZoneHit('z9')"><span class="zone-name">Rasa Der</span><span class="zone-count" id="z9">0</span></div>
+        </div>
+        <button class="btn btn-action" style="width: 100%; margin-top: 4px;" onclick="resetStats()">🧹 Limpiar Estadísticas</button>
+      </div>
+
+      <!-- TIPO DE GESTO TÉCNICO -->
+      <div class="panel-card">
+        <div class="panel-title">🧤 Gesto Técnico de Parada</div>
+        <div class="gesture-list">
+          <div class="chip-tag selected" onclick="selectGesture(this)">Cruz</div>
+          <div class="chip-tag" onclick="selectGesture(this)">Mariposa</div>
+          <div class="chip-tag" onclick="selectGesture(this)">Caída Lateral</div>
+          <div class="chip-tag" onclick="selectGesture(this)">Spagat</div>
+          <div class="chip-tag" onclick="selectGesture(this)">Achique Rápido</div>
+          <div class="chip-tag" onclick="selectGesture(this)">Parada de Pie</div>
+        </div>
+      </div>
+
+      <!-- DISTANCIA DE ACHIQUE ESTIMADA -->
+      <div class="panel-card">
+        <div class="panel-title">📏 Distancia del Achique</div>
+        <p style="font-size: 13px; color: #aaa;">Distancia calculada al arco:</p>
+        <p style="font-size: 22px; font-weight: bold; color: #00e676; margin-top: 4px;" id="gkDistance">2.1 metros</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gkCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let showAngleLines = true;
+    let activePiece = null;
+
+    // POSTES DEL ARCO (Lado izquierdo del canvas)
+    const goalPost1 = { x: 70, y: 190 };
+    const goalPost2 = { x: 70, y: 410 };
+    const goalCenter = { x: 70, y: 300 };
+
+    // ELEMENTOS INTERACTIVOS
+    const initialPieces = [
+      { id: 'gk', type: 'gk', label: '1', x: 190, y: 300, r: 28, color: '#121212', border: '#00e676', angle: Math.PI / 2 },
+      { id: 'ball', type: 'ball', label: '10', x: 480, y: 220, r: 22, color: '#1565c0', border: '#ffffff' },
+      { id: 'cone', type: 'cone', label: '▲', x: 330, y: 260, r: 18, color: '#ff9800' }
+    ];
+
+    let pieces = JSON.parse(JSON.stringify(initialPieces));
+
+    // PATRÓN DE MADERA CREADO POR CÓDIGO
+    function createWoodPattern(isLighter = false) {
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = 120;
+      pCanvas.height = 36;
+      const pCtx = pCanvas.getContext('2d');
+
+      const colors = isLighter
+        ? ['#ebd0a7', '#dfbc8a', '#e6c89c', '#d9b480']
+        : ['#c4945d', '#b78750', '#a87843', '#bb8c54'];
+
+      for (let i = 0; i < 3; i++) {
+        pCtx.fillStyle = colors[i % colors.length];
+        pCtx.fillRect(0, i * 12, 120, 11.5);
+        pCtx.strokeStyle = isLighter ? '#c9ab7f' : '#8e6231';
+        pCtx.lineWidth = 0.8;
+        pCtx.strokeRect(0, i * 12, 120, 12);
+      }
+      return ctx.createPattern(pCanvas, 'repeat');
+    }
+
+    let woodDark = null;
+    let woodLight = null;
+
+    function render() {
+      if (!woodDark) {
+        woodDark = createWoodPattern(false);
+        woodLight = createWoodPattern(true);
+      }
+
+      // 1. Fondo de Madera Principal
+      ctx.fillStyle = woodDark;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 2. Área de 6m en Madera Clara
+      ctx.save();
+      ctx.fillStyle = woodLight;
+      ctx.beginPath();
+      ctx.arc(70, 300, 220, -Math.PI / 2, Math.PI / 2);
+      ctx.fill();
+      ctx.restore();
+
+      // 3. Arcos Concéntricos de Distancia (1m, 2m, 3m, 4m)
+      const metersPx = 36; // 36px ~= 1 metro
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+
+      for (let m = 1; m <= 5; m++) {
+        const radius = m * metersPx + 30;
+        ctx.beginPath();
+        ctx.arc(70, 300, radius, -Math.PI / 2, Math.PI / 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText(`${m}m`, 70 + radius - 12, 295);
+      }
+      ctx.setLineDash([]);
+
+      // 4. Líneas de Campo Tácticas
+      ctx.strokeStyle = '#222222';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(70, 20);
+      ctx.lineTo(70, 580);
+      ctx.stroke();
+
+      // Curva del Área 6m
+      ctx.beginPath();
+      ctx.arc(70, 300, 220, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+
+      // Punto de Penal
+      ctx.beginPath();
+      ctx.arc(70 + 220, 300, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#222';
+      ctx.fill();
+
+      // 5. CÁLCULO Y DIBUJO DE ÁNGULOS Y BISECTRIZ DE TIRO
+      const ball = pieces.find(p => p.id === 'ball');
+      const gk = pieces.find(p => p.id === 'gk');
+
+      if (showAngleLines && ball) {
+        // Líneas de tiro hacia los postes (Amarillo)
+        ctx.strokeStyle = '#ffeb3b';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 4]);
+
+        ctx.beginPath(); ctx.moveTo(ball.x, ball.y); ctx.lineTo(goalPost1.x, goalPost1.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ball.x, ball.y); ctx.lineTo(goalPost2.x, goalPost2.y); ctx.stroke();
+
+        // Línea de Bisectriz (Verde neón - Centro óptimo)
+        ctx.strokeStyle = '#00e676';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(ball.x, ball.y);
+        ctx.lineTo(goalCenter.x, goalCenter.y);
+        ctx.stroke();
+
+        // Sombra de Cobertura del Arquero
+        if (gk) {
+          ctx.fillStyle = 'rgba(0, 230, 118, 0.2)';
+          ctx.beginPath();
+          ctx.moveTo(ball.x, ball.y);
+          ctx.lineTo(gk.x + 15 * Math.cos(gk.angle - Math.PI/2), gk.y + 15 * Math.sin(gk.angle - Math.PI/2));
+          ctx.lineTo(gk.x + 15 * Math.cos(gk.angle + Math.PI/2), gk.y + 15 * Math.sin(gk.angle + Math.PI/2));
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+
+      // 6. DIBUJAR PORTERÍA / POSTES
+      ctx.fillStyle = '#1565c0';
+      ctx.fillRect(45, 190, 25, 220);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.strokeRect(45, 190, 25, 220);
+
+      // Postes blancos
+      ctx.beginPath(); ctx.arc(goalPost1.x, goalPost1.y, 7, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(goalPost2.x, goalPost2.y, 7, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
+
+      // 7. DIBUJAR FICHAS
+      for (const p of pieces) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+
+        if (p.type === 'gk') {
+          ctx.rotate(p.angle || 0);
+
+          // Silueta del Arquero
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = p.border;
+          ctx.stroke();
+
+          // Marcadores de Guantes/Manos
+          ctx.beginPath(); ctx.arc(-p.r * 0.8, -p.r * 0.5, 6, 0, Math.PI * 2); ctx.fillStyle = '#00e676'; ctx.fill();
+          ctx.beginPath(); ctx.arc(p.r * 0.8, -p.r * 0.5, 6, 0, Math.PI * 2); ctx.fillStyle = '#00e676'; ctx.fill();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(p.label, 0, 0);
+
+        } else if (p.type === 'ball') {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = p.border;
+          ctx.stroke();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('⚽ ' + p.label, 0, 0);
+
+        } else if (p.type === 'cone') {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#fff';
+          ctx.stroke();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('▲', 0, 0);
+        }
+
+        ctx.restore();
+      }
+
+      // 8. ACTUALIZAR DISTANCIA DEL ACHIQUE
+      if (gk) {
+        const dx = gk.x - goalCenter.x;
+        const dy = gk.y - goalCenter.y;
+        const distMeters = (Math.sqrt(dx * dx + dy * dy) / metersPx).toFixed(1);
+        document.getElementById('gkDistance').innerText = `${distMeters} metros`;
+      }
+    }
+
+    // INTERACCIÓN MOUSE Y TÁCTIL
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    function handleStart(e) {
+      const pos = getCanvasCoords(e);
+      for (let i = pieces.length - 1; i >= 0; i--) {
+        const p = pieces[i];
+        const dx = pos.x - p.x;
+        const dy = pos.y - p.y;
+        if (dx * dx + dy * dy <= p.r * p.r * 1.5) {
+          activePiece = p;
+          break;
+        }
+      }
+    }
+
+    function handleMove(e) {
+      if (!activePiece) return;
+      const pos = getCanvasCoords(e);
+      activePiece.x = Math.max(30, Math.min(canvas.width - 30, pos.x));
+      activePiece.y = Math.max(30, Math.min(canvas.height - 30, pos.y));
+      render();
+    }
+
+    function handleEnd() { activePiece = null; }
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
+    canvas.addEventListener('touchend', handleEnd);
+
+    // CONTROLES
+    function toggleLines() {
+      showAngleLines = !showAngleLines;
+      const btn = document.getElementById('btnLines');
+      btn.innerText = showAngleLines ? '📐 Ángulos y Bisectriz: ON' : '📐 Ángulos y Bisectriz: OFF';
+      btn.classList.toggle('btn-active', showAngleLines);
+      render();
+    }
+
+    function rotateArquero(deg) {
+      const gk = pieces.find(p => p.id === 'gk');
+      if (gk) {
+        gk.angle = (gk.angle || 0) + (deg * Math.PI) / 180;
+        render();
+      }
+    }
+
+    function resetPositions() {
+      pieces = JSON.parse(JSON.stringify(initialPieces));
+      render();
+    }
+
+    // REGISTRO DE ESTADÍSTICAS
+    const stats = { z1:0, z2:0, z3:0, z4:0, z5:0, z6:0, z7:0, z8:0, z9:0 };
+
+    function addZoneHit(zoneId) {
+      stats[zoneId]++;
+      document.getElementById(zoneId).innerText = stats[zoneId];
+    }
+
+    function resetStats() {
+      for (let z in stats) {
+        stats[z] = 0;
+        document.getElementById(z).innerText = '0';
+      }
+    }
+
+    function selectGesture(el) {
+      document.querySelectorAll('.chip-tag').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    render();
+  </script>
+</body>
+</html>
