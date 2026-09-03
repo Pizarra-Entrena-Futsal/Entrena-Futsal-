@@ -20,7 +20,8 @@
     .stats-link:hover { background: #e68a00; }
 
     /* CONTROLES Y HERRAMIENTAS */
-    .controls-panel { width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; }
+    .controls-panel { width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; }
+    .panel-label { font-size: 13px; font-weight: bold; color: #00e676; margin-right: 4px; }
     .btn { padding: 9px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
     .btn:active { transform: scale(0.97); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -52,12 +53,23 @@
     <a href="stats.html" class="stats-link">📊 Estadísticas</a>
   </header>
 
-  <!-- PANEL DE HERRAMIENTAS -->
+  <!-- PANEL DE MODO -->
   <div class="controls-panel">
-    <button class="btn btn-tool active" id="modeMove" onclick="setMode('move')">✋ Mover Jugadores</button>
+    <button class="btn btn-tool active" id="modeMove" onclick="setMode('move')">✋ Mover / Girar</button>
     <button class="btn btn-tool" id="modeDraw" onclick="setMode('draw')">✏️ Dibujar Trazos</button>
     <button class="btn btn-clear" onclick="clearDrawings()">🧹 Borrar Trazos</button>
     <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
+  </div>
+
+  <!-- PANEL DE ORIENTACIÓN RÁPIDA -->
+  <div class="controls-panel">
+    <span class="panel-label">Perfilar Ficha:</span>
+    <button class="btn btn-tool" onclick="rotateSelected(-45)" title="Girar 45° Izquierda">↺ -45°</button>
+    <button class="btn btn-tool" onclick="rotateSelected(45)" title="Girar 45° Derecha">↻ +45°</button>
+    <button class="btn btn-tool" onclick="setSelectedAngle(90)" title="Perfilar hacia la Derecha">➡️ Der</button>
+    <button class="btn btn-tool" onclick="setSelectedAngle(-90)" title="Perfilar hacia la Izquierda">⬅️ Izq</button>
+    <button class="btn btn-tool" onclick="setSelectedAngle(0)" title="Perfilar hacia Arriba">⬆️ Arriba</button>
+    <button class="btn btn-tool" onclick="setSelectedAngle(180)" title="Perfilar hacia Abajo">⬇️ Abajo</button>
   </div>
 
   <!-- PANEL DE ANIMACIÓN Y EXPORTACIÓN -->
@@ -82,6 +94,8 @@
     let mode = 'move';
     let isDrawing = false;
     let activePiece = null;
+    let selectedPiece = null;
+    let isRotating = false;
     let steps = [];
     let isPlaying = false;
 
@@ -90,23 +104,24 @@
 
     // CONFIGURACIÓN DE EQUIPOS
     // Verde (#00c853), Azul (#1565c0), Arqueros Negros (#121212)
+    // angle: Math.PI / 2 (90°) = Mira a la derecha | -Math.PI / 2 (-90°) = Mira a la izquierda
     const initialPieces = [
-      // EQUIPO VERDE
-      { id: 'g1', type: 'gk', team: 'green', label: '1', x: 80, y: 360, r: 28, color: '#121212', border: '#00e676' },
-      { id: 'g2', type: 'player', team: 'green', label: '2', x: 230, y: 150, r: 28, color: '#00c853', border: '#ffffff' },
-      { id: 'g3', type: 'player', team: 'green', label: '3', x: 230, y: 570, r: 28, color: '#00c853', border: '#ffffff' },
-      { id: 'g4', type: 'player', team: 'green', label: '4', x: 390, y: 270, r: 28, color: '#00c853', border: '#ffffff' },
-      { id: 'g5', type: 'player', team: 'green', label: '5', x: 390, y: 450, r: 28, color: '#00c853', border: '#ffffff' },
+      // EQUIPO VERDE (Mirando hacia la derecha)
+      { id: 'g1', type: 'gk', team: 'green', label: '1', x: 80, y: 360, r: 28, color: '#121212', border: '#00e676', angle: Math.PI / 2 },
+      { id: 'g2', type: 'player', team: 'green', label: '2', x: 230, y: 150, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
+      { id: 'g3', type: 'player', team: 'green', label: '3', x: 230, y: 570, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
+      { id: 'g4', type: 'player', team: 'green', label: '4', x: 390, y: 270, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
+      { id: 'g5', type: 'player', team: 'green', label: '5', x: 390, y: 450, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
 
-      // EQUIPO AZUL
-      { id: 'b1', type: 'gk', team: 'blue', label: '1', x: 1120, y: 360, r: 28, color: '#121212', border: '#29b6f6' },
-      { id: 'b2', type: 'player', team: 'blue', label: '2', x: 970, y: 150, r: 28, color: '#1565c0', border: '#ffffff' },
-      { id: 'b3', type: 'player', team: 'blue', label: '3', x: 970, y: 570, r: 28, color: '#1565c0', border: '#ffffff' },
-      { id: 'b4', type: 'player', team: 'blue', label: '10', x: 810, y: 270, r: 28, color: '#1565c0', border: '#ffffff' },
-      { id: 'b5', type: 'player', team: 'blue', label: '5', x: 810, y: 450, r: 28, color: '#1565c0', border: '#ffffff' },
+      // EQUIPO AZUL (Mirando hacia la izquierda)
+      { id: 'b1', type: 'gk', team: 'blue', label: '1', x: 1120, y: 360, r: 28, color: '#121212', border: '#29b6f6', angle: -Math.PI / 2 },
+      { id: 'b2', type: 'player', team: 'blue', label: '2', x: 970, y: 150, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
+      { id: 'b3', type: 'player', team: 'blue', label: '3', x: 970, y: 570, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
+      { id: 'b4', type: 'player', team: 'blue', label: '10', x: 810, y: 270, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
+      { id: 'b5', type: 'player', team: 'blue', label: '5', x: 810, y: 450, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
 
       // PELOTA
-      { id: 'ball', type: 'ball', team: 'ball', label: '⚽', x: 600, y: 360, r: 18 }
+      { id: 'ball', type: 'ball', team: 'ball', label: '⚽', x: 600, y: 360, r: 18, angle: 0 }
     ];
 
     let pieces = JSON.parse(JSON.stringify(initialPieces));
@@ -117,10 +132,11 @@
       document.getElementById('modeDraw').classList.toggle('active', mode === 'draw');
     }
 
-    // DIBUJAR FICHA PERSONALIZADA (BASADA EN LA IMAGEN ADJUNTADA)
-    function drawCustomChip(x, y, scale, teamColor, borderColor, label, isGK) {
+    // DIBUJAR FICHA CON ROTACIÓN
+    function drawCustomChip(x, y, scale, teamColor, borderColor, label, isGK, angle) {
       ctx.save();
       ctx.translate(x, y);
+      ctx.rotate(angle);
 
       const s = scale;
 
@@ -141,8 +157,7 @@
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      // 2. APLIQUES DE MANGAS / HOMBRERAS (Gris claro de la foto)
-      // Manga Izquierda
+      // 2. APLIQUES DE MANGAS / HOMBRERAS
       ctx.beginPath();
       ctx.moveTo(-s * 1.15, -s * 0.15);
       ctx.quadraticCurveTo(-s * 0.8, -s * 0.65, -s * 0.6, -s * 0.25);
@@ -153,7 +168,6 @@
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      // Manga Derecha
       ctx.beginPath();
       ctx.moveTo(s * 1.15, -s * 0.15);
       ctx.quadraticCurveTo(s * 0.8, -s * 0.65, s * 0.6, -s * 0.25);
@@ -268,7 +282,7 @@
       // 4. Dibujar Jugadores
       for (const p of pieces) {
         if (p.type === 'player' || p.type === 'gk') {
-          drawCustomChip(p.x, p.y, p.r, p.color, p.border, p.label, p.type === 'gk');
+          drawCustomChip(p.x, p.y, p.r, p.color, p.border, p.label, p.type === 'gk', p.angle || 0);
         } else if (p.type === 'ball') {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -283,6 +297,50 @@
           ctx.textBaseline = 'middle';
           ctx.fillText('⚽', p.x, p.y + 1);
         }
+      }
+
+      // 5. MARCADOR DE SELECCIÓN Y MANIJA DE GIRO
+      if (selectedPiece && selectedPiece.type !== 'ball') {
+        const p = selectedPiece;
+        const handleDist = p.r + 28;
+        const hx = p.x + handleDist * Math.sin(p.angle || 0);
+        const hy = p.y - handleDist * Math.cos(p.angle || 0);
+
+        ctx.save();
+        // Círculo Punteado alrededor de la ficha
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + 8, 0, Math.PI * 2);
+        ctx.strokeStyle = '#00e676';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+
+        // Línea hacia la manija de giro
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(hx, hy);
+        ctx.strokeStyle = '#00e676';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Círculo de la Manija
+        ctx.beginPath();
+        ctx.arc(hx, hy, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#00e676';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Ícono de giro dentro de la manija
+        ctx.fillStyle = '#121212';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🔄', hx, hy);
+
+        ctx.restore();
       }
     }
 
@@ -309,12 +367,41 @@
       return null;
     }
 
+    function getRotationHandleCoords(p) {
+      const handleDist = p.r + 28;
+      return {
+        x: p.x + handleDist * Math.sin(p.angle || 0),
+        y: p.y - handleDist * Math.cos(p.angle || 0)
+      };
+    }
+
     function handleStart(e) {
       if (isPlaying) return;
       const pos = getCanvasCoords(e);
 
       if (mode === 'move') {
-        activePiece = findPiece(pos.x, pos.y);
+        // Verificar si hizo clic en la manija de giro de la ficha seleccionada
+        if (selectedPiece && selectedPiece.type !== 'ball') {
+          const handlePos = getRotationHandleCoords(selectedPiece);
+          const dx = pos.x - handlePos.x;
+          const dy = pos.y - handlePos.y;
+          if (dx * dx + dy * dy <= 22 * 22) {
+            isRotating = true;
+            activePiece = selectedPiece;
+            return;
+          }
+        }
+
+        // Buscar si hizo clic en una ficha
+        const p = findPiece(pos.x, pos.y);
+        if (p) {
+          activePiece = p;
+          selectedPiece = p;
+          render();
+        } else {
+          selectedPiece = null;
+          render();
+        }
       } else if (mode === 'draw') {
         isDrawing = true;
         currentPath = [pos];
@@ -327,10 +414,18 @@
       if (isPlaying) return;
       const pos = getCanvasCoords(e);
 
-      if (mode === 'move' && activePiece) {
-        activePiece.x = Math.max(activePiece.r + 20, Math.min(canvas.width - activePiece.r - 20, pos.x));
-        activePiece.y = Math.max(activePiece.r + 20, Math.min(canvas.height - activePiece.r - 20, pos.y));
-        render();
+      if (mode === 'move') {
+        if (isRotating && activePiece) {
+          const dx = pos.x - activePiece.x;
+          const dy = pos.y - activePiece.y;
+          // Calcular ángulo de orientación respecto al centro
+          activePiece.angle = Math.atan2(dx, -dy);
+          render();
+        } else if (activePiece) {
+          activePiece.x = Math.max(activePiece.r + 20, Math.min(canvas.width - activePiece.r - 20, pos.x));
+          activePiece.y = Math.max(activePiece.r + 20, Math.min(canvas.height - activePiece.r - 20, pos.y));
+          render();
+        }
       } else if (mode === 'draw' && isDrawing) {
         currentPath.push(pos);
         render();
@@ -339,12 +434,42 @@
 
     function handleEnd() {
       isDrawing = false;
+      isRotating = false;
       activePiece = null;
+    }
+
+    // ROTAR FICHA SELECCIONADA POR BOTONES
+    function rotateSelected(deg) {
+      if (!selectedPiece || selectedPiece.type === 'ball') {
+        alert('Haz clic primero sobre un jugador para seleccionarlo y girarlo.');
+        return;
+      }
+      selectedPiece.angle = (selectedPiece.angle || 0) + (deg * Math.PI) / 180;
+      render();
+    }
+
+    function setSelectedAngle(deg) {
+      if (!selectedPiece || selectedPiece.type === 'ball') {
+        alert('Haz clic primero sobre un jugador para seleccionarlo y orientarlo.');
+        return;
+      }
+      selectedPiece.angle = (deg * Math.PI) / 180;
+      render();
     }
 
     canvas.addEventListener('mousedown', handleStart);
     canvas.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('dblclick', (e) => {
+      const pos = getCanvasCoords(e);
+      const p = findPiece(pos.x, pos.y);
+      if (p && p.type !== 'ball') {
+        p.angle = (p.angle || 0) + Math.PI / 4;
+        selectedPiece = p;
+        render();
+      }
+    });
 
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
@@ -357,11 +482,12 @@
 
     function resetPositions() {
       pieces = JSON.parse(JSON.stringify(initialPieces));
+      selectedPiece = null;
       render();
     }
 
     function saveFrame() {
-      const frame = pieces.map(p => ({ id: p.id, x: p.x, y: p.y }));
+      const frame = pieces.map(p => ({ id: p.id, x: p.x, y: p.y, angle: p.angle || 0 }));
       steps.push(frame);
       document.getElementById('stepCounter').innerText = `Pasos: ${steps.length}`;
     }
@@ -378,10 +504,11 @@
       }
 
       isPlaying = true;
+      selectedPiece = null;
 
       steps[0].forEach(s => {
         const p = pieces.find(item => item.id === s.id);
-        if (p) { p.x = s.x; p.y = s.y; }
+        if (p) { p.x = s.x; p.y = s.y; p.angle = s.angle; }
       });
       render();
 
@@ -417,6 +544,15 @@
             if (startP && endP) {
               p.x = startP.x + (endP.x - startP.x) * ease;
               p.y = startP.y + (endP.y - startP.y) * ease;
+
+              // Interpolación de ángulo por el camino más corto
+              let startA = startP.angle || 0;
+              let endA = endP.angle || 0;
+              let diffA = endA - startA;
+              while (diffA < -Math.PI) diffA += Math.PI * 2;
+              while (diffA > Math.PI) diffA -= Math.PI * 2;
+
+              p.angle = startA + diffA * ease;
             }
           }
 
@@ -445,10 +581,17 @@
     }
 
     function downloadPhoto() {
+      const tempSelected = selectedPiece;
+      selectedPiece = null;
+      render();
+
       const link = document.createElement('a');
       link.download = `pizarra-tactica-${new Date().toISOString().slice(0, 10)}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
+
+      selectedPiece = tempSelected;
+      render();
     }
 
     function exportVideo() {
