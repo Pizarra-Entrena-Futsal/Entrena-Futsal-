@@ -3,358 +3,303 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pizarra Táctica Futsal - @entrenafutsal</title>
+  <title>Pizarra Táctica Futsal</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: #121212; color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
     
-    /* ENCABEZADO */
-    header { width: 100%; max-width: 1000px; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text .handle { color: #00e676; font-weight: bold; font-size: 13px; }
-    .nav-btn { color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
-    .nav-btn:hover { opacity: 0.85; }
-
-    /* CONTENEDOR Y BOTONES */
-    .controls-container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 8px; align-items: center; margin-bottom: 12px; }
-    .button-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+    header { width: 100%; max-width: 1020px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo { width: 40px; height: 40px; background: #1e88e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #fff; }
+    .brand-title { font-size: 1.1rem; font-weight: bold; }
+    .brand-sub { font-size: 0.8rem; color: #00e676; }
+    .btn-stats { background: #ff9800; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
     
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; color: #fff; background: #333; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, background 0.2s; }
-    .btn:active { transform: scale(0.96); }
-    .btn-green { background: #00e676; color: #121212; }
-    .btn-dark { background: #2a2a2a; border: 1px solid #444; }
-    .btn-red { background: #f44336; }
-    .btn-orange { background: #ff9800; }
-    .btn-purple { background: #9c27b0; }
-    .btn-pink { background: #e91e63; }
-    .btn-blue { background: #0288d1; }
-    .btn-active { ring: 2px solid #fff; opacity: 0.9; }
+    .toolbar { width: 100%; max-width: 1020px; background: #1e1e1e; border-radius: 10px; padding: 12px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #333; }
+    .tool-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+    
+    .btn { border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; color: white; transition: all 0.2s; }
+    .btn-green  { background: #00c853; }
+    .btn-orange { background: #f57c00; }
+    .btn-red    { background: #e53935; }
+    .btn-coral  { background: #ff5252; }
+    .btn-dark   { background: #333333; border: 1px solid #555; }
+    .btn-purple { background: #ab47bc; }
+    .btn-pink   { background: #ec407a; }
+    .btn-grey   { background: #616161; }
+    .btn-cyan   { background: #00acc1; }
+    .btn:hover  { opacity: 0.9; transform: translateY(-1px); }
 
-    .counter-badge { background: #2a2a2a; border: 1px solid #00e676; color: #00e676; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-
-    /* CANVAS DE LA CANCHA */
-    .board-wrapper { width: 100%; max-width: 1000px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
-    canvas { width: 100%; height: auto; aspect-ratio: 1000 / 600; display: block; border-radius: 8px; touch-action: none; cursor: crosshair; }
+    .canvas-container { position: relative; width: 1000px; height: 600px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #333; }
+    canvas { background-color: #2e7d32; display: block; }
+    
+    .label-tag { font-size: 0.85rem; color: #ccc; margin-right: 5px; font-weight: 600; }
+    .badge-step { background: #00c853; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-info">
-      <div class="header-text">
-        <strong>Pizarra Táctica Futsal</strong>
-        <span class="handle">@entrenafutsal</span>
+    <div class="brand">
+      <div class="logo">⚽</div>
+      <div>
+        <div class="brand-title">Pizarra Táctica Futsal</div>
+        <div class="brand-sub">@entrenafutsal</div>
       </div>
     </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <a href="arqueros.html" class="nav-btn" style="background: #0288d1;">🧤 Arqueros</a>
-      <a href="stats.html" class="nav-btn" style="background: #ff9800;">📊 Estadísticas</a>
-    </div>
+    <button class="btn-stats">📊 Estadísticas</button>
   </header>
 
-  <div class="controls-container">
-    <div class="button-group">
-      <button class="btn btn-green" id="btnMove" onclick="setMode('move')">🤚 Mover / Girar</button>
-      <button class="btn btn-dark" id="btnDraw" onclick="setMode('draw')">✏️ Dibujar Trazos</button>
-      <button class="btn btn-red" onclick="clearDrawings()">🧹 Borrar Trazos</button>
-      <button class="btn btn-red" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
+  <div class="toolbar">
+    <div class="tool-row">
+      <button class="btn btn-green">✋ Mover / Girar</button>
+      <button class="btn btn-orange">✏️ Dibujar Trazos</button>
+      <button class="btn btn-red">🧹 Borrar Trazos</button>
+      <button class="btn btn-coral" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
     </div>
 
-    <div class="button-group">
-      <span style="font-size: 12px; color: #aaa; font-weight: bold;">Perfilar Ficha:</span>
+    <div class="tool-row">
+      <span class="label-tag">Perfilar Ficha:</span>
       <button class="btn btn-dark" onclick="rotateSelected(-45)">↺ -45°</button>
       <button class="btn btn-dark" onclick="rotateSelected(45)">↻ +45°</button>
       <button class="btn btn-dark" onclick="setAngleSelected(0)">➔ Der</button>
-      <button class="btn btn-dark" onclick="setAngleSelected(180)">⬅ Izq</button>
+      <button class="btn btn-dark" onclick="setAngleSelected(180)">➔ Izq</button>
       <button class="btn btn-dark" onclick="setAngleSelected(270)">⬆ Arriba</button>
       <button class="btn btn-dark" onclick="setAngleSelected(90)">⬇ Abajo</button>
     </div>
 
-    <div class="button-group">
-      <button class="btn btn-purple" onclick="saveStep()">➕ Guardar Paso</button>
-      <button class="btn btn-pink" onclick="playAnimation()">▶ Reproducir</button>
-      <button class="btn btn-orange" onclick="alert('Función de grabación activa en versión Pro')">📹 Descargar Video</button>
-      <button class="btn btn-dark" onclick="clearSteps()">🗑️ Limpiar Pasos</button>
-      <div class="counter-badge" id="stepCounter">Pasos: 0</div>
-      <button class="btn btn-blue" onclick="downloadPhoto()">📷 Descargar Foto</button>
+    <div class="tool-row">
+      <button class="btn btn-purple">➕ Guardar Paso</button>
+      <button class="btn btn-pink">▶ Reproducir</button>
+      <button class="btn btn-orange">🎥 Descargar Video</button>
+      <button class="btn btn-grey">🗑 Limpiar Pasos</button>
+      <span class="badge-step">Pasos: 0</span>
+      <button class="btn btn-cyan">📸 Descargar Foto</button>
     </div>
   </div>
 
-  <div class="board-wrapper">
-    <canvas id="futsalCanvas" width="1000" height="600"></canvas>
+  <div class="canvas-container">
+    <canvas id="tacticCanvas" width="1000" height="600"></canvas>
   </div>
 
   <script>
-    const canvas = document.getElementById('futsalCanvas');
+    const canvas = document.getElementById('tacticCanvas');
     const ctx = canvas.getContext('2d');
 
-    let currentMode = 'move'; // 'move' o 'draw'
-    let activePiece = null;
-    let selectedPiece = null;
-    let isDrawing = false;
-    let currentPath = [];
-    let drawings = [];
-    let steps = [];
+    const initialPlayers = [
+      // Equipo Verde
+      { id: 'g1', team: 'green', role: 'ARQ', label: '1', x: 130, y: 300, r: 20, angle: 0, selected: false },
+      { id: 'g2', team: 'green', role: 'JUG', label: '2', x: 250, y: 140, r: 20, angle: 45, selected: false },
+      { id: 'g4', team: 'green', role: 'JUG', label: '4', x: 360, y: 230, r: 20, angle: 0, selected: false },
+      { id: 'g5', team: 'green', role: 'JUG', label: '5', x: 360, y: 370, r: 20, angle: 0, selected: false },
+      { id: 'g3', team: 'green', role: 'JUG', label: '3', x: 250, y: 460, r: 20, angle: -45, selected: false },
 
-    // FICHAS INICIALES (FUTSAL 5v5 + PELOTA)
-    const initialPieces = [
-      // Equipo Verde (Izquierda)
-      { id: 'g1', team: 'green', label: '1', role: 'ARQ', x: 80, y: 300, r: 20, angle: 0 },
-      { id: 'g2', team: 'green', label: '2', x: 250, y: 140, r: 20, angle: 0 },
-      { id: 'g3', team: 'green', label: '3', x: 250, y: 460, r: 20, angle: 0 },
-      { id: 'g4', team: 'green', label: '4', x: 360, y: 220, r: 20, angle: 0 },
-      { id: 'g5', team: 'green', label: '5', x: 360, y: 380, r: 20, angle: 0 },
-
-      // Equipo Azul (Derecha)
-      { id: 'b1', team: 'blue', label: '1', role: 'ARQ', x: 920, y: 300, r: 20, angle: 180 },
-      { id: 'b2', team: 'blue', label: '2', x: 750, y: 140, r: 20, angle: 180 },
-      { id: 'b3', team: 'blue', label: '3', x: 750, y: 460, r: 180, angle: 180 },
-      { id: 'b4', team: 'blue', label: '10', x: 640, y: 220, r: 20, angle: 180 },
-      { id: 'b5', team: 'blue', label: '5', x: 640, y: 380, r: 20, angle: 180 },
+      // Equipo Azul
+      { id: 'b1', team: 'blue', role: 'ARQ', label: '1', x: 910, y: 300, r: 20, angle: 180, selected: false },
+      { id: 'b2', team: 'blue', role: 'JUG', label: '2', x: 770, y: 140, r: 20, angle: 180, selected: true },
+      { id: 'b10', team: 'blue', role: 'JUG', label: '10', x: 670, y: 230, r: 20, angle: 180, selected: false },
+      { id: 'b5', team: 'blue', role: 'JUG', label: '5', x: 670, y: 370, r: 20, angle: 180, selected: false },
+      { id: 'b3', team: 'blue', role: 'JUG', label: '3', x: 770, y: 460, r: 20, angle: 180, selected: false },
 
       // Balón
-      { id: 'ball', team: 'ball', label: '', x: 500, y: 300, r: 12, angle: 0 }
+      { id: 'ball', team: 'ball', role: 'BALL', label: '', x: 500, y: 300, r: 10, angle: 0, selected: false }
     ];
 
-    let pieces = JSON.parse(JSON.stringify(initialPieces));
+    let players = JSON.parse(JSON.stringify(initialPlayers));
 
-    // DIBUJAR CANCHA Y ELEMENTOS
-    function render() {
-      // 1. Campo de Juego (Cancha Verde)
+    function drawCourt() {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // MARCAS DE LÍNEAS DE CAMPO
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 3;
 
-      // Línea Exterior
-      ctx.strokeRect(30, 20, 940, 560);
+      const pad = 30;
+      ctx.strokeRect(pad, pad, canvas.width - pad*2, canvas.height - pad*2);
 
-      // Línea Central
+      // Línea central
       ctx.beginPath();
-      ctx.moveTo(500, 20);
-      ctx.lineTo(500, 580);
+      ctx.moveTo(canvas.width / 2, pad);
+      ctx.lineTo(canvas.width / 2, canvas.height - pad);
       ctx.stroke();
 
-      // Círculo Central
+      // Círculo central
       ctx.beginPath();
-      ctx.arc(500, 300, 60, 0, Math.PI * 2);
+      ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, Math.PI * 2);
       ctx.stroke();
+
+      // Punto central
       ctx.beginPath();
-      ctx.arc(500, 300, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
+      ctx.arc(canvas.width / 2, canvas.height / 2, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
       ctx.fill();
 
-      // Áreas 6m (Semicírculos/Arcos)
-      ctx.beginPath(); ctx.arc(30, 300, 120, -Math.PI / 2, Math.PI / 2); ctx.stroke();
-      ctx.beginPath(); ctx.arc(970, 300, 120, Math.PI / 2, -Math.PI / 2); ctx.stroke();
+      // Áreas (6 metros)
+      ctx.beginPath();
+      ctx.arc(pad, canvas.height / 2, 100, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
 
-      // Puntos de Penal (6m) y Doble Penal (10m)
-      [150, 270, 730, 850].forEach(x => {
-        ctx.beginPath(); ctx.arc(x, 300, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(canvas.width - pad, canvas.height / 2, 100, Math.PI / 2, Math.PI * 1.5);
+      ctx.stroke();
+
+      // Puntos de penalti
+      [pad + 100, canvas.width - pad - 100].forEach(x => {
+        ctx.beginPath();
+        ctx.arc(x, canvas.height / 2, 3, 0, Math.PI * 2);
+        ctx.fill();
       });
 
-      // Arcos / Porterías
-      ctx.strokeStyle = '#ffffff';
-      ctx.strokeRect(10, 250, 20, 100);
-      ctx.strokeRect(970, 250, 20, 100);
+      // Porterías
+      ctx.strokeRect(pad - 15, canvas.height / 2 - 35, 15, 70);
+      ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 35, 15, 70);
+    }
 
-      // 2. DIBUJAR TRAZOS TÁCTICOS
-      ctx.strokeStyle = '#ffeb3b';
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+    // Renderizado correcto usando círculos fijos (ctx.arc)
+    function drawPlayer(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
 
-      for (const path of drawings) {
-        if (path.length < 2) continue;
+      if (p.role === 'BALL') {
         ctx.beginPath();
-        ctx.moveTo(path[0].x, path[0].y);
-        for (let i = 1; i < path.length; i++) {
-          ctx.lineTo(path[i].x, path[i].y);
-        }
+        ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1565c0';
         ctx.stroke();
-      }
-
-      if (currentPath.length > 1) {
+        
         ctx.beginPath();
-        ctx.moveTo(currentPath[0].x, currentPath[0].y);
-        for (let i = 1; i < currentPath.length; i++) {
-          ctx.lineTo(currentPath[i].x, currentPath[i].y);
-        }
-        ctx.stroke();
-      }
-
-      // 3. DIBUJAR FICHAS
-      for (const p of pieces) {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-
-        if (p.team === 'ball') {
-          // Pelota
-          ctx.beginPath(); ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = '#ffffff'; ctx.fill();
-          ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
-          ctx.fillStyle = '#1565c0'; ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
-        } else {
-          // Jugadores con orientación (hombros)
-          const rad = (p.angle * Math.PI) / 180;
-          ctx.rotate(rad);
-
-          // Hombros / Cuerpo perfilado
-          ctx.fillStyle = (p.team === 'green') ? '#00c853' : (p.team === 'blue' ? '#1565c0' : '#212121');
-          if (p.role === 'ARQ') ctx.fillStyle = '#121212';
-
-          ctx.beginPath();
-          ctx.ellipse(0, 0, p.r * 1.2, p.r * 0.7, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.lineWidth = 2; ctx.strokeStyle = '#ffffff'; ctx.stroke();
-
-          // Cabeza / Número
-          ctx.beginPath(); ctx.arc(0, 0, p.r * 0.65, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; ctx.fill();
-          ctx.stroke();
-
-          // Resaltar si está seleccionada
-          if (selectedPiece && selectedPiece.id === p.id) {
-            ctx.strokeStyle = '#ffeb3b';
-            ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.arc(0, 0, p.r * 1.3, 0, Math.PI * 2); ctx.stroke();
-          }
-
-          // Texto número
-          ctx.rotate(-rad); // Mantener número vertical
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(p.label, 0, 0);
-        }
-
+        ctx.arc(0, 0, p.r * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = '#1565c0';
+        ctx.fill();
         ctx.restore();
-      }
-    }
-
-    // COORDENADAS INTERACTIVAS
-    function getCanvasCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return {
-        x: (clientX - rect.left) * (canvas.width / rect.width),
-        y: (clientY - rect.top) * (canvas.height / rect.height)
-      };
-    }
-
-    function handleStart(e) {
-      const pos = getCanvasCoords(e);
-
-      if (currentMode === 'draw') {
-        isDrawing = true;
-        currentPath = [pos];
         return;
       }
 
-      // Modo mover
-      for (let i = pieces.length - 1; i >= 0; i--) {
-        const p = pieces[i];
-        const dx = pos.x - p.x;
-        const dy = pos.y - p.y;
-        if (dx * dx + dy * dy <= p.r * p.r * 1.4) {
-          activePiece = p;
-          selectedPiece = p;
-          render();
-          break;
-        }
+      let teamColor = '#00c853';
+      let textColor = '#008e3c';
+
+      if (p.role === 'ARQ') {
+        teamColor = '#121212';
+        textColor = '#121212';
+      } else if (p.team === 'blue') {
+        teamColor = '#1e88e5';
+        textColor = '#1565c0';
+      }
+
+      // 1. Halo de selección
+      if (p.selected) {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r * 1.35, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffeb3b';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+
+      // 2. Nariz / Indicador de perfilado (orientación)
+      const rad = (p.angle || 0) * Math.PI / 180;
+      const bumpDist = p.r * 0.92;
+      const bumpRadius = p.r * 0.35;
+      const bx = Math.cos(rad) * bumpDist;
+      const by = Math.sin(rad) * bumpDist;
+
+      ctx.beginPath();
+      ctx.arc(bx, by, bumpRadius, 0, Math.PI * 2);
+      ctx.fillStyle = teamColor;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // 3. Círculo base de la ficha
+      ctx.beginPath();
+      ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = teamColor;
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // 4. Círculo interior blanco
+      const innerRadius = p.r * 0.58;
+      ctx.beginPath();
+      ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      // 5. Número
+      ctx.fillStyle = textColor;
+      ctx.font = `bold ${Math.round(p.r * 0.72)}px Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.label, 0, 1);
+
+      ctx.restore();
+    }
+
+    function render() {
+      drawCourt();
+      players.forEach(p => drawPlayer(p));
+    }
+
+    function rotateSelected(delta) {
+      const sel = players.find(p => p.selected);
+      if (sel) {
+        sel.angle = (sel.angle + delta + 360) % 360;
+        render();
       }
     }
 
-    function handleMove(e) {
-      const pos = getCanvasCoords(e);
-
-      if (isDrawing) {
-        currentPath.push(pos);
-        render();
-        return;
-      }
-
-      if (activePiece) {
-        activePiece.x = Math.max(20, Math.min(canvas.width - 20, pos.x));
-        activePiece.y = Math.max(20, Math.min(canvas.height - 20, pos.y));
+    function setAngleSelected(angle) {
+      const sel = players.find(p => p.selected);
+      if (sel) {
+        sel.angle = angle;
         render();
       }
     }
 
-    function handleEnd() {
-      if (isDrawing && currentPath.length > 0) {
-        drawings.push([...currentPath]);
-        currentPath = [];
-      }
-      isDrawing = false;
-      activePiece = null;
+    function resetPositions() {
+      players = JSON.parse(JSON.stringify(initialPlayers));
       render();
     }
 
-    canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
+    let isDragging = false;
+    let dragPlayer = null;
 
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
-    canvas.addEventListener('touchend', handleEnd);
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
 
-    // CONTROLES Y MODOS
-    function setMode(mode) {
-      currentMode = mode;
-      document.getElementById('btnMove').classList.toggle('btn-active', mode === 'move');
-      document.getElementById('btnDraw').classList.toggle('btn-active', mode === 'draw');
-    }
+      players.forEach(p => p.selected = false);
 
-    function rotateSelected(deg) {
-      if (selectedPiece && selectedPiece.team !== 'ball') {
-        selectedPiece.angle = (selectedPiece.angle + deg) % 360;
+      for (let i = players.length - 1; i >= 0; i--) {
+        const p = players[i];
+        const dist = Math.hypot(p.x - mx, p.y - my);
+        if (dist <= p.r * 1.3) {
+          p.selected = true;
+          dragPlayer = p;
+          isDragging = true;
+          break;
+        }
+      }
+      render();
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (isDragging && dragPlayer) {
+        const rect = canvas.getBoundingClientRect();
+        dragPlayer.x = e.clientX - rect.left;
+        dragPlayer.y = e.clientY - rect.top;
         render();
       }
-    }
+    });
 
-    function setAngleSelected(deg) {
-      if (selectedPiece && selectedPiece.team !== 'ball') {
-        selectedPiece.angle = deg;
-        render();
-      }
-    }
-
-    function clearDrawings() { drawings = []; render(); }
-    function resetPositions() { pieces = JSON.parse(JSON.stringify(initialPieces)); render(); }
-
-    // GUARDAR Y REPRODUCIR PASOS
-    function saveStep() {
-      steps.push(JSON.parse(JSON.stringify(pieces)));
-      document.getElementById('stepCounter').innerText = `Pasos: ${steps.length}`;
-    }
-
-    function clearSteps() {
-      steps = [];
-      document.getElementById('stepCounter').innerText = 'Pasos: 0';
-    }
-
-    function playAnimation() {
-      if (steps.length === 0) return;
-      let i = 0;
-      const interval = setInterval(() => {
-        pieces = JSON.parse(JSON.stringify(steps[i]));
-        render();
-        i++;
-        if (i >= steps.length) clearInterval(interval);
-      }, 700);
-    }
-
-    function downloadPhoto() {
-      const link = document.createElement('a');
-      link.download = 'futsal-jugada.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }
+    canvas.addEventListener('mouseup', () => {
+      isDragging = false;
+      dragPlayer = null;
+    });
 
     render();
   </script>
