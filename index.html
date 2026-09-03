@@ -17,7 +17,7 @@
     .nav-btn:hover { opacity: 0.85; }
 
     /* CONTENEDOR Y BOTONES */
-    .controls-container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .controls-container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 8px; align-items: center; margin-bottom: 12px; }
     .button-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
     
     .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; color: #fff; background: #333; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, background 0.2s; }
@@ -29,12 +29,12 @@
     .btn-purple { background: #9c27b0; }
     .btn-pink { background: #e91e63; }
     .btn-blue { background: #0288d1; }
-    .btn-active { outline: 2px solid #fff; opacity: 0.9; }
+    .btn-active { ring: 2px solid #fff; opacity: 0.9; }
 
     .counter-badge { background: #2a2a2a; border: 1px solid #00e676; color: #00e676; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
 
     /* CANVAS DE LA CANCHA */
-    .board-wrapper { width: 100%; max-width: 1000px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); margin-top: 8px; }
+    .board-wrapper { width: 100%; max-width: 1000px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
     canvas { width: 100%; height: auto; aspect-ratio: 1000 / 600; display: block; border-radius: 8px; touch-action: none; cursor: crosshair; }
   </style>
 </head>
@@ -55,7 +55,7 @@
 
   <div class="controls-container">
     <div class="button-group">
-      <button class="btn btn-green btn-active" id="btnMove" onclick="setMode('move')">🤚 Mover / Girar</button>
+      <button class="btn btn-green" id="btnMove" onclick="setMode('move')">🤚 Mover / Girar</button>
       <button class="btn btn-dark" id="btnDraw" onclick="setMode('draw')">✏️ Dibujar Trazos</button>
       <button class="btn btn-red" onclick="clearDrawings()">🧹 Borrar Trazos</button>
       <button class="btn btn-red" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
@@ -74,7 +74,7 @@
     <div class="button-group">
       <button class="btn btn-purple" onclick="saveStep()">➕ Guardar Paso</button>
       <button class="btn btn-pink" onclick="playAnimation()">▶ Reproducir</button>
-      <button class="btn btn-orange" onclick="alert('Función Pro activa')">📹 Descargar Video</button>
+      <button class="btn btn-orange" onclick="alert('Función de grabación activa en versión Pro')">📹 Descargar Video</button>
       <button class="btn btn-dark" onclick="clearSteps()">🗑️ Limpiar Pasos</button>
       <div class="counter-badge" id="stepCounter">Pasos: 0</div>
       <button class="btn btn-blue" onclick="downloadPhoto()">📷 Descargar Foto</button>
@@ -89,7 +89,7 @@
     const canvas = document.getElementById('futsalCanvas');
     const ctx = canvas.getContext('2d');
 
-    let currentMode = 'move';
+    let currentMode = 'move'; // 'move' o 'draw'
     let activePiece = null;
     let selectedPiece = null;
     let isDrawing = false;
@@ -97,57 +97,71 @@
     let drawings = [];
     let steps = [];
 
+    // FICHAS INICIALES (FUTSAL 5v5 + PELOTA)
     const initialPieces = [
+      // Equipo Verde (Izquierda)
       { id: 'g1', team: 'green', label: '1', role: 'ARQ', x: 80, y: 300, r: 20, angle: 0 },
       { id: 'g2', team: 'green', label: '2', x: 250, y: 140, r: 20, angle: 0 },
       { id: 'g3', team: 'green', label: '3', x: 250, y: 460, r: 20, angle: 0 },
       { id: 'g4', team: 'green', label: '4', x: 360, y: 220, r: 20, angle: 0 },
       { id: 'g5', team: 'green', label: '5', x: 360, y: 380, r: 20, angle: 0 },
 
+      // Equipo Azul (Derecha)
       { id: 'b1', team: 'blue', label: '1', role: 'ARQ', x: 920, y: 300, r: 20, angle: 180 },
       { id: 'b2', team: 'blue', label: '2', x: 750, y: 140, r: 20, angle: 180 },
-      { id: 'b3', team: 'blue', label: '3', x: 750, y: 460, r: 20, angle: 180 },
+      { id: 'b3', team: 'blue', label: '3', x: 750, y: 460, r: 180, angle: 180 },
       { id: 'b4', team: 'blue', label: '10', x: 640, y: 220, r: 20, angle: 180 },
       { id: 'b5', team: 'blue', label: '5', x: 640, y: 380, r: 20, angle: 180 },
 
+      // Balón
       { id: 'ball', team: 'ball', label: '', x: 500, y: 300, r: 12, angle: 0 }
     ];
 
     let pieces = JSON.parse(JSON.stringify(initialPieces));
 
+    // DIBUJAR CANCHA Y ELEMENTOS
     function render() {
+      // 1. Campo de Juego (Cancha Verde)
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // MARCAS DE LÍNEAS DE CAMPO
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 4;
+
+      // Línea Exterior
       ctx.strokeRect(30, 20, 940, 560);
 
+      // Línea Central
       ctx.beginPath();
       ctx.moveTo(500, 20);
       ctx.lineTo(500, 580);
       ctx.stroke();
 
+      // Círculo Central
       ctx.beginPath();
       ctx.arc(500, 300, 60, 0, Math.PI * 2);
       ctx.stroke();
-
       ctx.beginPath();
       ctx.arc(500, 300, 4, 0, Math.PI * 2);
       ctx.fillStyle = '#fff';
       ctx.fill();
 
+      // Áreas 6m (Semicírculos/Arcos)
       ctx.beginPath(); ctx.arc(30, 300, 120, -Math.PI / 2, Math.PI / 2); ctx.stroke();
       ctx.beginPath(); ctx.arc(970, 300, 120, Math.PI / 2, -Math.PI / 2); ctx.stroke();
 
+      // Puntos de Penal (6m) y Doble Penal (10m)
       [150, 270, 730, 850].forEach(x => {
         ctx.beginPath(); ctx.arc(x, 300, 3, 0, Math.PI * 2); ctx.fill();
       });
 
+      // Arcos / Porterías
       ctx.strokeStyle = '#ffffff';
       ctx.strokeRect(10, 250, 20, 100);
       ctx.strokeRect(970, 250, 20, 100);
 
+      // 2. DIBUJAR TRAZOS TÁCTICOS
       ctx.strokeStyle = '#ffeb3b';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
@@ -172,19 +186,23 @@
         ctx.stroke();
       }
 
+      // 3. DIBUJAR FICHAS
       for (const p of pieces) {
         ctx.save();
         ctx.translate(p.x, p.y);
 
         if (p.team === 'ball') {
+          // Pelota
           ctx.beginPath(); ctx.arc(0, 0, p.r, 0, Math.PI * 2);
           ctx.fillStyle = '#ffffff'; ctx.fill();
           ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
           ctx.fillStyle = '#1565c0'; ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
         } else {
+          // Jugadores con orientación (hombros)
           const rad = (p.angle * Math.PI) / 180;
           ctx.rotate(rad);
 
+          // Hombros / Cuerpo perfilado
           ctx.fillStyle = (p.team === 'green') ? '#00c853' : (p.team === 'blue' ? '#1565c0' : '#212121');
           if (p.role === 'ARQ') ctx.fillStyle = '#121212';
 
@@ -193,17 +211,20 @@
           ctx.fill();
           ctx.lineWidth = 2; ctx.strokeStyle = '#ffffff'; ctx.stroke();
 
+          // Cabeza / Número
           ctx.beginPath(); ctx.arc(0, 0, p.r * 0.65, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; ctx.fill();
           ctx.stroke();
 
+          // Resaltar si está seleccionada
           if (selectedPiece && selectedPiece.id === p.id) {
             ctx.strokeStyle = '#ffeb3b';
             ctx.lineWidth = 3;
             ctx.beginPath(); ctx.arc(0, 0, p.r * 1.3, 0, Math.PI * 2); ctx.stroke();
           }
 
-          ctx.rotate(-rad);
+          // Texto número
+          ctx.rotate(-rad); // Mantener número vertical
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 12px sans-serif';
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -214,6 +235,7 @@
       }
     }
 
+    // COORDENADAS INTERACTIVAS
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -226,11 +248,14 @@
 
     function handleStart(e) {
       const pos = getCanvasCoords(e);
+
       if (currentMode === 'draw') {
         isDrawing = true;
         currentPath = [pos];
         return;
       }
+
+      // Modo mover
       for (let i = pieces.length - 1; i >= 0; i--) {
         const p = pieces[i];
         const dx = pos.x - p.x;
@@ -246,11 +271,13 @@
 
     function handleMove(e) {
       const pos = getCanvasCoords(e);
+
       if (isDrawing) {
         currentPath.push(pos);
         render();
         return;
       }
+
       if (activePiece) {
         activePiece.x = Math.max(20, Math.min(canvas.width - 20, pos.x));
         activePiece.y = Math.max(20, Math.min(canvas.height - 20, pos.y));
@@ -276,6 +303,7 @@
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
     canvas.addEventListener('touchend', handleEnd);
 
+    // CONTROLES Y MODOS
     function setMode(mode) {
       currentMode = mode;
       document.getElementById('btnMove').classList.toggle('btn-active', mode === 'move');
@@ -299,6 +327,7 @@
     function clearDrawings() { drawings = []; render(); }
     function resetPositions() { pieces = JSON.parse(JSON.stringify(initialPieces)); render(); }
 
+    // GUARDAR Y REPRODUCIR PASOS
     function saveStep() {
       steps.push(JSON.parse(JSON.stringify(pieces)));
       document.getElementById('stepCounter').innerText = `Pasos: ${steps.length}`;
