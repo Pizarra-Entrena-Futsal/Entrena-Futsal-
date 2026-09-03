@@ -76,7 +76,7 @@
     <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Fichas</button>
   </div>
 
-  <!-- PANEL DE ANIMACIÓN PASO A PASO Y EXPORTACIÓN -->
+  <!-- PANEL DE ANIMACIÓN Y EXPORTACIÓN -->
   <div class="controls-panel">
     <button class="btn btn-anim" onclick="saveFrame()">➕ Guardar Paso</button>
     <button class="btn btn-play" id="btnPlay" onclick="playAnimation()">▶️ Reproducir</button>
@@ -283,7 +283,7 @@
     }
 
     function downloadBoard() {
-      html2canvas(wrapper).then(canvas => {
+      html2canvas(wrapper, { scale: 1 }).then(canvas => {
         const link = document.createElement('a');
         link.download = `pizarra-futsal-${new Date().toISOString().slice(0,10)}.png`;
         link.href = canvas.toDataURL();
@@ -291,8 +291,8 @@
       });
     }
 
-    // GRABACIÓN DE VIDEO DIRECTA
-    function exportVideo() {
+    // GRABACIÓN DE VIDEO CORREGIDA (ESCALA 1:1 Y SIN ZOOM)
+    async function exportVideo() {
       if (animationFrames.length === 0) {
         alert('Guarda al menos un paso antes de exportar el video.');
         return;
@@ -302,13 +302,14 @@
       btnVideo.innerText = '⏳ Grabando...';
       btnVideo.disabled = true;
 
-      // Crear canvas oculto para procesar fotogramas en streaming
-      const recCanvas = document.createElement('canvas');
-      recCanvas.width = wrapper.clientWidth;
-      recCanvas.height = wrapper.clientHeight;
-      const recCtx = recCanvas.getContext('2d');
+      const width = wrapper.clientWidth;
+      const height = wrapper.clientHeight;
 
-      const stream = recCanvas.captureStream(30); // 30 FPS
+      const recCanvas = document.createElement('canvas');
+      recCanvas.width = width;
+      recCanvas.height = height;
+
+      const stream = recCanvas.captureStream(30);
       let mimeType = 'video/webm';
       if (!MediaRecorder.isTypeSupported(mimeType)) {
         mimeType = 'video/mp4';
@@ -317,7 +318,10 @@
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
       const chunks = [];
 
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: mimeType });
         const url = URL.createObjectURL(blob);
@@ -332,16 +336,38 @@
 
       mediaRecorder.start();
 
-      // Dibujar fotogramas continuamente mientras corre la animación
-      const renderInterval = setInterval(() => {
-        html2canvas(wrapper, { canvas: recCanvas, logging: false }).then(() => {});
-      }, 50);
+      let isRecording = true;
 
-      playAnimation(() => {
-        setTimeout(() => {
-          clearInterval(renderInterval);
-          mediaRecorder.stop();
-        }, 800);
+      // Captura asíncrona a escala exacta 1:1
+      const captureLoop = async () => {
+        while (isRecording) {
+          try {
+            await html2canvas(wrapper, {
+              canvas: recCanvas,
+              scale: 1, // Previene el zoom en móviles y pantallas HD
+              width: width,
+              height: height,
+              scrollX: 0,
+              scrollY: 0,
+              x: 0,
+              y: 0,
+              useCORS: true,
+              logging: false
+            });
+          } catch (err) {
+            console.error(err);
+          }
+          await new Promise(r => setTimeout(r, 33)); // ~30 FPS
+        }
+      };
+
+      const recordingPromise = captureLoop();
+
+      playAnimation(async () => {
+        await new Promise(r => setTimeout(r, 800)); // Mantener último fotograma
+        isRecording = false;
+        await recordingPromise;
+        mediaRecorder.stop();
       });
     }
   </script>
