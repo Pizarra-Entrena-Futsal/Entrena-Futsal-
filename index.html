@@ -4,21 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pizarra Táctica Futsal - @entrenafutsal</title>
+  <!-- Reparador de metadatos de duración para videos WebM -->
+  <script src="https://cdn.jsdelivr.net/npm/fix-webm-duration@1.0.6/fix-webm-duration.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
     
     /* ENCABEZADO */
-    header { width: 100%; max-width: 800px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 8px; border-bottom: 3px solid #00e676; margin-bottom: 12px; }
+    header { width: 100%; max-width: 900px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
     .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
+    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
     .header-text strong { font-size: 18px; color: #fff; display: block; }
     .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
-    .stats-link { background: #ff9800; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; }
+    .stats-link { background: #ff9800; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+    .stats-link:hover { background: #e68a00; }
 
-    /* BARRA DE HERRAMIENTAS */
-    .controls-panel { width: 100%; max-width: 800px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; }
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; }
+    /* CONTROLES Y HERRAMIENTAS */
+    .controls-panel { width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; }
+    .btn { padding: 9px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
+    .btn:active { transform: scale(0.97); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-tool { background: #333; }
     .btn-tool.active { background: #00e676; color: #121212; }
@@ -28,11 +32,11 @@
     .btn-clear { background: #f44336; }
     .btn-download { background: #0288d1; }
 
-    .anim-counter { background: #262626; color: #00e676; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; display: flex; align-items: center; }
+    .anim-counter { background: #262626; color: #00e676; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: flex; align-items: center; border: 1px solid #333; }
 
-    /* CONTENEDOR CANCHA NATIVA */
-    .board-container { width: 100%; max-width: 800px; background: #1e1e1e; padding: 6px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
-    canvas { width: 100%; height: auto; display: block; background: #2e7d32; border-radius: 8px; touch-action: none; cursor: crosshair; }
+    /* CONTENEDOR DE LA CANCHA HD */
+    .board-container { width: 100%; max-width: 900px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
+    canvas { width: 100%; height: auto; aspect-ratio: 1200 / 720; display: block; background: #2e7d32; border-radius: 8px; touch-action: none; cursor: crosshair; }
   </style>
 </head>
 <body>
@@ -48,12 +52,12 @@
     <a href="stats.html" class="stats-link">📊 Estadísticas</a>
   </header>
 
-  <!-- HERRAMIENTAS DE EDICIÓN -->
+  <!-- PANEL DE HERRAMIENTAS -->
   <div class="controls-panel">
-    <button class="btn btn-tool active" id="modeMove" onclick="setMode('move')">✋ Mover Fichas</button>
+    <button class="btn btn-tool active" id="modeMove" onclick="setMode('move')">✋ Mover Jugadores</button>
     <button class="btn btn-tool" id="modeDraw" onclick="setMode('draw')">✏️ Dibujar Trazos</button>
     <button class="btn btn-clear" onclick="clearDrawings()">🧹 Borrar Trazos</button>
-    <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Fichas</button>
+    <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
   </div>
 
   <!-- PANEL DE ANIMACIÓN Y EXPORTACIÓN -->
@@ -66,100 +70,188 @@
     <button class="btn btn-download" onclick="downloadPhoto()">📷 Descargar Foto</button>
   </div>
 
-  <!-- CANCHA EN CANVAS NATIVO -->
+  <!-- CANCHA CANVAS (1200x720 HD) -->
   <div class="board-container">
-    <canvas id="futsalCanvas" width="800" height="480"></canvas>
+    <canvas id="futsalCanvas" width="1200" height="720"></canvas>
   </div>
 
   <script>
     const canvas = document.getElementById('futsalCanvas');
     const ctx = canvas.getContext('2d');
 
-    let mode = 'move'; // 'move' o 'draw'
+    let mode = 'move';
     let isDrawing = false;
     let activePiece = null;
     let steps = [];
     let isPlaying = false;
 
-    // Trazos dibujados
     let drawings = [];
     let currentPath = [];
 
-    // Fichas iniciales
+    // CONFIGURACIÓN DE EQUIPOS
+    // Verde (#00c853), Azul (#1565c0), Arqueros Negros (#121212)
     const initialPieces = [
-      { id: 'r1', team: 'red', label: '1', x: 50, y: 240, r: 18 },
-      { id: 'r2', team: 'red', label: '2', x: 150, y: 100, r: 18 },
-      { id: 'r3', team: 'red', label: '3', x: 150, y: 380, r: 18 },
-      { id: 'r4', team: 'red', label: '4', x: 260, y: 180, r: 18 },
-      { id: 'r5', team: 'red', label: '5', x: 260, y: 300, r: 18 },
+      // EQUIPO VERDE
+      { id: 'g1', type: 'gk', team: 'green', label: '1', x: 80, y: 360, r: 28, color: '#121212', border: '#00e676' },
+      { id: 'g2', type: 'player', team: 'green', label: '2', x: 230, y: 150, r: 28, color: '#00c853', border: '#ffffff' },
+      { id: 'g3', type: 'player', team: 'green', label: '3', x: 230, y: 570, r: 28, color: '#00c853', border: '#ffffff' },
+      { id: 'g4', type: 'player', team: 'green', label: '4', x: 390, y: 270, r: 28, color: '#00c853', border: '#ffffff' },
+      { id: 'g5', type: 'player', team: 'green', label: '5', x: 390, y: 450, r: 28, color: '#00c853', border: '#ffffff' },
 
-      { id: 'b1', team: 'blue', label: '1', x: 750, y: 240, r: 18 },
-      { id: 'b2', team: 'blue', label: '2', x: 650, y: 100, r: 18 },
-      { id: 'b3', team: 'blue', label: '3', x: 650, y: 380, r: 18 },
-      { id: 'b4', team: 'blue', label: '4', x: 540, y: 180, r: 18 },
-      { id: 'b5', team: 'blue', label: '5', x: 540, y: 300, r: 18 },
+      // EQUIPO AZUL
+      { id: 'b1', type: 'gk', team: 'blue', label: '1', x: 1120, y: 360, r: 28, color: '#121212', border: '#29b6f6' },
+      { id: 'b2', type: 'player', team: 'blue', label: '2', x: 970, y: 150, r: 28, color: '#1565c0', border: '#ffffff' },
+      { id: 'b3', type: 'player', team: 'blue', label: '3', x: 970, y: 570, r: 28, color: '#1565c0', border: '#ffffff' },
+      { id: 'b4', type: 'player', team: 'blue', label: '10', x: 810, y: 270, r: 28, color: '#1565c0', border: '#ffffff' },
+      { id: 'b5', type: 'player', team: 'blue', label: '5', x: 810, y: 450, r: 28, color: '#1565c0', border: '#ffffff' },
 
-      { id: 'ball', team: 'ball', label: '⚽', x: 400, y: 240, r: 13 }
+      // PELOTA
+      { id: 'ball', type: 'ball', team: 'ball', label: '⚽', x: 600, y: 360, r: 18 }
     ];
 
     let pieces = JSON.parse(JSON.stringify(initialPieces));
 
-    // CAMBIO DE MODO
     function setMode(newMode) {
       mode = newMode;
       document.getElementById('modeMove').classList.toggle('active', mode === 'move');
       document.getElementById('modeDraw').classList.toggle('active', mode === 'draw');
     }
 
+    // DIBUJAR FICHA PERSONALIZADA (BASADA EN LA IMAGEN ADJUNTADA)
+    function drawCustomChip(x, y, scale, teamColor, borderColor, label, isGK) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      const s = scale;
+
+      // 1. SILUETA DEL CUERPO (Hombros curvos y base redondeada)
+      ctx.beginPath();
+      ctx.moveTo(-s * 1.15, -s * 0.15);
+      ctx.quadraticCurveTo(-s * 0.8, -s * 0.65, -s * 0.45, -s * 0.55); // Hombro Izq
+      ctx.quadraticCurveTo(0, -s * 0.35, s * 0.45, -s * 0.55);          // Escote
+      ctx.quadraticCurveTo(s * 0.8, -s * 0.65, s * 1.15, -s * 0.15);   // Hombro Der
+      ctx.quadraticCurveTo(s * 1.25, s * 0.25, s * 0.8, s * 0.6);      // Lateral Der
+      ctx.quadraticCurveTo(0, s * 1.05, -s * 0.8, s * 0.6);             // Base Inferior
+      ctx.quadraticCurveTo(-s * 1.25, s * 0.25, -s * 1.15, -s * 0.15); // Lateral Izq
+      ctx.closePath();
+
+      ctx.fillStyle = teamColor;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // 2. APLIQUES DE MANGAS / HOMBRERAS (Gris claro de la foto)
+      // Manga Izquierda
+      ctx.beginPath();
+      ctx.moveTo(-s * 1.15, -s * 0.15);
+      ctx.quadraticCurveTo(-s * 0.8, -s * 0.65, -s * 0.6, -s * 0.25);
+      ctx.quadraticCurveTo(-s * 0.85, s * 0.3, -s * 1.15, -s * 0.15);
+      ctx.fillStyle = '#cfd8dc';
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // Manga Derecha
+      ctx.beginPath();
+      ctx.moveTo(s * 1.15, -s * 0.15);
+      ctx.quadraticCurveTo(s * 0.8, -s * 0.65, s * 0.6, -s * 0.25);
+      ctx.quadraticCurveTo(s * 0.85, s * 0.3, s * 1.15, -s * 0.15);
+      ctx.fillStyle = '#cfd8dc';
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // 3. CÍRCULO CENTRAL DE LA FICHA
+      ctx.beginPath();
+      ctx.arc(0, 0.05 * s, s * 0.52, 0, Math.PI * 2);
+      ctx.fillStyle = teamColor;
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // 4. TEXTO DEL NÚMERO
+      if (isGK) {
+        ctx.fillStyle = borderColor;
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('ARQ', 0, -s * 0.18);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, 0, s * 0.22);
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, 0, s * 0.08);
+      }
+
+      ctx.restore();
+    }
+
     // RENDERIZADO GENERAL
     function render() {
-      // 1. Fondo Cancha
+      // 1. Césped de la cancha
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // 2. Líneas tácticas
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-      ctx.lineWidth = 3;
-
-      // Borde exterior
-      ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
-
-      // Línea de medio campo
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, 12);
-      ctx.lineTo(canvas.width / 2, canvas.height - 12);
-      ctx.stroke();
-
-      // Círculo central
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Punto central
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
-
-      // Área izquierda (6m)
-      ctx.beginPath();
-      ctx.arc(12, canvas.height / 2, 100, -Math.PI / 2, Math.PI / 2);
-      ctx.stroke();
-
-      // Área derecha (6m)
-      ctx.beginPath();
-      ctx.arc(canvas.width - 12, canvas.height / 2, 100, Math.PI / 2, 3 * Math.PI / 2);
-      ctx.stroke();
-
-      // Puntos de penal (6m)
-      ctx.beginPath();
-      ctx.arc(112, canvas.height / 2, 3, 0, Math.PI * 2);
-      ctx.arc(canvas.width - 112, canvas.height / 2, 3, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 3. Dibujar Trazos del Usuario
-      ctx.strokeStyle = '#ffeb3b';
+      ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 4;
+
+      const pad = 20;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+
+      ctx.strokeRect(pad, pad, w, h);
+
+      // Línea Central
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, pad);
+      ctx.lineTo(canvas.width / 2, canvas.height - pad);
+      ctx.stroke();
+
+      // Círculo Central
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 75, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Punto Central
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      // Áreas de 6m
+      ctx.beginPath();
+      ctx.arc(pad, canvas.height / 2, 150, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(canvas.width - pad, canvas.height / 2, 150, Math.PI / 2, 3 * Math.PI / 2);
+      ctx.stroke();
+
+      // Puntos de Penal
+      ctx.beginPath();
+      ctx.arc(pad + 150, canvas.height / 2, 4, 0, Math.PI * 2);
+      ctx.arc(canvas.width - pad - 150, canvas.height / 2, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Arcos
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.strokeRect(pad - 12, canvas.height / 2 - 60, 12, 120);
+      ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 60, 12, 120);
+
+      // 3. Trazos Tácticos
+      ctx.strokeStyle = '#ffeb3b';
+      ctx.lineWidth = 6;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
@@ -173,45 +265,20 @@
         ctx.stroke();
       }
 
-      // 4. Dibujar Fichas
+      // 4. Dibujar Jugadores
       for (const p of pieces) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-
-        if (p.team === 'red') {
-          ctx.fillStyle = '#d32f2f';
-          ctx.fill();
-          ctx.lineWidth = 2.5;
-          ctx.strokeStyle = '#ffffff';
-          ctx.stroke();
-
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 15px system-ui, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(p.label, p.x, p.y + 1);
-
-        } else if (p.team === 'blue') {
-          ctx.fillStyle = '#1976d2';
-          ctx.fill();
-          ctx.lineWidth = 2.5;
-          ctx.strokeStyle = '#ffffff';
-          ctx.stroke();
-
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 15px system-ui, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(p.label, p.x, p.y + 1);
-
-        } else if (p.team === 'ball') {
+        if (p.type === 'player' || p.type === 'gk') {
+          drawCustomChip(p.x, p.y, p.r, p.color, p.border, p.label, p.type === 'gk');
+        } else if (p.type === 'ball') {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fillStyle = '#ffffff';
           ctx.fill();
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 3;
           ctx.strokeStyle = '#000000';
           ctx.stroke();
 
-          ctx.font = '13px system-ui, sans-serif';
+          ctx.font = '20px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText('⚽', p.x, p.y + 1);
@@ -219,7 +286,6 @@
       }
     }
 
-    // OBTENER COORDENADAS RECTIFICADAS
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -236,14 +302,13 @@
         const p = pieces[i];
         const dx = x - p.x;
         const dy = y - p.y;
-        if (dx * dx + dy * dy <= (p.r + 8) * (p.r + 8)) {
+        if (dx * dx + dy * dy <= (p.r + 14) * (p.r + 14)) {
           return p;
         }
       }
       return null;
     }
 
-    // EVENTOS DE INTERACCIÓN (MOUSE Y TOUCH)
     function handleStart(e) {
       if (isPlaying) return;
       const pos = getCanvasCoords(e);
@@ -263,8 +328,8 @@
       const pos = getCanvasCoords(e);
 
       if (mode === 'move' && activePiece) {
-        activePiece.x = Math.max(activePiece.r + 12, Math.min(canvas.width - activePiece.r - 12, pos.x));
-        activePiece.y = Math.max(activePiece.r + 12, Math.min(canvas.height - activePiece.r - 12, pos.y));
+        activePiece.x = Math.max(activePiece.r + 20, Math.min(canvas.width - activePiece.r - 20, pos.x));
+        activePiece.y = Math.max(activePiece.r + 20, Math.min(canvas.height - activePiece.r - 20, pos.y));
         render();
       } else if (mode === 'draw' && isDrawing) {
         currentPath.push(pos);
@@ -285,7 +350,6 @@
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
     canvas.addEventListener('touchend', handleEnd);
 
-    // ACCIONES DE EDICIÓN
     function clearDrawings() {
       drawings = [];
       render();
@@ -296,7 +360,6 @@
       render();
     }
 
-    // SISTEMA DE ANIMACIÓN
     function saveFrame() {
       const frame = pieces.map(p => ({ id: p.id, x: p.x, y: p.y }));
       steps.push(frame);
@@ -316,7 +379,6 @@
 
       isPlaying = true;
 
-      // Posicionar en el primer paso
       steps[0].forEach(s => {
         const p = pieces.find(item => item.id === s.id);
         if (p) { p.x = s.x; p.y = s.y; }
@@ -329,7 +391,7 @@
         return;
       }
 
-      const durationPerStep = 1000; // 1 segundo por paso
+      const durationPerStep = 1100;
 
       function runNextStep(stepIdx) {
         if (stepIdx >= steps.length - 1) {
@@ -346,7 +408,6 @@
           if (!startTime) startTime = timestamp;
           const progress = Math.min((timestamp - startTime) / durationPerStep, 1);
           
-          // Suavizado Ease-In-Out
           const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
 
           for (let i = 0; i < pieces.length; i++) {
@@ -364,7 +425,7 @@
           if (progress < 1) {
             requestAnimationFrame(stepAnimation);
           } else {
-            setTimeout(() => runNextStep(stepIdx + 1), 200);
+            setTimeout(() => runNextStep(stepIdx + 1), 250);
           }
         }
 
@@ -377,76 +438,95 @@
     function playAnimation() {
       if (isPlaying) return;
       if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos para reproducir una animación.');
+        alert('Guarda al menos 2 pasos antes de reproducir.');
         return;
       }
       animateSteps();
     }
 
-    // EXPORTACIÓN DE FOTO Y VIDEO NATIVOS
     function downloadPhoto() {
       const link = document.createElement('a');
-      link.download = `pizarra-futsal-${new Date().toISOString().slice(0, 10)}.png`;
+      link.download = `pizarra-tactica-${new Date().toISOString().slice(0, 10)}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     }
 
     function exportVideo() {
       if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos antes de descargar el video.');
+        alert('Guarda al menos 2 pasos antes de exportar el video.');
         return;
       }
 
       const btnVideo = document.getElementById('btnVideo');
-      btnVideo.innerText = '⏳ Grabando...';
+      btnVideo.innerText = '⏳ Procesando Video...';
       btnVideo.disabled = true;
 
-      // Captura directa de la transmisión gráfica del Canvas a 30 FPS
+      let isRecording = true;
+      function recordLoop() {
+        render();
+        if (isRecording) {
+          requestAnimationFrame(recordLoop);
+        }
+      }
+      requestAnimationFrame(recordLoop);
+
       const stream = canvas.captureStream(30);
 
-      let mimeType = 'video/webm;codecs=vp9';
-      if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
-      if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4';
+      let options = { mimeType: 'video/webm;codecs=vp9' };
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = {};
 
       let mediaRecorder;
       try {
-        mediaRecorder = new MediaRecorder(stream, { mimeType });
+        mediaRecorder = new MediaRecorder(stream, options);
       } catch (e) {
         mediaRecorder = new MediaRecorder(stream);
       }
 
       const chunks = [];
+      const startTime = Date.now();
+
       mediaRecorder.ondataavailable = e => {
         if (e.data && e.data.size > 0) chunks.push(e.data);
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const ext = (mediaRecorder.mimeType && mediaRecorder.mimeType.includes('mp4')) ? 'mp4' : 'webm';
-        a.download = `animacion-tactica-${new Date().toISOString().slice(0, 10)}.${ext}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        isRecording = false;
+        const totalDuration = Date.now() - startTime;
+        const buggyBlob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/webm' });
 
-        btnVideo.innerText = '🎥 Descargar Video';
-        btnVideo.disabled = false;
+        const triggerDownload = (finalBlob) => {
+          const url = URL.createObjectURL(finalBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `jugada-tactica-${new Date().toISOString().slice(0, 10)}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          btnVideo.innerText = '🎥 Descargar Video';
+          btnVideo.disabled = false;
+        };
+
+        if (typeof ysFixWebmDuration === 'function') {
+          ysFixWebmDuration(buggyBlob, totalDuration, function(fixedBlob) {
+            triggerDownload(fixedBlob);
+          });
+        } else {
+          triggerDownload(buggyBlob);
+        }
       };
 
-      mediaRecorder.start();
+      mediaRecorder.start(100);
 
-      // Ejecutar la animación y finalizar la grabación
       animateSteps(() => {
         setTimeout(() => {
           mediaRecorder.stop();
-        }, 800);
+        }, 600);
       });
     }
 
-    // Dibujar pantalla inicial
     render();
   </script>
 </body>
