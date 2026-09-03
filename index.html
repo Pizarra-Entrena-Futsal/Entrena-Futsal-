@@ -73,22 +73,25 @@
       transition: all 0.2s;
     }
 
-    .btn-gk {
-      background: #00bcd4;
-    }
-
-    .btn-stats {
-      background: #ff9800;
-    }
-
-    .btn-header:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+    .btn-gk { background: #00bcd4; }
+    .btn-stats { background: #ff9800; }
+    .btn-header:hover { opacity: 0.9; transform: translateY(-1px); }
     
-    .toolbar {
+    /* Vistas de trabajo */
+    .view-section {
       width: 100%;
       max-width: 1020px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+
+    .toolbar {
+      width: 100%;
       background: #1e1e1e;
       border-radius: 10px;
       padding: 12px;
@@ -131,10 +134,7 @@
     .btn-grey   { background: #616161; }
     .btn-cyan   { background: #00acc1; }
 
-    .btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
     .canvas-container {
       position: relative;
@@ -149,9 +149,8 @@
     canvas {
       background-color: #2e7d32;
       display: block;
-      cursor: crosshair;
     }
-    
+
     .label-tag {
       font-size: 0.85rem;
       color: #ccc;
@@ -167,47 +166,50 @@
       font-weight: bold;
     }
 
-    /* Modal Secciones */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
+    /* Paneles de Arqueros y Estadísticas */
+    .panel-card {
+      width: 100%;
       background: #1e1e1e;
-      padding: 25px;
+      border: 1px solid #333;
       border-radius: 12px;
-      border: 1px solid #444;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
+      padding: 25px;
+      margin-top: 10px;
     }
 
-    .modal-content h2 {
-      margin-bottom: 15px;
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 1.4rem;
+      font-weight: bold;
       color: #00bcd4;
     }
 
-    .modal-content p {
-      margin-bottom: 20px;
-      color: #ccc;
-      font-size: 0.95rem;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
     }
 
-    .close-btn {
-      background: #e53935;
-      color: white;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 6px;
-      cursor: pointer;
+    .stat-box {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #444;
+    }
+
+    .stat-value {
+      font-size: 2rem;
       font-weight: bold;
+      color: #00e676;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -215,62 +217,126 @@
 
   <header>
     <div class="brand">
-      <img src="tu-logo.png" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/44/1e88e5/ffffff?text=⚽'">
+      <!-- Fallback SVG instantáneo en base64 para evitar esperas de red -->
+      <img src="tu-logo.png" alt="Logo" class="logo-img" 
+           onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'48\' fill=\'%231e88e5\' stroke=\'%23ffffff\' stroke-width=\'4\'/><text x=\'50\' y=\'65\' font-size=\'45\' text-anchor=\'middle\'>⚽</text></svg>';">
       <div>
         <div class="brand-title">Pizarra Táctica Futsal</div>
         <div class="brand-sub">@entrenafutsal</div>
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-header btn-gk" onclick="openModal('Arqueros')">🧤 Arqueros</button>
-      <button class="btn-header btn-stats" onclick="openModal('Estadísticas')">📊 Estadísticas</button>
+      <button class="btn-header btn-gk" onclick="switchView('view-arqueros')">🧤 Arqueros</button>
+      <button class="btn-header btn-stats" onclick="switchView('view-estadisticas')">📊 Estadísticas</button>
     </div>
   </header>
 
-  <div class="toolbar">
-    <div class="tool-row">
-      <button class="btn btn-green">✋ Mover / Girar</button>
-      <button class="btn btn-orange">✏️ Dibujar Trazos</button>
-      <button class="btn btn-red">🧹 Borrar Trazos</button>
-      <button class="btn btn-coral" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
+  <!-- VISTA 1: PIZARRA TÁCTICA -->
+  <main id="view-pizarra" class="view-section active">
+    <div class="toolbar">
+      <div class="tool-row">
+        <button class="btn btn-green">✋ Mover / Girar</button>
+        <button class="btn btn-orange">✏️ Dibujar Trazos</button>
+        <button class="btn btn-red">🧹 Borrar Trazos</button>
+        <button class="btn btn-coral" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
+      </div>
+
+      <div class="tool-row">
+        <span class="label-tag">Perfilar Ficha (o usa el tirador amarillo):</span>
+        <button class="btn btn-dark" onclick="rotateSelected(-45)">↺ -45°</button>
+        <button class="btn btn-dark" onclick="rotateSelected(45)">↻ +45°</button>
+        <button class="btn btn-dark" onclick="setAngleSelected(0)">➔ Der</button>
+        <button class="btn btn-dark" onclick="setAngleSelected(180)">➔ Izq</button>
+        <button class="btn btn-dark" onclick="setAngleSelected(270)">⬆ Arriba</button>
+        <button class="btn btn-dark" onclick="setAngleSelected(90)">⬇ Abajo</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="btn btn-purple">➕ Guardar Paso</button>
+        <button class="btn btn-pink">▶ Reproducir</button>
+        <button class="btn btn-orange">🎥 Descargar Video</button>
+        <button class="btn btn-grey">🗑 Limpiar Pasos</button>
+        <span class="badge-step">Pasos: 0</span>
+        <button class="btn btn-cyan">📸 Descargar Foto</button>
+      </div>
     </div>
 
-    <div class="tool-row">
-      <span class="label-tag">Perfilar Ficha (o arrastra el tirador amarillo):</span>
-      <button class="btn btn-dark" onclick="rotateSelected(-45)">↺ -45°</button>
-      <button class="btn btn-dark" onclick="rotateSelected(45)">↻ +45°</button>
-      <button class="btn btn-dark" onclick="setAngleSelected(0)">➔ Der</button>
-      <button class="btn btn-dark" onclick="setAngleSelected(180)">➔ Izq</button>
-      <button class="btn btn-dark" onclick="setAngleSelected(270)">⬆ Arriba</button>
-      <button class="btn btn-dark" onclick="setAngleSelected(90)">⬇ Abajo</button>
+    <div class="canvas-container">
+      <canvas id="tacticCanvas" width="1000" height="600"></canvas>
     </div>
+  </main>
 
-    <div class="tool-row">
-      <button class="btn btn-purple">➕ Guardar Paso</button>
-      <button class="btn btn-pink">▶ Reproducir</button>
-      <button class="btn btn-orange">🎥 Descargar Video</button>
-      <button class="btn btn-grey">🗑 Limpiar Pasos</button>
-      <span class="badge-step">Pasos: 0</span>
-      <button class="btn btn-cyan">📸 Descargar Foto</button>
+  <!-- VISTA 2: SECCIÓN ARQUEROS -->
+  <section id="view-arqueros" class="view-section">
+    <div class="panel-card">
+      <div class="panel-header">
+        <div class="panel-title">🧤 Módulo Especial de Arqueros</div>
+        <button class="btn btn-green" onclick="switchView('view-pizarra')">⬅ Volver a la Pizarra</button>
+      </div>
+      <p style="color: #ccc; margin-bottom: 20px;">Espacio de trabajo para ejercicios específicos de porteros, coberturas y saques de meta.</p>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div>Saques de Meta</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div>Paradas / Bloqueos</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div>Mano a Mano</div>
+          <div class="stat-value">0</div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="canvas-container">
-    <canvas id="tacticCanvas" width="1000" height="600"></canvas>
-  </div>
-
-  <!-- Modal genérico para Secciones -->
-  <div id="sectionModal" class="modal">
-    <div class="modal-content">
-      <h2 id="modalTitle">Sección</h2>
-      <p id="modalBody">Módulo listo para comenzar a trabajar e integrar tus ejercicios específicos.</p>
-      <button class="close-btn" onclick="closeModal()">Cerrar</button>
+  <!-- VISTA 3: SECCIÓN ESTADÍSTICAS -->
+  <section id="view-estadisticas" class="view-section">
+    <div class="panel-card">
+      <div class="panel-header">
+        <div class="panel-title" style="color: #ff9800;">📊 Control Estadístico de Partido</div>
+        <button class="btn btn-green" onclick="switchView('view-pizarra')">⬅ Volver a la Pizarra</button>
+      </div>
+      <p style="color: #ccc; margin-bottom: 20px;">Panel de análisis de rendimiento, posesión y datos tácticos en tiempo real.</p>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div>Tiros a Puerta</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div>Faltas Acumuladas</div>
+          <div class="stat-value">0 / 5</div>
+        </div>
+        <div class="stat-box">
+          <div>Posesión estimada</div>
+          <div class="stat-value">50%</div>
+        </div>
+        <div class="stat-box">
+          <div>Pérdidas de Balón</div>
+          <div class="stat-value">0</div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
   <script>
     const canvas = document.getElementById('tacticCanvas');
     const ctx = canvas.getContext('2d');
+
+    // Cambiador de pantallas
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      const activeSec = document.getElementById(viewId);
+      if (activeSec) {
+        activeSec.classList.add('active');
+      }
+      if (viewId === 'view-pizarra') {
+        render(); // Renderizar canvas al volver
+      }
+    }
 
     const initialPlayers = [
       // Equipo Verde
@@ -346,7 +412,6 @@
       ctx.translate(p.x, p.y);
       ctx.rotate((p.angle || 0) * Math.PI / 180);
 
-      // Balón
       if (p.role === 'BALL') {
         ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
         ctx.shadowBlur = 6;
@@ -386,24 +451,20 @@
 
       const skinColor = '#e19d62';
 
-      // Sombra
       ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
       ctx.shadowBlur = 8;
       ctx.shadowOffsetX = -4;
       ctx.shadowOffsetY = 5;
 
-      // Halo y Tirador de Giro si está seleccionado
       if (p.selected) {
         ctx.shadowColor = 'transparent';
 
-        // Círculo de selección
         ctx.beginPath();
         ctx.arc(0, 0, p.r * 1.4, 0, Math.PI * 2);
         ctx.strokeStyle = '#ffeb3b';
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // Línea hacia el tirador
         ctx.beginPath();
         ctx.moveTo(p.r * 1.4, 0);
         ctx.lineTo(p.r * 2.3, 0);
@@ -411,7 +472,6 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Tirador de giro (Knob)
         ctx.beginPath();
         ctx.arc(p.r * 2.3, 0, 7, 0, Math.PI * 2);
         ctx.fillStyle = '#ffeb3b';
@@ -500,18 +560,6 @@
       render();
     }
 
-    // Modal Manager
-    function openModal(title) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalBody').innerText = `Has ingresado a la sección de ${title}. Aquí podrás trabajar con configuraciones específicas.`;
-      document.getElementById('sectionModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('sectionModal').style.display = 'none';
-    }
-
-    // Interacción Mouse: Arrastre y Giro directo en Canvas
     let isDragging = false;
     let isRotating = false;
     let activePlayer = null;
@@ -521,7 +569,6 @@
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
 
-      // 1. Verificar si hizo clic sobre el TIRADOR DE GIRO del jugador seleccionado
       const sel = players.find(p => p.selected && p.role !== 'BALL');
       if (sel) {
         const rad = (sel.angle || 0) * Math.PI / 180;
@@ -536,7 +583,6 @@
         }
       }
 
-      // 2. Verificar si hizo clic sobre el CUERPO de algún jugador
       let found = false;
       for (let i = players.length - 1; i >= 0; i--) {
         const p = players[i];
@@ -564,7 +610,6 @@
       const my = e.clientY - rect.top;
 
       if (isRotating && activePlayer) {
-        // Giro directo según la posición del ratón respecto al centro del jugador
         const angleRad = Math.atan2(my - activePlayer.y, mx - activePlayer.x);
         let angleDeg = Math.round(angleRad * 180 / Math.PI);
         if (angleDeg < 0) angleDeg += 360;
