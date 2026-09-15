@@ -611,7 +611,6 @@
           requestAnimationFrame(recordLoop);
         }
       }
-      requestAnimationFrame(recordLoop);
 
       const stream = canvas.captureStream(30);
 
@@ -661,12 +660,17 @@
         }
       };
 
-mediaRecorder.start(100);
+      // Inicia el bucle de renderizado antes de grabar
+      isRecording = true;
+      requestAnimationFrame(recordLoop);
+
+      mediaRecorder.start(100);
 
       animateSteps(() => {
+        // Pausa de 2 segundos al finalizar la jugada antes de cortar el video
         setTimeout(() => {
           mediaRecorder.stop();
-        }, 4000);
+        }, 2000);
       });
     }
 
