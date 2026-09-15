@@ -594,85 +594,99 @@
       render();
     }
 
-    function exportVideo() {
-      if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos antes de exportar el video.');
-        return;
-      }
+function exportVideo() {
+  if (steps.length < 2) {
+    alert('Guarda al menos 2 pasos antes de exportar el video.');
+    return;
+  }
 
-      const btnVideo = document.getElementById('btnVideo');
-      btnVideo.innerText = '⏳ Procesando Video...';
-      btnVideo.disabled = true;
+  const btnVideo = document.getElementById('btnVideo');
+  btnVideo.innerText = '⏳ Procesando Video...';
+  btnVideo.disabled = true;
 
-      let isRecording = true;
-      function recordLoop() {
-        render();
-        if (isRecording) {
-          requestAnimationFrame(recordLoop);
-        }
-      }
+  let isRecording = true;
 
-      const stream = canvas.captureStream(30);
-
-      let options = { mimeType: 'video/webm;codecs=vp9' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = {};
-
-      let mediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(stream, options);
-      } catch (e) {
-        mediaRecorder = new MediaRecorder(stream);
-      }
-
-      const chunks = [];
-      const startTime = Date.now();
-
-      mediaRecorder.ondataavailable = e => {
-        if (e.data && e.data.size > 0) chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        isRecording = false;
-        const totalDuration = Date.now() - startTime;
-        const buggyBlob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/webm' });
-
-        const triggerDownload = (finalBlob) => {
-          const url = URL.createObjectURL(finalBlob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `jugada-tactica-${new Date().toISOString().slice(0, 10)}.webm`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-
-          btnVideo.innerText = '🎥 Descargar Video';
-          btnVideo.disabled = false;
-        };
-
-        if (typeof ysFixWebmDuration === 'function') {
-          ysFixWebmDuration(buggyBlob, totalDuration, function(fixedBlob) {
-            triggerDownload(fixedBlob);
-          });
-        } else {
-          triggerDownload(buggyBlob);
-        }
-      };
-
-      // Inicia el bucle de renderizado antes de grabar
-      isRecording = true;
+  // Renderizado continuo mientras graba
+  function recordLoop() {
+    render();
+    if (isRecording) {
       requestAnimationFrame(recordLoop);
-
-      mediaRecorder.start(100);
-
-      animateSteps(() => {
-        // Pausa de 2 segundos al finalizar la jugada antes de cortar el video
-        setTimeout(() => {
-          mediaRecorder.stop();
-        }, 2000);
-      });
     }
+  }
+
+  // Capturar stream a 30 FPS
+  const stream = canvas.captureStream(30);
+
+  // Intentar usar MP4 si el navegador lo soporta (evita el bug de WebM en navegadores modernos)
+  let mimeType = 'video/webm;codecs=vp9';
+  let isWebm = true;
+
+  if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')) {
+    mimeType = 'video/mp4;codecs=avc1';
+    isWebm = false;
+  } else if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm';
+  }
+
+  let mediaRecorder;
+  try {
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+  } catch (e) {
+    mediaRecorder = new MediaRecorder(stream);
+  }
+
+  const chunks = [];
+  const startTime = Date.now();
+
+  mediaRecorder.ondataavailable = e => {
+    if (e.data && e.data.size > 0) chunks.push(e.data);
+  };
+
+  mediaRecorder.onstop = () => {
+    isRecording = false;
+    const totalDuration = Date.now() - startTime;
+    const extension = isWebm ? 'webm' : 'mp4';
+    const rawBlob = new Blob(chunks, { type: mediaRecorder.mimeType || `video/${extension}` });
+
+    const triggerDownload = (finalBlob) => {
+      const url = URL.createObjectURL(finalBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `jugada-tactica-${new Date().toISOString().slice(0, 10)}.${extension}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      btnVideo.innerText = '🎥 Descargar Video';
+      btnVideo.disabled = false;
+    };
+
+    // Si es WebM y la librería de arreglo está disponible, reescribimos los metadatos de duración
+    if (isWebm && typeof ysFixWebmDuration === 'function') {
+      ysFixWebmDuration(rawBlob, totalDuration, function(fixedBlob) {
+        triggerDownload(fixedBlob);
+      });
+    } else {
+      triggerDownload(rawBlob);
+    }
+  };
+
+  // Iniciar renderizado y grabación
+  isRecording = true;
+  requestAnimationFrame(recordLoop);
+  
+  // Guardar datos cada 100ms
+  mediaRecorder.start(100);
+
+  // Ejecutar la animación de pasos
+  animateSteps(() => {
+    // Pausa final de 1.5 segundos antes de detener la grabación
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 1500);
+  });
+}
 
     render();
   </script>
