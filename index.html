@@ -482,11 +482,13 @@
 
     function resetPositions() {
       pieces = JSON.parse(JSON.stringify(initialPieces));
+      drawings = [];
       selectedPiece = null;
+      isPlaying = false;
       render();
     }
 
-   function saveFrame() {
+    function saveFrame() {
       const frame = {
         pieces: pieces.map(p => ({ id: p.id, x: p.x, y: p.y, angle: p.angle || 0 })),
         drawings: JSON.parse(JSON.stringify(drawings))
@@ -497,11 +499,22 @@
 
     function clearAnimation() {
       steps = [];
+      isPlaying = false;
       document.getElementById('stepCounter').innerText = `Pasos: 0`;
+    }
+
+    function playAnimation() {
+      if (steps.length < 2) {
+        alert('Guarda al menos 2 pasos antes de reproducir.');
+        return;
+      }
+      isPlaying = false;
+      animateSteps();
     }
 
     function animateSteps(onComplete) {
       if (steps.length === 0) {
+        isPlaying = false;
         if (onComplete) onComplete();
         return;
       }
