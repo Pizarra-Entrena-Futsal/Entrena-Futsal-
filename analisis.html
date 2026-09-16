@@ -32,6 +32,7 @@
     .btn-clear { background: #f44336; }
     .btn-mark { background: #ff9800; }
     .btn-download { background: #9c27b0; }
+    .btn-clip { background: #e91e63; }
 
     .color-picker { display: flex; gap: 6px; }
     .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
@@ -41,6 +42,9 @@
     .video-wrapper { width: 100%; max-width: 960px; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid #333; }
     video { width: 100%; height: auto; display: block; }
     canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+    /* INDICADOR DE ESTADO */
+    .status-banner { width: 100%; max-width: 960px; background: #ff9800; color: #121212; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 6px; margin-bottom: 10px; display: none; text-align: center; }
 
     /* MARCADORES DE TIEMPO */
     .marks-container { width: 100%; max-width: 960px; background: #1e1e1e; border-radius: 10px; padding: 12px; margin-top: 12px; border: 1px solid #333; }
@@ -54,6 +58,7 @@
 </head>
 <body>
 
+  <!-- ENCABEZADO -->
   <header>
     <div class="header-info">
       <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
@@ -68,6 +73,10 @@
     </div>
   </header>
 
+  <!-- BANNER DE ESTADO GRABACIÓN -->
+  <div class="status-banner" id="statusBanner"></div>
+
+  <!-- PANEL DE ARCHIVO Y NAVEGACIÓN DE VIDEO -->
   <div class="controls-panel">
     <label class="btn btn-file">
       📂 Cargar Video <input type="file" id="videoInput" accept="video/*" style="display:none;" onchange="loadVideo(event)">
@@ -87,6 +96,7 @@
     </div>
   </div>
 
+  <!-- PANEL DE HERRAMIENTAS DIBUJO Y EXPORTACIÓN -->
   <div class="controls-panel">
     <div class="panel-group">
       <span class="panel-label">Dibujo:</span>
@@ -106,14 +116,17 @@
     </div>
 
     <button class="btn btn-mark" onclick="addTimestampMark()">📌 Guardar Momento</button>
-    <button class="btn btn-download" onclick="downloadSnapshot()">📷 Descargar Foto con Trazos</button>
+    <button class="btn btn-download" onclick="downloadSnapshot()">📷 Foto con Trazos</button>
+    <button class="btn btn-clip" id="btnClip" onclick="toggleClipRecording()">🎬 Recortar Clip (-5s)</button>
   </div>
 
+  <!-- CONTENEDOR VIDEO + CANVAS -->
   <div class="video-wrapper" id="videoWrapper">
     <video id="futsalVideo" playsinline></video>
     <canvas id="drawCanvas"></canvas>
   </div>
 
+  <!-- LISTA DE MARCAS DE TIEMPO -->
   <div class="marks-container">
     <div class="marks-title">
       <span>📌 Momentos Clave Guardados</span>
@@ -129,6 +142,7 @@
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
     const btnPlay = document.getElementById('btnPlay');
+    const statusBanner = document.getElementById('statusBanner');
 
     let isDrawingMode = true;
     let isDrawing = false;
@@ -137,7 +151,10 @@
     let currentPath = [];
     let marks = [];
 
-    // Ajustar resolución del canvas al tamaño exacto del video cargado
+    // Estado del recorte de clip
+    let isRecordingClip = false;
+    let clipStartTime = 0;
+
     function resizeCanvas() {
       if (video.videoWidth) {
         canvas.width = video.videoWidth;
@@ -152,7 +169,6 @@
     window.addEventListener('resize', resizeCanvas);
     video.addEventListener('loadedmetadata', resizeCanvas);
 
-    // Cargar video local desde la PC o celular
     function loadVideo(event) {
       const file = event.target.files[0];
       if (file) {
@@ -166,7 +182,6 @@
       }
     }
 
-    // Play / Pause
     function togglePlay() {
       if (video.paused) {
         video.play();
@@ -177,19 +192,16 @@
       }
     }
 
-    // Cambiar velocidad de reproducción
     function setSpeed(speed) {
       video.playbackRate = speed;
     }
 
-    // Avanzar o retroceder cuadros
     function stepFrame(timeOffset) {
       video.pause();
       btnPlay.innerText = '▶️ Reproducir';
       video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + timeOffset));
     }
 
-    // Cambiar modo de interacción (Dibujar vs Controlar Video)
     function toggleDrawing(enable) {
       isDrawingMode = enable;
       canvas.style.pointerEvents = enable ? 'auto' : 'none';
@@ -208,7 +220,6 @@
       renderCanvas();
     }
 
-    // Obtener coordenadas exactas escaladas en la resolución real del canvas
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -248,7 +259,6 @@
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
     canvas.addEventListener('touchend', handleEnd);
 
-    // Renderizar trazos tácticos
     function renderCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -256,7 +266,7 @@
         if (path.length < 2) continue;
         ctx.beginPath();
         ctx.strokeStyle = path[0].color || '#ffeb3b';
-        ctx.lineWidth = Math.max(4, canvas.width / 240); // Ajustar grosor según resolución
+        ctx.lineWidth = Math.max(4, canvas.width / 240);
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
@@ -268,7 +278,6 @@
       }
     }
 
-    // MARCADORES DE TIEMPO
     function formatTime(seconds) {
       const m = Math.floor(seconds / 60).toString().padStart(2, '0');
       const s = Math.floor(seconds % 60).toString().padStart(2, '0');
@@ -318,7 +327,6 @@
       `).join('');
     }
 
-    // DESCARGAR CAPTURA CON COMBINACIÓN DE VIDEO + CANVAS
     function downloadSnapshot() {
       if (!video.videoWidth) {
         alert('Carga un video primero.');
@@ -330,17 +338,123 @@
       tempCanvas.height = video.videoHeight;
       const tempCtx = tempCanvas.getContext('2d');
 
-      // 1. Dibujar imagen del fotograma del video
       tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-
-      // 2. Dibujar la capa táctica arriba
       tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
 
-      // 3. Descargar imagen PNG
       const link = document.createElement('a');
       link.download = `analisis-futsal-${formatTime(video.currentTime).replace(':', '-')}.png`;
       link.href = tempCanvas.toDataURL('image/png');
       link.click();
+    }
+
+    /* LÓGICA DE RECORTE DE VIDEO (-5 SEC ONS Y DESCARGA) */
+    function toggleClipRecording() {
+      if (!video.duration) {
+        alert('Carga un video primero.');
+        return;
+      }
+
+      const btn = document.getElementById('btnClip');
+
+      if (!isRecordingClip) {
+        // 1er Clic: Marca inicio 5 segundos atrás del tiempo actual
+        clipStartTime = Math.max(0, video.currentTime - 5);
+        isRecordingClip = true;
+
+        btn.innerText = '⏹️ Finalizar y Descargar Clip';
+        btn.style.background = '#f44336';
+
+        statusBanner.style.display = 'block';
+        statusBanner.innerText = `🔴 Recortando desde ${formatTime(clipStartTime)}... Hacé clic de nuevo para finalizar.`;
+      } else {
+        // 2do Clic: Marca fin y procesa la descarga
+        const clipEndTime = video.currentTime;
+
+        if (clipEndTime <= clipStartTime) {
+          alert('El tiempo de fin debe ser mayor al inicio.');
+          resetClipUI();
+          return;
+        }
+
+        isRecordingClip = false;
+        btn.innerText = '⏳ Procesando video...';
+        btn.disabled = true;
+        statusBanner.innerText = `⏳ Generando clip de video (${formatTime(clipStartTime)} a ${formatTime(clipEndTime)})... Por favor esperá.`;
+
+        processAndDownloadClip(clipStartTime, clipEndTime, () => {
+          resetClipUI();
+        });
+      }
+    }
+
+    function resetClipUI() {
+      const btn = document.getElementById('btnClip');
+      isRecordingClip = false;
+      btn.innerText = '🎬 Recortar Clip (-5s)';
+      btn.style.background = '#e91e63';
+      btn.disabled = false;
+      statusBanner.style.display = 'none';
+    }
+
+    function processAndDownloadClip(start, end, onComplete) {
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = video.videoWidth || 1280;
+      exportCanvas.height = video.videoHeight || 720;
+      const exportCtx = exportCanvas.getContext('2d');
+
+      const stream = exportCanvas.captureStream(30);
+      let options = { mimeType: 'video/webm;codecs=vp9' };
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options = { mimeType: 'video/webm' };
+      }
+
+      const recorder = new MediaRecorder(stream, options);
+      const chunks = [];
+
+      recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `clip-futsal-${formatTime(start).replace(':', '-')}_a_${formatTime(end).replace(':', '-')}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+        if (onComplete) onComplete();
+      };
+
+      const originalTime = video.currentTime;
+      const originalPaused = video.paused;
+      const originalMuted = video.muted;
+
+      video.muted = true;
+      video.currentTime = start;
+
+      let animId;
+
+      function renderFrame() {
+        if (video.currentTime >= end || video.ended) {
+          recorder.stop();
+          cancelAnimationFrame(animId);
+          video.pause();
+          video.currentTime = originalTime;
+          video.muted = originalMuted;
+          if (!originalPaused) video.play();
+          return;
+        }
+
+        exportCtx.drawImage(video, 0, 0, exportCanvas.width, exportCanvas.height);
+        exportCtx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
+
+        animId = requestAnimationFrame(renderFrame);
+      }
+
+      video.onseeked = function () {
+        video.onseeked = null;
+        recorder.start();
+        video.play();
+        renderFrame();
+      };
     }
   </script>
 </body>
