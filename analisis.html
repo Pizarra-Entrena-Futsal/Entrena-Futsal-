@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis de Video Futsal - @entrenafutsal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
+
+    /* ENCABEZADO */
+    header { width: 100%; max-width: 960px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .header-info { display: flex; align-items: center; gap: 12px; }
+    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
+    .header-text strong { font-size: 18px; color: #fff; display: block; }
+    .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-link { background: #333; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+    .nav-link:hover { background: #444; }
+
+    /* CONTROLES Y PANELES */
+    .controls-panel { width: 100%; max-width: 960px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; }
+    .panel-group { display: flex; align-items: center; gap: 6px; background: #1e1e1e; padding: 6px 12px; border-radius: 8px; border: 1px solid #333; }
+    .panel-label { font-size: 12px; font-weight: bold; color: #00e676; }
+
+    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
+    .btn:active { transform: scale(0.97); }
+    .btn-file { background: #0288d1; cursor: pointer; }
+    .btn-tool { background: #333; }
+    .btn-tool.active { background: #00e676; color: #121212; }
+    .btn-play { background: #e91e63; }
+    .btn-clear { background: #f44336; }
+    .btn-mark { background: #ff9800; }
+    .btn-download { background: #9c27b0; }
+
+    .color-picker { display: flex; gap: 6px; }
+    .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
+    .color-dot.active { border-color: #00e676; transform: scale(1.15); }
+
+    /* REPRODUCTOR Y CANVAS SOBREPUESTO */
+    .video-wrapper { width: 100%; max-width: 960px; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid #333; }
+    video { width: 100%; height: auto; display: block; }
+    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+    /* MARCADORES DE TIEMPO */
+    .marks-container { width: 100%; max-width: 960px; background: #1e1e1e; border-radius: 10px; padding: 12px; margin-top: 12px; border: 1px solid #333; }
+    .marks-title { font-size: 14px; font-weight: bold; color: #00e676; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .marks-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
+    .mark-item { display: flex; align-items: center; justify-content: space-between; background: #2a2a2a; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
+    .mark-time { background: #00e676; color: #121212; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .mark-time:hover { opacity: 0.85; }
+    .btn-delete-mark { background: none; border: none; color: #ff5252; cursor: pointer; font-weight: bold; margin-left: 8px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-info">
+      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
+      <div class="header-text">
+        <strong>Análisis de Video Futsal</strong>
+        <span class="handle">@entrenafutsal</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">📋 Pizarra Táctica</a>
+      <a href="stats.html" class="nav-link">📊 Estadísticas</a>
+    </div>
+  </header>
+
+  <div class="controls-panel">
+    <label class="btn btn-file">
+      📂 Cargar Video <input type="file" id="videoInput" accept="video/*" style="display:none;" onchange="loadVideo(event)">
+    </label>
+
+    <div class="panel-group">
+      <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">▶️ Reproducir</button>
+      <button class="btn btn-tool" onclick="stepFrame(-0.04)" title="Atrasar 1 Fotograma">⏮️ -1 Frame</button>
+      <button class="btn btn-tool" onclick="stepFrame(0.04)" title="Avanzar 1 Fotograma">+1 Frame ⏭️</button>
+    </div>
+
+    <div class="panel-group">
+      <span class="panel-label">Velocidad:</span>
+      <button class="btn btn-tool" onclick="setSpeed(0.5)">0.5x</button>
+      <button class="btn btn-tool active" id="speed1" onclick="setSpeed(1.0)">1x</button>
+      <button class="btn btn-tool" onclick="setSpeed(1.5)">1.5x</button>
+    </div>
+  </div>
+
+  <div class="controls-panel">
+    <div class="panel-group">
+      <span class="panel-label">Dibujo:</span>
+      <button class="btn btn-tool active" id="modeDraw" onclick="toggleDrawing(true)">✏️ Activar Dibujo</button>
+      <button class="btn btn-tool" id="modeVideo" onclick="toggleDrawing(false)">✋ Controlar Video</button>
+      <button class="btn btn-clear" onclick="clearDrawings()">🧹 Borrar Trazos</button>
+    </div>
+
+    <div class="panel-group">
+      <span class="panel-label">Color:</span>
+      <div class="color-picker">
+        <div class="color-dot active" style="background:#ffeb3b;" onclick="setColor('#ffeb3b', this)"></div>
+        <div class="color-dot" style="background:#ff1744;" onclick="setColor('#ff1744', this)"></div>
+        <div class="color-dot" style="background:#00e676;" onclick="setColor('#00e676', this)"></div>
+        <div class="color-dot" style="background:#ffffff;" onclick="setColor('#ffffff', this)"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-mark" onclick="addTimestampMark()">📌 Guardar Momento</button>
+    <button class="btn btn-download" onclick="downloadSnapshot()">📷 Descargar Foto con Trazos</button>
+  </div>
+
+  <div class="video-wrapper" id="videoWrapper">
+    <video id="futsalVideo" playsinline></video>
+    <canvas id="drawCanvas"></canvas>
+  </div>
+
+  <div class="marks-container">
+    <div class="marks-title">
+      <span>📌 Momentos Clave Guardados</span>
+      <span id="markCount" style="font-size:12px; color:#aaa;">0 momentos</span>
+    </div>
+    <div class="marks-list" id="marksList">
+      <div style="color:#777; font-size:13px; text-align:center; padding:10px;">Carga un video y guarda momentos clave para analizarlos rápidamente.</div>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('futsalVideo');
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    const btnPlay = document.getElementById('btnPlay');
+
+    let isDrawingMode = true;
+    let isDrawing = false;
+    let currentColor = '#ffeb3b';
+    let drawings = [];
+    let currentPath = [];
+    let marks = [];
+
+    // Ajustar resolución del canvas al tamaño exacto del video cargado
+    function resizeCanvas() {
+      if (video.videoWidth) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+      } else {
+        canvas.width = video.clientWidth || 960;
+        canvas.height = video.clientHeight || 540;
+      }
+      renderCanvas();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    video.addEventListener('loadedmetadata', resizeCanvas);
+
+    // Cargar video local desde la PC o celular
+    function loadVideo(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        video.src = url;
+        video.play();
+        btnPlay.innerText = '⏸️ Pausar';
+        drawings = [];
+        marks = [];
+        renderMarks();
+      }
+    }
+
+    // Play / Pause
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+        btnPlay.innerText = '⏸️ Pausar';
+      } else {
+        video.pause();
+        btnPlay.innerText = '▶️ Reproducir';
+      }
+    }
+
+    // Cambiar velocidad de reproducción
+    function setSpeed(speed) {
+      video.playbackRate = speed;
+    }
+
+    // Avanzar o retroceder cuadros
+    function stepFrame(timeOffset) {
+      video.pause();
+      btnPlay.innerText = '▶️ Reproducir';
+      video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + timeOffset));
+    }
+
+    // Cambiar modo de interacción (Dibujar vs Controlar Video)
+    function toggleDrawing(enable) {
+      isDrawingMode = enable;
+      canvas.style.pointerEvents = enable ? 'auto' : 'none';
+      document.getElementById('modeDraw').classList.toggle('active', enable);
+      document.getElementById('modeVideo').classList.toggle('active', !enable);
+    }
+
+    function setColor(color, element) {
+      currentColor = color;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    function clearDrawings() {
+      drawings = [];
+      renderCanvas();
+    }
+
+    // Obtener coordenadas exactas escaladas en la resolución real del canvas
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    function handleStart(e) {
+      if (!isDrawingMode) return;
+      isDrawing = true;
+      const pos = getCanvasCoords(e);
+      currentPath = [{ x: pos.x, y: pos.y, color: currentColor }];
+      drawings.push(currentPath);
+      renderCanvas();
+    }
+
+    function handleMove(e) {
+      if (!isDrawing || !isDrawingMode) return;
+      const pos = getCanvasCoords(e);
+      currentPath.push({ x: pos.x, y: pos.y, color: currentColor });
+      renderCanvas();
+    }
+
+    function handleEnd() {
+      isDrawing = false;
+    }
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
+    canvas.addEventListener('touchend', handleEnd);
+
+    // Renderizar trazos tácticos
+    function renderCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const path of drawings) {
+        if (path.length < 2) continue;
+        ctx.beginPath();
+        ctx.strokeStyle = path[0].color || '#ffeb3b';
+        ctx.lineWidth = Math.max(4, canvas.width / 240); // Ajustar grosor según resolución
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.moveTo(path[0].x, path[0].y);
+        for (let i = 1; i < path.length; i++) {
+          ctx.lineTo(path[i].x, path[i].y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    // MARCADORES DE TIEMPO
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+      const ms = Math.floor((seconds % 1) * 10);
+      return `${m}:${s}.${ms}`;
+    }
+
+    function addTimestampMark() {
+      if (!video.duration) return;
+      const time = video.currentTime;
+      const note = prompt('Ingresa un comentario táctico para este momento:', 'Analizar jugada');
+      if (note !== null) {
+        marks.push({ time, note: note || 'Sin nota' });
+        marks.sort((a, b) => a.time - b.time);
+        renderMarks();
+      }
+    }
+
+    function jumpToTime(seconds) {
+      video.currentTime = seconds;
+      video.pause();
+      btnPlay.innerText = '▶️ Reproducir';
+    }
+
+    function deleteMark(index) {
+      marks.splice(index, 1);
+      renderMarks();
+    }
+
+    function renderMarks() {
+      const list = document.getElementById('marksList');
+      document.getElementById('markCount').innerText = `${marks.length} momento(s)`;
+
+      if (marks.length === 0) {
+        list.innerHTML = `<div style="color:#777; font-size:13px; text-align:center; padding:10px;">Carga un video y guarda momentos clave para analizarlos rápidamente.</div>`;
+        return;
+      }
+
+      list.innerHTML = marks.map((m, i) => `
+        <div class="mark-item">
+          <div>
+            <span class="mark-time" onclick="jumpToTime(${m.time})">⏱️ ${formatTime(m.time)}</span>
+            <span style="margin-left: 8px;">${m.note}</span>
+          </div>
+          <button class="btn-delete-mark" onclick="deleteMark(${i})">❌</button>
+        </div>
+      `).join('');
+    }
+
+    // DESCARGAR CAPTURA CON COMBINACIÓN DE VIDEO + CANVAS
+    function downloadSnapshot() {
+      if (!video.videoWidth) {
+        alert('Carga un video primero.');
+        return;
+      }
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = video.videoWidth;
+      tempCanvas.height = video.videoHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      // 1. Dibujar imagen del fotograma del video
+      tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+      // 2. Dibujar la capa táctica arriba
+      tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+      // 3. Descargar imagen PNG
+      const link = document.createElement('a');
+      link.download = `analisis-futsal-${formatTime(video.currentTime).replace(':', '-')}.png`;
+      link.href = tempCanvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
