@@ -46,14 +46,31 @@
     /* INDICADOR DE ESTADO */
     .status-banner { width: 100%; max-width: 960px; background: #ff9800; color: #121212; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 6px; margin-bottom: 10px; display: none; text-align: center; }
 
-    /* MARCADORES DE TIEMPO */
-    .marks-container { width: 100%; max-width: 960px; background: #1e1e1e; border-radius: 10px; padding: 12px; margin-top: 12px; border: 1px solid #333; }
-    .marks-title { font-size: 14px; font-weight: bold; color: #00e676; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .marks-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
-    .mark-item { display: flex; align-items: center; justify-content: space-between; background: #2a2a2a; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
-    .mark-time { background: #00e676; color: #121212; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-    .mark-time:hover { opacity: 0.85; }
-    .btn-delete-mark { background: none; border: none; color: #ff5252; cursor: pointer; font-weight: bold; margin-left: 8px; }
+    /* SECCIÓN DE CARPETAS Y BIBLIOTECA */
+    .library-container { width: 100%; max-width: 960px; background: #1e1e1e; border-radius: 10px; padding: 16px; margin-top: 16px; border: 1px solid #333; }
+    .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+    .library-title { font-size: 16px; font-weight: bold; color: #00e676; display: flex; align-items: center; gap: 8px; }
+
+    .folder-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
+    .folder-btn { background: #2a2a2a; color: #ccc; border: 1px solid #444; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .folder-btn.active { background: #00e676; color: #121212; border-color: #00e676; }
+
+    .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    .clip-card { background: #2a2a2a; border-radius: 8px; padding: 10px; border: 1px solid #333; display: flex; flex-direction: column; gap: 8px; }
+    .clip-card video { width: 100%; border-radius: 4px; background: #000; }
+    .clip-info { font-size: 12px; color: #ccc; }
+    .clip-actions { display: flex; justify-content: space-between; gap: 6px; margin-top: auto; }
+    .clip-btn { padding: 4px 8px; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; color: #fff; }
+    .clip-btn-dl { background: #9c27b0; }
+    .clip-btn-del { background: #f44336; }
+
+    /* MODAL DE SELECCIÓN DE CARPETA */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 1000; }
+    .modal-box { background: #1e1e1e; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; border: 1px solid #00e676; }
+    .modal-box h3 { color: #00e676; margin-bottom: 12px; font-size: 16px; }
+    .modal-box label { display: block; font-size: 12px; margin: 8px 0 4px; color: #aaa; }
+    .modal-box select, .modal-box input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #333; background: #2a2a2a; color: #fff; font-size: 13px; margin-bottom: 10px; }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -73,10 +90,10 @@
     </div>
   </header>
 
-  <!-- BANNER DE ESTADO GRABACIÓN -->
+  <!-- BANNER DE ESTADO -->
   <div class="status-banner" id="statusBanner"></div>
 
-  <!-- PANEL DE ARCHIVO Y NAVEGACIÓN DE VIDEO -->
+  <!-- PANEL DE CONTROLES PRINCIPALES -->
   <div class="controls-panel">
     <label class="btn btn-file">
       📂 Cargar Video <input type="file" id="videoInput" accept="video/*" style="display:none;" onchange="loadVideo(event)">
@@ -84,8 +101,8 @@
 
     <div class="panel-group">
       <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">▶️ Reproducir</button>
-      <button class="btn btn-tool" onclick="stepFrame(-0.04)" title="Atrasar 1 Fotograma">⏮️ -1 Frame</button>
-      <button class="btn btn-tool" onclick="stepFrame(0.04)" title="Avanzar 1 Fotograma">+1 Frame ⏭️</button>
+      <button class="btn btn-tool" onclick="stepFrame(-0.04)">⏮️ -1 Frame</button>
+      <button class="btn btn-tool" onclick="stepFrame(0.04)">+1 Frame ⏭️</button>
     </div>
 
     <div class="panel-group">
@@ -96,7 +113,7 @@
     </div>
   </div>
 
-  <!-- PANEL DE HERRAMIENTAS DIBUJO Y EXPORTACIÓN -->
+  <!-- PANEL DIBUJO Y RECORTE -->
   <div class="controls-panel">
     <div class="panel-group">
       <span class="panel-label">Dibujo:</span>
@@ -115,7 +132,6 @@
       </div>
     </div>
 
-    <button class="btn btn-mark" onclick="addTimestampMark()">📌 Guardar Momento</button>
     <button class="btn btn-download" onclick="downloadSnapshot()">📷 Foto con Trazos</button>
     <button class="btn btn-clip" id="btnClip" onclick="toggleClipRecording()">🎬 Recortar Clip (-5s)</button>
   </div>
@@ -126,14 +142,36 @@
     <canvas id="drawCanvas"></canvas>
   </div>
 
-  <!-- LISTA DE MARCAS DE TIEMPO -->
-  <div class="marks-container">
-    <div class="marks-title">
-      <span>📌 Momentos Clave Guardados</span>
-      <span id="markCount" style="font-size:12px; color:#aaa;">0 momentos</span>
+  <!-- BIBLIOTECA DE CLIPS POR CARPETAS -->
+  <div class="library-container">
+    <div class="library-header">
+      <div class="library-title">📁 Biblioteca de Clips Guardados</div>
+      <button class="btn btn-tool" onclick="promptNewFolder()">➕ Nueva Carpeta</button>
     </div>
-    <div class="marks-list" id="marksList">
-      <div style="color:#777; font-size:13px; text-align:center; padding:10px;">Carga un video y guarda momentos clave para analizarlos rápidamente.</div>
+
+    <!-- PESTAÑAS DE CARPETAS -->
+    <div class="folder-tabs" id="folderTabs"></div>
+
+    <!-- REJILLA DE CLIPS DE LA CARPETA SELECCIONADA -->
+    <div class="clip-grid" id="clipGrid">
+      <div style="color:#777; font-size:13px; text-align:center; grid-column: 1/-1; padding:20px;">No hay clips guardados en esta carpeta.</div>
+    </div>
+  </div>
+
+  <!-- MODAL PARA GUARDAR CLIP EN CARPETA -->
+  <div class="modal-overlay" id="saveModal">
+    <div class="modal-box">
+      <h3>💾 Guardar Clip en Carpeta</h3>
+      <label>Seleccionar Carpeta:</label>
+      <select id="modalFolderSelect"></select>
+
+      <label>Comentario / Nota del Clip:</label>
+      <input type="text" id="modalClipNote" placeholder="Ej: Rotación 3-1, buena presión alto">
+
+      <div class="modal-buttons">
+        <button class="btn btn-tool" onclick="cancelClipSave()">Cancelar</button>
+        <button class="btn btn-play" onclick="confirmClipSave()">Guardar Clip</button>
+      </div>
     </div>
   </div>
 
@@ -149,11 +187,30 @@
     let currentColor = '#ffeb3b';
     let drawings = [];
     let currentPath = [];
-    let marks = [];
 
-    // Estado del recorte de clip
+    // Estado de grabado
     let isRecordingClip = false;
     let clipStartTime = 0;
+    let pendingClipBlob = null;
+
+    // LISTA DE CARPETAS CONFIGURADAS
+    let folders = ["⚽ Ataque", "🛡️ Defensa", "⚡ Transiciones", "🎯 ABP", "🧤 Arquero Jugador", "⚽ Goles", "🚨 Infracciones"];
+    let currentFolder = folders[0];
+
+    // BASE DE DATOS LOCAL (IndexedDB)
+    let db;
+    const request = indexedDB.open("FutsalVideoDB", 1);
+    request.onupgradeneeded = (e) => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("clips")) {
+        db.createObjectStore("clips", { keyPath: "id", autoIncrement: true });
+      }
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      renderFolders();
+      loadClipsForFolder(currentFolder);
+    };
 
     function resizeCanvas() {
       if (video.videoWidth) {
@@ -172,29 +229,20 @@
     function loadVideo(event) {
       const file = event.target.files[0];
       if (file) {
-        const url = URL.createObjectURL(file);
-        video.src = url;
+        video.src = URL.createObjectURL(file);
         video.play();
         btnPlay.innerText = '⏸️ Pausar';
         drawings = [];
-        marks = [];
-        renderMarks();
+        renderCanvas();
       }
     }
 
     function togglePlay() {
-      if (video.paused) {
-        video.play();
-        btnPlay.innerText = '⏸️ Pausar';
-      } else {
-        video.pause();
-        btnPlay.innerText = '▶️ Reproducir';
-      }
+      if (video.paused) { video.play(); btnPlay.innerText = '⏸️ Pausar'; }
+      else { video.pause(); btnPlay.innerText = '▶️ Reproducir'; }
     }
 
-    function setSpeed(speed) {
-      video.playbackRate = speed;
-    }
+    function setSpeed(speed) { video.playbackRate = speed; }
 
     function stepFrame(timeOffset) {
       video.pause();
@@ -215,16 +263,12 @@
       element.classList.add('active');
     }
 
-    function clearDrawings() {
-      drawings = [];
-      renderCanvas();
-    }
+    function clearDrawings() { drawings = []; renderCanvas(); }
 
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
       return {
         x: (clientX - rect.left) * (canvas.width / rect.width),
         y: (clientY - rect.top) * (canvas.height / rect.height)
@@ -247,142 +291,71 @@
       renderCanvas();
     }
 
-    function handleEnd() {
-      isDrawing = false;
-    }
+    function handleEnd() { isDrawing = false; }
 
     canvas.addEventListener('mousedown', handleStart);
     canvas.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleEnd);
-
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
     canvas.addEventListener('touchend', handleEnd);
 
     function renderCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       for (const path of drawings) {
         if (path.length < 2) continue;
         ctx.beginPath();
         ctx.strokeStyle = path[0].color || '#ffeb3b';
         ctx.lineWidth = Math.max(4, canvas.width / 240);
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         ctx.moveTo(path[0].x, path[0].y);
-        for (let i = 1; i < path.length; i++) {
-          ctx.lineTo(path[i].x, path[i].y);
-        }
+        for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
         ctx.stroke();
       }
     }
 
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-      const ms = Math.floor((seconds % 1) * 10);
-      return `${m}:${s}.${ms}`;
-    }
-
-    function addTimestampMark() {
-      if (!video.duration) return;
-      const time = video.currentTime;
-      const note = prompt('Ingresa un comentario táctico para este momento:', 'Analizar jugada');
-      if (note !== null) {
-        marks.push({ time, note: note || 'Sin nota' });
-        marks.sort((a, b) => a.time - b.time);
-        renderMarks();
-      }
-    }
-
-    function jumpToTime(seconds) {
-      video.currentTime = seconds;
-      video.pause();
-      btnPlay.innerText = '▶️ Reproducir';
-    }
-
-    function deleteMark(index) {
-      marks.splice(index, 1);
-      renderMarks();
-    }
-
-    function renderMarks() {
-      const list = document.getElementById('marksList');
-      document.getElementById('markCount').innerText = `${marks.length} momento(s)`;
-
-      if (marks.length === 0) {
-        list.innerHTML = `<div style="color:#777; font-size:13px; text-align:center; padding:10px;">Carga un video y guarda momentos clave para analizarlos rápidamente.</div>`;
-        return;
-      }
-
-      list.innerHTML = marks.map((m, i) => `
-        <div class="mark-item">
-          <div>
-            <span class="mark-time" onclick="jumpToTime(${m.time})">⏱️ ${formatTime(m.time)}</span>
-            <span style="margin-left: 8px;">${m.note}</span>
-          </div>
-          <button class="btn-delete-mark" onclick="deleteMark(${i})">❌</button>
-        </div>
-      `).join('');
-    }
-
     function downloadSnapshot() {
-      if (!video.videoWidth) {
-        alert('Carga un video primero.');
-        return;
-      }
-
+      if (!video.videoWidth) return alert('Carga un video primero.');
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = video.videoWidth;
-      tempCanvas.height = video.videoHeight;
+      tempCanvas.width = video.videoWidth; tempCanvas.height = video.videoHeight;
       const tempCtx = tempCanvas.getContext('2d');
-
       tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
       tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
-
       const link = document.createElement('a');
-      link.download = `analisis-futsal-${formatTime(video.currentTime).replace(':', '-')}.png`;
+      link.download = `foto-futsal.png`;
       link.href = tempCanvas.toDataURL('image/png');
       link.click();
     }
 
-    /* LÓGICA DE RECORTE DE VIDEO (-5 SEC ONS Y DESCARGA) */
+    /* RECORTE DE CLIP Y GUARDADO EN CARPETAS */
     function toggleClipRecording() {
-      if (!video.duration) {
-        alert('Carga un video primero.');
-        return;
-      }
-
+      if (!video.duration) return alert('Carga un video primero.');
       const btn = document.getElementById('btnClip');
 
       if (!isRecordingClip) {
-        // 1er Clic: Marca inicio 5 segundos atrás del tiempo actual
         clipStartTime = Math.max(0, video.currentTime - 5);
         isRecordingClip = true;
-
-        btn.innerText = '⏹️ Finalizar y Descargar Clip';
+        btn.innerText = '⏹️ Finalizar y Guardar Clip';
         btn.style.background = '#f44336';
-
         statusBanner.style.display = 'block';
-        statusBanner.innerText = `🔴 Recortando desde ${formatTime(clipStartTime)}... Hacé clic de nuevo para finalizar.`;
+        statusBanner.innerText = `🔴 Recortando desde -5s... Presioná de nuevo para finalizar.`;
       } else {
-        // 2do Clic: Marca fin y procesa la descarga
         const clipEndTime = video.currentTime;
-
         if (clipEndTime <= clipStartTime) {
-          alert('El tiempo de fin debe ser mayor al inicio.');
+          alert('El tiempo final debe ser mayor.');
           resetClipUI();
           return;
         }
 
         isRecordingClip = false;
-        btn.innerText = '⏳ Procesando video...';
+        btn.innerText = '⏳ Procesando clip...';
         btn.disabled = true;
-        statusBanner.innerText = `⏳ Generando clip de video (${formatTime(clipStartTime)} a ${formatTime(clipEndTime)})... Por favor esperá.`;
+        statusBanner.innerText = `⏳ Generando clip de video... Por favor esperá.`;
 
-        processAndDownloadClip(clipStartTime, clipEndTime, () => {
+        processClip(clipStartTime, clipEndTime, (blob) => {
+          pendingClipBlob = blob;
           resetClipUI();
+          openSaveModal();
         });
       }
     }
@@ -396,7 +369,7 @@
       statusBanner.style.display = 'none';
     }
 
-    function processAndDownloadClip(start, end, onComplete) {
+    function processClip(start, end, onDone) {
       const exportCanvas = document.createElement('canvas');
       exportCanvas.width = video.videoWidth || 1280;
       exportCanvas.height = video.videoHeight || 720;
@@ -404,9 +377,7 @@
 
       const stream = exportCanvas.captureStream(30);
       let options = { mimeType: 'video/webm;codecs=vp9' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        options = { mimeType: 'video/webm' };
-      }
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
 
       const recorder = new MediaRecorder(stream, options);
       const chunks = [];
@@ -414,38 +385,27 @@
       recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `clip-futsal-${formatTime(start).replace(':', '-')}_a_${formatTime(end).replace(':', '-')}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
-        if (onComplete) onComplete();
+        onDone(blob);
       };
 
       const originalTime = video.currentTime;
       const originalPaused = video.paused;
-      const originalMuted = video.muted;
-
       video.muted = true;
       video.currentTime = start;
 
       let animId;
-
       function renderFrame() {
         if (video.currentTime >= end || video.ended) {
           recorder.stop();
           cancelAnimationFrame(animId);
           video.pause();
           video.currentTime = originalTime;
-          video.muted = originalMuted;
+          video.muted = false;
           if (!originalPaused) video.play();
           return;
         }
-
         exportCtx.drawImage(video, 0, 0, exportCanvas.width, exportCanvas.height);
         exportCtx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
-
         animId = requestAnimationFrame(renderFrame);
       }
 
@@ -455,6 +415,128 @@
         video.play();
         renderFrame();
       };
+    }
+
+    /* MODAL Y GUARDADO EN INDEXEDDB */
+    function openSaveModal() {
+      const select = document.getElementById('modalFolderSelect');
+      select.innerHTML = folders.map(f => `<option value="${f}">${f}</option>`).join('');
+      document.getElementById('modalClipNote').value = '';
+      document.getElementById('saveModal').style.display = 'flex';
+    }
+
+    function cancelClipSave() {
+      pendingClipBlob = null;
+      document.getElementById('saveModal').style.display = 'none';
+    }
+
+    function confirmClipSave() {
+      if (!pendingClipBlob) return;
+      const folder = document.getElementById('modalFolderSelect').value;
+      const note = document.getElementById('modalClipNote').value || 'Sin comentario';
+
+      const transaction = db.transaction(["clips"], "readwrite");
+      const store = transaction.objectStore("clips");
+      store.add({
+        folder: folder,
+        note: note,
+        blob: pendingClipBlob,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      transaction.oncomplete = () => {
+        cancelClipSave();
+        currentFolder = folder;
+        renderFolders();
+        loadClipsForFolder(currentFolder);
+      };
+    }
+
+    /* GESTIÓN DE CARPETAS Y BIBLIOTECA */
+    function promptNewFolder() {
+      const name = prompt('Nombre de la nueva carpeta:');
+      if (name && !folders.includes(name)) {
+        folders.push(name);
+        currentFolder = name;
+        renderFolders();
+        loadClipsForFolder(currentFolder);
+      }
+    }
+
+    function renderFolders() {
+      const tabs = document.getElementById('folderTabs');
+      tabs.innerHTML = folders.map(f => `
+        <button class="folder-btn ${f === currentFolder ? 'active' : ''}" onclick="selectFolder('${f}')">
+          📁 ${f}
+        </button>
+      `).join('');
+    }
+
+    function selectFolder(folderName) {
+      currentFolder = folderName;
+      renderFolders();
+      loadClipsForFolder(currentFolder);
+    }
+
+    function loadClipsForFolder(folderName) {
+      if (!db) return;
+      const grid = document.getElementById('clipGrid');
+      grid.innerHTML = '';
+
+      const transaction = db.transaction(["clips"], "readonly");
+      const store = transaction.objectStore("clips");
+      const request = store.openCursor();
+      let count = 0;
+
+      request.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          if (cursor.value.folder === folderName) {
+            count++;
+            const item = cursor.value;
+            const clipUrl = URL.createObjectURL(item.blob);
+
+            const card = document.createElement('div');
+            card.className = 'clip-card';
+            card.innerHTML = `
+              <video src="${clipUrl}" controls preload="metadata"></video>
+              <div class="clip-info">
+                <strong>📝 ${item.note}</strong><br>
+                <span style="color:#888;">🕒 ${item.date}</span>
+              </div>
+              <div class="clip-actions">
+                <button class="clip-btn clip-btn-dl" onclick="downloadClipFromDb(${item.id})">💾 Descargar</button>
+                <button class="clip-btn clip-btn-del" onclick="deleteClipFromDb(${item.id})">🗑️ Borrar</button>
+              </div>
+            `;
+            grid.appendChild(card);
+          }
+          cursor.continue();
+        } else if (count === 0) {
+          grid.innerHTML = `<div style="color:#777; font-size:13px; text-align:center; grid-column: 1/-1; padding:20px;">No hay clips guardados en "${folderName}".</div>`;
+        }
+      };
+    }
+
+    function downloadClipFromDb(id) {
+      const tx = db.transaction(["clips"], "readonly");
+      tx.objectStore("clips").get(id).onsuccess = (e) => {
+        const item = e.target.result;
+        const url = URL.createObjectURL(item.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `futsal-${item.folder.replace(/[^a-zA-Z0-9]/g, '')}-${item.id}.webm`;
+        a.click();
+      };
+    }
+
+    function deleteClipFromDb(id) {
+      if (confirm('¿Borrar este clip de la carpeta?')) {
+        const tx = db.transaction(["clips"], "readwrite");
+        tx.objectStore("clips").delete(id).onsuccess = () => {
+          loadClipsForFolder(currentFolder);
+        };
+      }
     }
   </script>
 </body>
