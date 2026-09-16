@@ -486,8 +486,11 @@
       render();
     }
 
-    function saveFrame() {
-      const frame = pieces.map(p => ({ id: p.id, x: p.x, y: p.y, angle: p.angle || 0 }));
+   function saveFrame() {
+      const frame = {
+        pieces: pieces.map(p => ({ id: p.id, x: p.x, y: p.y, angle: p.angle || 0 })),
+        drawings: JSON.parse(JSON.stringify(drawings))
+      };
       steps.push(frame);
       document.getElementById('stepCounter').innerText = `Pasos: ${steps.length}`;
     }
@@ -506,10 +509,18 @@
       isPlaying = true;
       selectedPiece = null;
 
-      steps[0].forEach(s => {
+      const firstFrame = steps[0];
+      const firstPieces = firstFrame.pieces || firstFrame;
+
+      firstPieces.forEach(s => {
         const p = pieces.find(item => item.id === s.id);
         if (p) { p.x = s.x; p.y = s.y; p.angle = s.angle; }
       });
+
+      if (firstFrame.drawings !== undefined) {
+        drawings = JSON.parse(JSON.stringify(firstFrame.drawings));
+      }
+
       render();
 
       if (steps.length === 1) {
@@ -531,21 +542,27 @@
         const endFrame = steps[stepIdx + 1];
         let startTime = null;
 
+        if (startFrame.drawings !== undefined) {
+          drawings = JSON.parse(JSON.stringify(startFrame.drawings));
+        }
+
         function stepAnimation(timestamp) {
           if (!startTime) startTime = timestamp;
           const progress = Math.min((timestamp - startTime) / durationPerStep, 1);
           
           const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
 
+          const startPieces = startFrame.pieces || startFrame;
+          const endPieces = endFrame.pieces || endFrame;
+
           for (let i = 0; i < pieces.length; i++) {
             const p = pieces[i];
-            const startP = startFrame.find(s => s.id === p.id);
-            const endP = endFrame.find(s => s.id === p.id);
+            const startP = startPieces.find(s => s.id === p.id);
+            const endP = endPieces.find(s => s.id === p.id);
             if (startP && endP) {
               p.x = startP.x + (endP.x - startP.x) * ease;
               p.y = startP.y + (endP.y - startP.y) * ease;
 
-              // Interpolación de ángulo por el camino más corto
               let startA = startP.angle || 0;
               let endA = endP.angle || 0;
               let diffA = endA - startA;
@@ -561,6 +578,10 @@
           if (progress < 1) {
             requestAnimationFrame(stepAnimation);
           } else {
+            if (endFrame.drawings !== undefined) {
+              drawings = JSON.parse(JSON.stringify(endFrame.drawings));
+              render();
+            }
             setTimeout(() => runNextStep(stepIdx + 1), 250);
           }
         }
@@ -570,16 +591,6 @@
 
       setTimeout(() => runNextStep(0), 300);
     }
-
-    function playAnimation() {
-      if (isPlaying) return;
-      if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos antes de reproducir.');
-        return;
-      }
-      animateSteps();
-    }
-
     function downloadPhoto() {
       const tempSelected = selectedPiece;
       selectedPiece = null;
