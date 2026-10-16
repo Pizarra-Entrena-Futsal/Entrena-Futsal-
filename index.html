@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrena Futsal Staff Hub</title>
-    <!-- Tailwind CSS CDN para estilos rápidos y modernos -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -16,7 +15,7 @@
                         brand: {
                             dark: '#0f172a',
                             panel: '#1e293b',
-                            accent: '#10b981', // Verde Futsal
+                            accent: '#10b981',
                             blue: '#3b82f6',
                             alert: '#ef4444'
                         }
@@ -38,14 +37,14 @@
             </div>
         </div>
 
-        <!-- Indicador de Partido Próximo -->
+        <!-- Indicador de Próximo Partido -->
         <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 text-sm">
             <div class="flex items-center space-x-2 text-amber-400 font-semibold">
                 <i class="fa-solid fa-trophy"></i>
-                <span>MD-2 vs. Barcelona FS</span>
+                <span>MD-2 vs. Rival Directo</span>
             </div>
             <span class="text-slate-500">|</span>
-            <span class="text-emerald-400 text-xs font-mono"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-1"></i> Staff Conectado (5)</span>
+            <span class="text-emerald-400 text-xs font-mono"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-1"></i> Staff Conectado</span>
         </div>
 
         <div class="flex items-center space-x-3">
@@ -59,10 +58,10 @@
     <!-- CUERPO PRINCIPAL -->
     <div class="flex flex-1 overflow-hidden">
 
-        <!-- BARRA LATERAL - NAVEGACIÓN COMPLETA -->
+        <!-- BARRA LATERAL -->
         <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
             <div class="p-4 space-y-6">
-                <!-- SECCIÓN HERRAMIENTAS EXISTENTES -->
+                <!-- HERRAMIENTAS TÁCTICAS EXISTENTES -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Herramientas Tácticas</h3>
                     <nav class="space-y-1">
@@ -70,7 +69,7 @@
                             <i class="fa-solid fa-chart-pie w-5"></i>
                             <span>Panel Principal</span>
                         </button>
-                        <a href="index.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <a href="pizarra.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-chalkboard w-5 text-blue-400"></i>
                             <span>Pizarra Online</span>
                         </a>
@@ -93,7 +92,7 @@
                     </nav>
                 </div>
 
-                <!-- SECCIÓN NUEVOS MÓDULOS DEL HUB -->
+                <!-- NUEVOS MÓDULOS DE GESTIÓN DE STAFF -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Gestión de Cuerpos Técnicos</h3>
                     <nav class="space-y-1">
@@ -120,10 +119,10 @@
             <div class="p-4 border-t border-slate-800">
                 <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs">DT</div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs text-white">DT</div>
                         <div class="text-xs">
-                            <p class="font-bold text-white">Coach Principal</p>
-                            <p class="text-slate-400">Admin Staff</p>
+                            <p class="font-bold text-white">Director Técnico</p>
+                            <p class="text-slate-400">@entrenafutsal</p>
                         </div>
                     </div>
                     <i class="fa-solid fa-shield-halved text-emerald-400 text-sm"></i>
@@ -131,14 +130,14 @@
             </div>
         </aside>
 
-        <!-- ÁREA DE CONTENIDO DINÁMICO -->
+        <!-- ÁREA DE CONTENIDO -->
         <main class="flex-1 overflow-y-auto p-6 bg-slate-950">
 
-            <!-- VISTA 1: DASHBOARD GENERAL -->
+            <!-- TAB 1: DASHBOARD PRINCIPAL -->
             <div id="tab-dashboard" class="tab-content space-y-6">
-                <!-- ACCESOS DIRECTOS RÁPIDOS -->
+                <!-- ACCESOS RÁPIDOS A TUS HERRAMIENTAS -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <a href="index.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition group text-center">
+                    <a href="pizarra.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition group text-center">
                         <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Pizarra Online</span>
                     </a>
@@ -160,7 +159,7 @@
                     </a>
                 </div>
 
-                <!-- CARDS DE METRICAS DEL STAFF -->
+                <!-- MÉTRICAS Y CARDS DEL STAFF -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
@@ -173,11 +172,11 @@
 
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Promedio Carga RPE (Borg)</span>
+                            <span>Promedio Carga RPE</span>
                             <i class="fa-solid fa-gauge-high text-amber-400"></i>
                         </div>
                         <p class="text-3xl font-extrabold text-amber-400">7.2 <span class="text-xs text-slate-400">/ 10</span></p>
-                        <p class="text-xs text-slate-400 mt-2">Sesión MD-2 Alta Intensidad</p>
+                        <p class="text-xs text-slate-400 mt-2">Microciclo Competitivo</p>
                     </div>
 
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
@@ -191,11 +190,11 @@
 
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Ventas de Charlas</span>
+                            <span>Ingresos Charlas</span>
                             <i class="fa-solid fa-dollar-sign text-indigo-400"></i>
                         </div>
                         <p class="text-3xl font-extrabold text-indigo-400">$1,450 <span class="text-xs text-slate-400">USD</span></p>
-                        <p class="text-xs text-emerald-400 mt-2">+18 inscriptos este mes</p>
+                        <p class="text-xs text-emerald-400 mt-2">Academia @entrenafutsal</p>
                     </div>
                 </div>
 
@@ -209,38 +208,38 @@
                         <div class="space-y-3">
                             <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
                                 <span class="text-xs font-bold bg-amber-950 text-amber-400 px-2 py-1 rounded">ARQ</span>
-                                <span class="font-semibold text-sm">1. Nico Sarmiento</span>
+                                <span class="font-semibold text-sm text-white">1. Arquero Principal</span>
                                 <span class="text-xs text-emerald-400">100% Apto</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
                                 <span class="text-xs font-bold bg-blue-950 text-blue-400 px-2 py-1 rounded">CIE</span>
-                                <span class="font-semibold text-sm">3. Pablo Taborda</span>
+                                <span class="font-semibold text-sm text-white">3. Cierre Central</span>
                                 <span class="text-xs text-emerald-400">100% Apto</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
                                 <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-sm">11. Alan Brandi</span>
+                                <span class="font-semibold text-sm text-white">8. Ala Izquierdo</span>
                                 <span class="text-xs text-emerald-400">100% Apto</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
                                 <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-sm">8. Maxi Rescia</span>
+                                <span class="font-semibold text-sm text-white">10. Ala Derecho</span>
                                 <span class="text-xs text-emerald-400">100% Apto</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
                                 <span class="text-xs font-bold bg-rose-950 text-rose-400 px-2 py-1 rounded">PIV</span>
-                                <span class="font-semibold text-sm">9. Kiki Vaporaki</span>
+                                <span class="font-semibold text-sm text-white">9. Pívot</span>
                                 <span class="text-xs text-emerald-400">100% Apto</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- RESUMEN TAREAS DE STAFF (KANBAN RAPIDO) -->
+                    <!-- RESUMEN DE TAREAS KANBAN -->
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
                         <div>
                             <h3 class="font-bold text-white mb-4 flex items-center justify-between">
-                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Pendientes Prioritarios Staff</span>
-                                <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero Completo</button>
+                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Pendientes del Staff</span>
+                                <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero</button>
                             </h3>
                             <div class="space-y-3">
                                 <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-rose-500 flex justify-between items-center">
@@ -260,162 +259,101 @@
                             </div>
                         </div>
                         <button onclick="showTab('kanban')" class="mt-4 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-bold rounded-lg border border-slate-700 transition">
-                            + Asignar Nueva Tarea al Staff
+                            + Gestionar Tablero Kanban
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- VISTA 2: CONTROL DE STAFF (KANBAN) -->
+            <!-- TAB 2: CONTROL DE STAFF (KANBAN) -->
             <div id="tab-kanban" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-bold text-white">Tablero de Control del Cuerpo Técnico</h2>
-                        <p class="text-xs text-slate-400">Coordinación de trabajos pre, durante y post-partido</p>
-                    </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">Tablero Kanban - Cuerpo Técnico</h2>
+                    <p class="text-xs text-slate-400">Coordinación de áreas: DT, Preparación Física, Kinesiología y Videoanálisis</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <!-- COLUMNA 1: PENDIENTES -->
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <h3 class="font-bold text-slate-300 text-sm mb-4 flex items-center justify-between">
-                            <span>📋 Pendientes</span>
-                            <span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-xs">2</span>
-                        </h3>
-                        <div class="space-y-3 flex-1">
-                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="font-bold text-purple-400">Videoanálisis</span>
-                                    <span class="text-slate-400">MD-2</span>
-                                </div>
-                                <p class="text-sm font-semibold text-white">Cortes de pelota parada 5v4</p>
-                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> Analista</p>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="font-bold text-slate-300 text-sm mb-4">📋 Pendientes</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700">
+                                <span class="text-xs font-bold text-purple-400">Video</span>
+                                <p class="text-sm font-semibold text-white mt-1">Cortes de pelota parada 5v4</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- COLUMNA 2: EN PROCESO -->
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <h3 class="font-bold text-blue-400 text-sm mb-4 flex items-center justify-between">
-                            <span>⚙️ En Proceso</span>
-                            <span class="bg-blue-950 text-blue-300 px-2 py-0.5 rounded text-xs">2</span>
-                        </h3>
-                        <div class="space-y-3 flex-1">
-                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-blue-500">
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="font-bold text-emerald-400">Preparación Física</span>
-                                    <span class="text-slate-400">Hoy</span>
-                                </div>
-                                <p class="text-sm font-semibold text-white">Monitoreo de recuperación post-entreno</p>
-                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> PF</p>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="font-bold text-blue-400 text-sm mb-4">⚙️ En Proceso</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-blue-500">
+                                <span class="text-xs font-bold text-emerald-400">Físico</span>
+                                <p class="text-sm font-semibold text-white mt-1">Evaluación de fatiga RPE post-entreno</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- COLUMNA 3: EN REVISIÓN DT -->
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <h3 class="font-bold text-amber-400 text-sm mb-4 flex items-center justify-between">
-                            <span>🔍 En Revisión DT</span>
-                            <span class="bg-amber-950 text-amber-300 px-2 py-0.5 rounded text-xs">1</span>
-                        </h3>
-                        <div class="space-y-3 flex-1">
-                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-amber-500">
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="font-bold text-amber-400">Estrategia</span>
-                                    <span class="text-slate-400">Aprobación</span>
-                                </div>
-                                <p class="text-sm font-semibold text-white">Plan de juego para saques de banda</p>
-                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> Asistente Técnico</p>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="font-bold text-amber-400 text-sm mb-4">🔍 En Revisión DT</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-amber-500">
+                                <span class="text-xs font-bold text-amber-400">Táctica</span>
+                                <p class="text-sm font-semibold text-white mt-1">Ajuste de saques de banda ofensivos</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- COLUMNA 4: LISTO PARA CAMPO -->
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <h3 class="font-bold text-emerald-400 text-sm mb-4 flex items-center justify-between">
-                            <span>✅ Completado</span>
-                            <span class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded text-xs">3</span>
-                        </h3>
-                        <div class="space-y-3 flex-1">
-                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-emerald-500 opacity-80">
-                                <p class="text-sm font-semibold text-white">Planilla de asistencia impresa</p>
-                                <p class="text-xs text-emerald-400 mt-2"><i class="fa-solid fa-check"></i> Listo en utilería</p>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="font-bold text-emerald-400 text-sm mb-4">✅ Completado</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-emerald-500">
+                                <span class="text-xs font-bold text-emerald-400">Administrativo</span>
+                                <p class="text-sm font-semibold text-white mt-1">Planillas de partido impresas</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- VISTA 3: ACADEMIA / CHARLAS ARANCELADAS -->
+            <!-- TAB 3: ACADEMIA Y CHARLAS -->
             <div id="tab-academia" class="tab-content hidden space-y-6">
                 <div class="bg-gradient-to-r from-indigo-900 to-slate-900 border border-indigo-700 p-6 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
-                        <span class="bg-indigo-500 text-white font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider">Módulo Comercial</span>
-                        <h2 class="text-2xl font-black text-white mt-1">Academia Entrena Futsal</h2>
-                        <p class="text-sm text-slate-300 max-w-xl">Publica clínicas, masterclasses y charlas tácticas para la comunidad. Monetiza el conocimiento de tu cuerpo técnico.</p>
+                        <span class="bg-indigo-500 text-white font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider">Monetización @entrenafutsal</span>
+                        <h2 class="text-2xl font-black text-white mt-1">Plataforma de Charlas y Capacitaciones</h2>
+                        <p class="text-sm text-slate-300">Publica masterclasses tácticas y capacitaciones aranceladas para la comunidad de futsal.</p>
                     </div>
-                    <button class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-5 py-3 rounded-xl transition text-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-plus-circle"></i>
-                        <span>Publicar Nueva Charla</span>
-                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-                        <div class="bg-slate-800 h-40 flex items-center justify-center relative">
-                            <i class="fa-solid fa-chalkboard-user text-5xl text-slate-600"></i>
-                            <span class="absolute top-3 right-3 bg-emerald-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">$29.99 USD</span>
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="font-bold text-white text-lg">Ataque Posicional 4-0 en Futsal Moderno</h3>
-                                <p class="text-xs text-slate-400 mt-2">Principios de rotación, fijaciones y momentos de aceleración ofensiva.</p>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-                                <span><i class="fa-solid fa-users text-indigo-400 mr-1"></i> 42 Alumnos</span>
-                                <span class="text-emerald-400 font-bold">$1,259.58 Recaudado</span>
-                            </div>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                        <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2 py-1 rounded">$29.99 USD</span>
+                        <h3 class="font-bold text-white text-lg mt-3">Ataque Posicional 4-0 en Futsal Moderno</h3>
+                        <p class="text-xs text-slate-400 mt-2">Rotaciones, fijaciones tácticas y patrones de aceleración ofensiva.</p>
                     </div>
-
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-                        <div class="bg-slate-800 h-40 flex items-center justify-center relative">
-                            <i class="fa-solid fa-shield-cat text-5xl text-slate-600"></i>
-                            <span class="absolute top-3 right-3 bg-emerald-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">$19.99 USD</span>
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="font-bold text-white text-lg">Defensa de Portero Jugador 5v4</h3>
-                                <p class="text-xs text-slate-400 mt-2">Ajustes en rombo y cuadrado defensivo según la velocidad de circulación.</p>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-                                <span><i class="fa-solid fa-users text-indigo-400 mr-1"></i> 28 Alumnos</span>
-                                <span class="text-emerald-400 font-bold">$559.72 Recaudado</span>
-                            </div>
-                        </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                        <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2 py-1 rounded">$19.99 USD</span>
+                        <h3 class="font-bold text-white text-lg mt-3">Defensa de Portero Jugador (5v4)</h3>
+                        <p class="text-xs text-slate-400 mt-2">Estructuras defensivas en rombo y cuadrado con basculaciones rápidas.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- VISTA MODALES / MÓDULOS SECUNDARIOS (PLANTEL/CALENDARIO STUBS) -->
-            <div id="tab-plantel" class="tab-content hidden space-y-4">
-                <h2 class="text-xl font-bold text-white">Monitoreo de Plantel y RPE Borg</h2>
-                <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 text-sm">
-                    Módulo de carga diaria de cansancio subjetivo RPE y ficha kinesiológica de los 14 jugadores convocados.
-                </div>
+            <!-- TABS DE APOYO -->
+            <div id="tab-plantel" class="tab-content hidden p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-300">
+                <h2 class="text-lg font-bold text-white mb-2">Control de Plantel y RPE</h2>
+                <p class="text-xs text-slate-400">Seguimiento físico y fisiológico de los 14 jugadores.</p>
             </div>
 
-            <div id="tab-calendario" class="tab-content hidden space-y-4">
-                <h2 class="text-xl font-bold text-white">Planificación de Microciclos y Torneos</h2>
-                <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 text-sm">
-                    Calendario de fixtures, citaciones oficiales y scouting de rivales.
-                </div>
+            <div id="tab-calendario" class="tab-content hidden p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-300">
+                <h2 class="text-lg font-bold text-white mb-2">Planificación y Torneos</h2>
+                <p class="text-xs text-slate-400">Calendarios de competencia y convocatorias.</p>
             </div>
 
         </main>
     </div>
 
-    <!-- SCRIPT DE NAVEGACIÓN -->
+    <!-- SCRIPT DE INTERACTIVIDAD DE PESTAÑAS -->
     <script>
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => {
