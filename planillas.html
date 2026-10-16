@@ -1,105 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recursos & Planillas - @entrenafutsal</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #121212; color: #fff; padding: 16px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-
-    header { width: 100%; max-width: 960px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 20px; }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #00e676; }
-    .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text span { color: #00e676; font-weight: bold; font-size: 14px; }
-    
-    .nav-links { display: flex; gap: 8px; }
-    .nav-link { background: #333; color: #fff; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; }
-    .nav-link:hover { background: #444; }
-
-    .main-container { width: 100%; max-width: 960px; }
-    .section-title { font-size: 20px; color: #00e676; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-
-    .grid-planillas { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .card { background: #1e1e1e; border: 1px solid #333; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-    .card:hover { transform: translateY(-4px); border-color: #00e676; }
-
-    .card-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; width: fit-content; margin-bottom: 8px; }
-    .tag-free { background: rgba(0,230,118,0.2); color: #00e676; border: 1px solid #00e676; }
-    .tag-pro { background: rgba(255,152,0,0.2); color: #ff9800; border: 1px solid #ff9800; }
-
-    .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #fff; }
-    .card-desc { font-size: 12px; color: #aaa; margin-bottom: 14px; line-height: 1.4; }
-    .card-price { font-size: 18px; font-weight: 900; color: #00e676; margin-bottom: 12px; }
-
-    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
-    .btn-free { background: #00e676; color: #121212; }
-    .btn-pay { background: #ff9800; color: #121212; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planillas Descargables - Entrena Futsal</title>
+    <!-- Tailwind CSS & FontAwesome CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            panel: '#1e293b',
+                            accent: '#10b981',
+                            red: '#f43f5e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen p-4 md:p-8">
 
-  <header>
-    <div class="header-info">
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
-      <div class="header-text">
-        <strong>Recursos & Planillas</strong>
-        <span>@entrenafutsal</span>
-      </div>
+    <!-- ENCABEZADO SECCIÓN -->
+    <div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
+        <div>
+            <div class="flex items-center space-x-2 text-rose-400 mb-1">
+                <i class="fa-solid fa-file-pdf text-xl"></i>
+                <span class="text-xs font-bold uppercase tracking-wider">Recursos Gratuitos</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white">Planillas de Trabajo al Papel</h1>
+            <p class="text-sm text-slate-400 mt-1">Imprime y lleva el control físico de tus sesiones, partidos y rendimiento de plantel.</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs text-slate-400">
+            <i class="fa-brands fa-instagram text-pink-400 mr-1"></i> @entrenafutsal
+        </div>
     </div>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link">📋 Pizarra</a>
-      <a href="analisis.html" class="nav-link">🎥 Video</a>
-      <a href="stats.html" class="nav-link">📊 Stats</a>
+
+    <!-- GRID DE PLANILLAS -->
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. PLANILLA DE SESIÓN -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-emerald-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-800/50">Sesión Diaria</span>
+                    <i class="fa-solid fa-clipboard-list text-2xl text-slate-600 group-hover:text-emerald-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Planilla de Sesión de Entrenamiento</h3>
+                <p class="text-xs text-slate-400">Diseñada con gráfico de cancha completa para 2 ejercicios, consignas, variantes y control de RPE.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Planilla%20sesion.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Planilla%20sesion.pdf" download class="py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 2. SESIÓN COMPLETA -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-emerald-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-800/50">Planificación</span>
+                    <i class="fa-solid fa-layer-group text-2xl text-slate-600 group-hover:text-emerald-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Planilla de Sesión Completa</h3>
+                <p class="text-xs text-slate-400">Estructura para entrada en calor, 3 bloques principales de trabajo, vuelta a la calma y feedback.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Sesion%20completa.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Sesion%20completa.pdf" download class="py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 3. PLANILLA DE MICROCICLO -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-blue-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-blue-950 text-blue-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-blue-800/50">Estrategia</span>
+                    <i class="fa-solid fa-calendar-week text-2xl text-slate-600 group-hover:text-blue-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Planilla de Microciclo Semanal</h3>
+                <p class="text-xs text-slate-400">Matriz táctica para secuenciación de objetivos (Ataque, Defensa, Transiciones, ABP) de Lunes a Domingo.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Ciclos.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Ciclos.pdf" download class="py-2 px-3 bg-blue-600 hover:bg-blue-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 4. PLANILLA DE PARTIDO -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-amber-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-amber-950 text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-amber-800/50">Competencia</span>
+                    <i class="fa-solid fa-trophy text-2xl text-slate-600 group-hover:text-amber-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Planilla de Partido</h3>
+                <p class="text-xs text-slate-400">Secciones pre-partido, bitácora de 1er/2do tiempo y balance post-partido (aspectos positivos y a mejorar).</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Planilla%20partido.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Planilla%20partido.pdf" download class="py-2 px-3 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 5. ESTADÍSTICAS DE PARTIDO -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-amber-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-amber-950 text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-amber-800/50">Stats</span>
+                    <i class="fa-solid fa-chart-bar text-2xl text-slate-600 group-hover:text-amber-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Estadísticas de Partido</h3>
+                <p class="text-xs text-slate-400">Control comparativo Equipo vs Rival: goles, remates al arco, atajadas, corners, faltas y recuperaciones.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Estadisticas%20de%20partido.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Estadisticas%20de%20partido.pdf" download class="py-2 px-3 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 6. ENTRENAMIENTO DE ARQUEROS -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-purple-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-purple-950 text-purple-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-purple-800/50">Específico</span>
+                    <i class="fa-solid fa-hand-paper text-2xl text-slate-600 group-hover:text-purple-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Entrenamiento de Arqueros</h3>
+                <p class="text-xs text-slate-400">Esquema con área de futsal y vista frontal del arco para bloques de trabajo técnico y despejes.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Entrenamiento%20de%20arqueros.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Entrenamiento%20de%20arqueros.pdf" download class="py-2 px-3 bg-purple-600 hover:bg-purple-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 7. RENDIMIENTO INDIVIDUAL -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-cyan-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-cyan-950 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-800/50">Jugadores</span>
+                    <i class="fa-solid fa-id-card text-2xl text-slate-600 group-hover:text-cyan-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Evaluación de Rendimiento Individual</h3>
+                <p class="text-xs text-slate-400">Ficha de valoración para Técnica, Táctica, Física y Actitud con gráficos de radar de desarrollo.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Planilla%20rendimiento%20individual.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Planilla%20rendimiento%20individual.pdf" download class="py-2 px-3 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 8. ASISTENCIA -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-500 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-slate-800 text-slate-300 text-[10px] font-bold px-2.5 py-1 rounded-md border border-slate-700">Control</span>
+                    <i class="fa-solid fa-users-check text-2xl text-slate-600 group-hover:text-slate-300 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Planilla de Asistencia</h3>
+                <p class="text-xs text-slate-400">Planilla mensual para 20 jugadores, con nomenclatura P/A/L/J/T y resumen porcentual de grupo.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Asistencia.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Asistencia.pdf" download class="py-2 px-3 bg-slate-600 hover:bg-slate-500 text-white font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <!-- 9. REGISTRO DE LESIONES -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-rose-500/50 transition flex flex-col justify-between group">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-rose-950 text-rose-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-rose-800/50">Sanidad</span>
+                    <i class="fa-solid fa-notes-medical text-2xl text-slate-600 group-hover:text-rose-400 transition"></i>
+                </div>
+                <h3 class="font-bold text-white text-base mb-1">Registro de Lesiones del Plantel</h3>
+                <p class="text-xs text-slate-400">Seguimiento kinesiológico: zonas afectadas, grado de severidad, estimación de retorno y alta médica.</p>
+            </div>
+            <div class="mt-6 flex space-x-2">
+                <a href="Registro%20lesiones.pdf" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg text-center transition">Ver PDF</a>
+                <a href="Registro%20lesiones.pdf" download class="py-2 px-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs transition"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
     </div>
-  </header>
-
-  <div class="main-container">
-    <div class="section-title">📁 Descargas Disponibles para Cuerpo Técnico</div>
-
-    <div class="grid-planillas">
-      <!-- PLANILLA GRATIS -->
-      <div class="card">
-        <div>
-          <span class="card-tag tag-free">GRATIS</span>
-          <div class="card-title">Planilla de Control de Partido</div>
-          <div class="card-desc">Formato PDF A4 listo para imprimir. Control de quintetos, faltas acumuladas, tiempo muerto y notas tácticas.</div>
-        </div>
-        <div>
-          <div class="card-price">GRATIS</div>
-          <a href="planillas/planilla-partido.pdf" download class="btn-action btn-free">📥 Descargar PDF</a>
-        </div>
-      </div>
-
-      <!-- PLANILLA PAGA 1 -->
-      <div class="card">
-        <div>
-          <span class="card-tag tag-pro">PRO EXCEL</span>
-          <div class="card-title">Planificador de Microciclo</div>
-          <div class="card-desc">Excel interactivo con cálculo automático de minutos de entrenamiento, cargas y distribución semanal.</div>
-        </div>
-        <div>
-          <div class="card-price">$4.500 ARS</div>
-          <!-- Reemplazar el href con tu Link de Mercado Pago o DropyFile -->
-          <a href="https://mpago.la/tu-link-de-pago" target="_blank" class="btn-action btn-pay">💳 Comprar y Descargar</a>
-        </div>
-      </div>
-
-      <!-- PLANILLA PAGA 2 -->
-      <div class="card">
-        <div>
-          <span class="card-tag tag-pro">PACK COMPLETO</span>
-          <div class="card-title">Kit Completo del Entrenador</div>
-          <div class="card-desc">Incluye Scouting Rival, Control de Cargas RPE, Microciclo y 5 modelos de informes de partido.</div>
-        </div>
-        <div>
-          <div class="card-price">$12.000 ARS</div>
-          <a href="https://mpago.la/tu-link-pack" target="_blank" class="btn-action btn-pay">⚡ Obtener Pack Completo</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </body>
 </html>
