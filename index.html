@@ -1,722 +1,428 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pizarra Táctica Futsal - @entrenafutsal</title>
-  <!-- Reparador de metadatos de duración para videos WebM -->
-  <script src="https://cdn.jsdelivr.net/npm/fix-webm-duration@1.0.6/fix-webm-duration.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
-    
-    /* ENCABEZADO */
-    header { width: 100%; max-width: 900px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
-    .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
-    .stats-link { background: #ff9800; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
-    .stats-link:hover { background: #e68a00; }
-
-    /* CONTROLES Y HERRAMIENTAS */
-    .controls-panel { width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; }
-    .panel-label { font-size: 13px; font-weight: bold; color: #00e676; margin-right: 4px; }
-    .btn { padding: 9px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-tool { background: #333; }
-    .btn-tool.active { background: #00e676; color: #121212; }
-    .btn-anim { background: #9c27b0; }
-    .btn-play { background: #e91e63; }
-    .btn-video { background: #ff5722; }
-    .btn-clear { background: #f44336; }
-    .btn-download { background: #0288d1; }
-
-    .anim-counter { background: #262626; color: #00e676; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: flex; align-items: center; border: 1px solid #333; }
-
-    /* CONTENEDOR DE LA CANCHA HD */
-    .board-container { width: 100%; max-width: 900px; background: #1e1e1e; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
-    canvas { width: 100%; height: auto; aspect-ratio: 1200 / 720; display: block; background: #2e7d32; border-radius: 8px; touch-action: none; cursor: crosshair; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrena Futsal Staff Hub</title>
+    <!-- Tailwind CSS CDN para estilos rápidos y modernos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            panel: '#1e293b',
+                            accent: '#10b981', // Verde Futsal
+                            blue: '#3b82f6',
+                            alert: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
-  <header>
-    <div class="header-info">
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
-      <div class="header-text">
-        <strong>Pizarra Táctica Futsal</strong>
-        <span class="handle">@entrenafutsal</span>
-      </div>
+    <!-- NAV BAR SUPERIOR -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <img src="logo.png.jpg" alt="Entrena Futsal Logo" class="h-10 w-10 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
+            <div>
+                <h1 class="font-bold text-lg text-white leading-none">ENTRENA FUTSAL <span class="text-emerald-400 text-xs px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 ml-2">STAFF HUB</span></h1>
+                <p class="text-xs text-slate-400 mt-1">Plataforma Integral de Gestión y Rendimiento</p>
+            </div>
+        </div>
+
+        <!-- Indicador de Partido Próximo -->
+        <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 text-sm">
+            <div class="flex items-center space-x-2 text-amber-400 font-semibold">
+                <i class="fa-solid fa-trophy"></i>
+                <span>MD-2 vs. Barcelona FS</span>
+            </div>
+            <span class="text-slate-500">|</span>
+            <span class="text-emerald-400 text-xs font-mono"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-1"></i> Staff Conectado (5)</span>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="https://instagram.com/entrenafutsal" target="_blank" class="text-slate-400 hover:text-pink-400 transition text-sm flex items-center space-x-1">
+                <i class="fa-brands fa-instagram text-base"></i>
+                <span class="hidden sm:inline">@entrenafutsal</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL -->
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- BARRA LATERAL - NAVEGACIÓN COMPLETA -->
+        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+            <div class="p-4 space-y-6">
+                <!-- SECCIÓN HERRAMIENTAS EXISTENTES -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Herramientas Tácticas</h3>
+                    <nav class="space-y-1">
+                        <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800 border-l-4 border-emerald-500">
+                            <i class="fa-solid fa-chart-pie w-5"></i>
+                            <span>Panel Principal</span>
+                        </button>
+                        <a href="index.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-chalkboard w-5 text-blue-400"></i>
+                            <span>Pizarra Online</span>
+                        </a>
+                        <a href="analisis.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-video w-5 text-purple-400"></i>
+                            <span>Videoanálisis</span>
+                        </a>
+                        <a href="stats.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-chart-line w-5 text-emerald-400"></i>
+                            <span>Tracking & Stats</span>
+                        </a>
+                        <a href="arqueros.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-hand-paper w-5 text-amber-400"></i>
+                            <span>Específico Arqueros</span>
+                        </a>
+                        <a href="planillas.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-file-pdf w-5 text-rose-400"></i>
+                            <span>Planillas Descargables</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- SECCIÓN NUEVOS MÓDULOS DEL HUB -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Gestión de Cuerpos Técnicos</h3>
+                    <nav class="space-y-1">
+                        <button onclick="showTab('kanban')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-list-check w-5 text-cyan-400"></i>
+                            <span>Control de Staff (Kanban)</span>
+                        </button>
+                        <button onclick="showTab('plantel')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-users-gear w-5 text-green-400"></i>
+                            <span>Equipo & Carga RPE</span>
+                        </button>
+                        <button onclick="showTab('calendario')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-calendar-days w-5 text-amber-400"></i>
+                            <span>Planificación Torneos</span>
+                        </button>
+                        <button onclick="showTab('academia')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <i class="fa-solid fa-graduation-cap w-5 text-indigo-400"></i>
+                            <span>Academia / Charlas <span class="bg-indigo-900 text-indigo-300 text-[10px] px-1.5 py-0.5 rounded font-bold ml-1">$</span></span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-800">
+                <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs">DT</div>
+                        <div class="text-xs">
+                            <p class="font-bold text-white">Coach Principal</p>
+                            <p class="text-slate-400">Admin Staff</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-sm"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ÁREA DE CONTENIDO DINÁMICO -->
+        <main class="flex-1 overflow-y-auto p-6 bg-slate-950">
+
+            <!-- VISTA 1: DASHBOARD GENERAL -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <!-- ACCESOS DIRECTOS RÁPIDOS -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <a href="index.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition group text-center">
+                        <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
+                        <span class="text-xs font-bold text-slate-200">Pizarra Online</span>
+                    </a>
+                    <a href="analisis.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-purple-500 p-4 rounded-xl transition group text-center">
+                        <i class="fa-solid fa-video text-2xl text-purple-400 group-hover:scale-110 transition mb-2 block"></i>
+                        <span class="text-xs font-bold text-slate-200">Videoanálisis</span>
+                    </a>
+                    <a href="stats.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 p-4 rounded-xl transition group text-center">
+                        <i class="fa-solid fa-chart-line text-2xl text-emerald-400 group-hover:scale-110 transition mb-2 block"></i>
+                        <span class="text-xs font-bold text-slate-200">Stats Futsal</span>
+                    </a>
+                    <a href="arqueros.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 p-4 rounded-xl transition group text-center">
+                        <i class="fa-solid fa-hand-paper text-2xl text-amber-400 group-hover:scale-110 transition mb-2 block"></i>
+                        <span class="text-xs font-bold text-slate-200">Arqueros</span>
+                    </a>
+                    <a href="planillas.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-rose-500 p-4 rounded-xl transition group text-center">
+                        <i class="fa-solid fa-file-pdf text-2xl text-rose-400 group-hover:scale-110 transition mb-2 block"></i>
+                        <span class="text-xs font-bold text-slate-200">Planillas Papel</span>
+                    </a>
+                </div>
+
+                <!-- CARDS DE METRICAS DEL STAFF -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
+                            <span>Plantel Disponible</span>
+                            <i class="fa-solid fa-user-check text-emerald-400"></i>
+                        </div>
+                        <p class="text-3xl font-extrabold text-white">12 / 14</p>
+                        <p class="text-xs text-rose-400 mt-2"><i class="fa-solid fa-kit-medical"></i> 2 Jugadores en Sanidad</p>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
+                            <span>Promedio Carga RPE (Borg)</span>
+                            <i class="fa-solid fa-gauge-high text-amber-400"></i>
+                        </div>
+                        <p class="text-3xl font-extrabold text-amber-400">7.2 <span class="text-xs text-slate-400">/ 10</span></p>
+                        <p class="text-xs text-slate-400 mt-2">Sesión MD-2 Alta Intensidad</p>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
+                            <span>Tareas del Staff</span>
+                            <i class="fa-solid fa-tasks text-blue-400"></i>
+                        </div>
+                        <p class="text-3xl font-extrabold text-white">8 <span class="text-xs text-emerald-400 font-normal">(5 Listas)</span></p>
+                        <p class="text-xs text-slate-400 mt-2">3 tareas pend. para partido</p>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
+                            <span>Ventas de Charlas</span>
+                            <i class="fa-solid fa-dollar-sign text-indigo-400"></i>
+                        </div>
+                        <p class="text-3xl font-extrabold text-indigo-400">$1,450 <span class="text-xs text-slate-400">USD</span></p>
+                        <p class="text-xs text-emerald-400 mt-2">+18 inscriptos este mes</p>
+                    </div>
+                </div>
+
+                <!-- VISTA PREVIA DE SQUAD & QUINTETO -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <h3 class="font-bold text-white mb-4 flex items-center justify-between">
+                            <span><i class="fa-solid fa-shield text-emerald-400 mr-2"></i> Quinteto Inicial Proyectado</span>
+                            <span class="text-xs text-slate-400">Sistema 3-1</span>
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                                <span class="text-xs font-bold bg-amber-950 text-amber-400 px-2 py-1 rounded">ARQ</span>
+                                <span class="font-semibold text-sm">1. Nico Sarmiento</span>
+                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                                <span class="text-xs font-bold bg-blue-950 text-blue-400 px-2 py-1 rounded">CIE</span>
+                                <span class="font-semibold text-sm">3. Pablo Taborda</span>
+                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                                <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
+                                <span class="font-semibold text-sm">11. Alan Brandi</span>
+                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                                <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
+                                <span class="font-semibold text-sm">8. Maxi Rescia</span>
+                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                                <span class="text-xs font-bold bg-rose-950 text-rose-400 px-2 py-1 rounded">PIV</span>
+                                <span class="font-semibold text-sm">9. Kiki Vaporaki</span>
+                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESUMEN TAREAS DE STAFF (KANBAN RAPIDO) -->
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-white mb-4 flex items-center justify-between">
+                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Pendientes Prioritarios Staff</span>
+                                <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero Completo</button>
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-rose-500 flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm font-semibold text-white">Análisis de Salidas 4-0 Rival</p>
+                                        <span class="text-xs text-slate-400">Asignado a: Analista de Video</span>
+                                    </div>
+                                    <span class="text-xs bg-rose-950 text-rose-300 px-2 py-1 rounded font-bold">MD-2</span>
+                                </div>
+                                <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-amber-500 flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm font-semibold text-white">Ajustar Carga de Alta Velocidad (GPS)</p>
+                                        <span class="text-xs text-slate-400">Asignado a: Prep. Físico</span>
+                                    </div>
+                                    <span class="text-xs bg-amber-950 text-amber-300 px-2 py-1 rounded font-bold">MD-1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="showTab('kanban')" class="mt-4 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-bold rounded-lg border border-slate-700 transition">
+                            + Asignar Nueva Tarea al Staff
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 2: CONTROL DE STAFF (KANBAN) -->
+            <div id="tab-kanban" class="tab-content hidden space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Tablero de Control del Cuerpo Técnico</h2>
+                        <p class="text-xs text-slate-400">Coordinación de trabajos pre, durante y post-partido</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- COLUMNA 1: PENDIENTES -->
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
+                        <h3 class="font-bold text-slate-300 text-sm mb-4 flex items-center justify-between">
+                            <span>📋 Pendientes</span>
+                            <span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-xs">2</span>
+                        </h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-bold text-purple-400">Videoanálisis</span>
+                                    <span class="text-slate-400">MD-2</span>
+                                </div>
+                                <p class="text-sm font-semibold text-white">Cortes de pelota parada 5v4</p>
+                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> Analista</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA 2: EN PROCESO -->
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
+                        <h3 class="font-bold text-blue-400 text-sm mb-4 flex items-center justify-between">
+                            <span>⚙️ En Proceso</span>
+                            <span class="bg-blue-950 text-blue-300 px-2 py-0.5 rounded text-xs">2</span>
+                        </h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-blue-500">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-bold text-emerald-400">Preparación Física</span>
+                                    <span class="text-slate-400">Hoy</span>
+                                </div>
+                                <p class="text-sm font-semibold text-white">Monitoreo de recuperación post-entreno</p>
+                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> PF</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA 3: EN REVISIÓN DT -->
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
+                        <h3 class="font-bold text-amber-400 text-sm mb-4 flex items-center justify-between">
+                            <span>🔍 En Revisión DT</span>
+                            <span class="bg-amber-950 text-amber-300 px-2 py-0.5 rounded text-xs">1</span>
+                        </h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-amber-500">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-bold text-amber-400">Estrategia</span>
+                                    <span class="text-slate-400">Aprobación</span>
+                                </div>
+                                <p class="text-sm font-semibold text-white">Plan de juego para saques de banda</p>
+                                <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-user-gear"></i> Asistente Técnico</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA 4: LISTO PARA CAMPO -->
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
+                        <h3 class="font-bold text-emerald-400 text-sm mb-4 flex items-center justify-between">
+                            <span>✅ Completado</span>
+                            <span class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded text-xs">3</span>
+                        </h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 border-l-4 border-emerald-500 opacity-80">
+                                <p class="text-sm font-semibold text-white">Planilla de asistencia impresa</p>
+                                <p class="text-xs text-emerald-400 mt-2"><i class="fa-solid fa-check"></i> Listo en utilería</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 3: ACADEMIA / CHARLAS ARANCELADAS -->
+            <div id="tab-academia" class="tab-content hidden space-y-6">
+                <div class="bg-gradient-to-r from-indigo-900 to-slate-900 border border-indigo-700 p-6 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <span class="bg-indigo-500 text-white font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider">Módulo Comercial</span>
+                        <h2 class="text-2xl font-black text-white mt-1">Academia Entrena Futsal</h2>
+                        <p class="text-sm text-slate-300 max-w-xl">Publica clínicas, masterclasses y charlas tácticas para la comunidad. Monetiza el conocimiento de tu cuerpo técnico.</p>
+                    </div>
+                    <button class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-5 py-3 rounded-xl transition text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Publicar Nueva Charla</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-slate-800 h-40 flex items-center justify-center relative">
+                            <i class="fa-solid fa-chalkboard-user text-5xl text-slate-600"></i>
+                            <span class="absolute top-3 right-3 bg-emerald-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">$29.99 USD</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-lg">Ataque Posicional 4-0 en Futsal Moderno</h3>
+                                <p class="text-xs text-slate-400 mt-2">Principios de rotación, fijaciones y momentos de aceleración ofensiva.</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                                <span><i class="fa-solid fa-users text-indigo-400 mr-1"></i> 42 Alumnos</span>
+                                <span class="text-emerald-400 font-bold">$1,259.58 Recaudado</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-slate-800 h-40 flex items-center justify-center relative">
+                            <i class="fa-solid fa-shield-cat text-5xl text-slate-600"></i>
+                            <span class="absolute top-3 right-3 bg-emerald-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">$19.99 USD</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-lg">Defensa de Portero Jugador 5v4</h3>
+                                <p class="text-xs text-slate-400 mt-2">Ajustes en rombo y cuadrado defensivo según la velocidad de circulación.</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                                <span><i class="fa-solid fa-users text-indigo-400 mr-1"></i> 28 Alumnos</span>
+                                <span class="text-emerald-400 font-bold">$559.72 Recaudado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA MODALES / MÓDULOS SECUNDARIOS (PLANTEL/CALENDARIO STUBS) -->
+            <div id="tab-plantel" class="tab-content hidden space-y-4">
+                <h2 class="text-xl font-bold text-white">Monitoreo de Plantel y RPE Borg</h2>
+                <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 text-sm">
+                    Módulo de carga diaria de cansancio subjetivo RPE y ficha kinesiológica de los 14 jugadores convocados.
+                </div>
+            </div>
+
+            <div id="tab-calendario" class="tab-content hidden space-y-4">
+                <h2 class="text-xl font-bold text-white">Planificación de Microciclos y Torneos</h2>
+                <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 text-sm">
+                    Calendario de fixtures, citaciones oficiales y scouting de rivales.
+                </div>
+            </div>
+
+        </main>
     </div>
-    <a href="stats.html" class="stats-link">📊 Estadísticas</a>
-  </header>
 
-  <!-- PANEL DE MODO -->
-  <div class="controls-panel">
-    <button class="btn btn-tool active" id="modeMove" onclick="setMode('move')">✋ Mover / Girar</button>
-    <button class="btn btn-tool" id="modeDraw" onclick="setMode('draw')">✏️ Dibujar Trazos</button>
-    <button class="btn btn-clear" onclick="clearDrawings()">🧹 Borrar Trazos</button>
-    <button class="btn btn-clear" onclick="resetPositions()">🔄 Reiniciar Posiciones</button>
-  </div>
-
-  <!-- PANEL DE ORIENTACIÓN RÁPIDA -->
-  <div class="controls-panel">
-    <span class="panel-label">Perfilar Ficha:</span>
-    <button class="btn btn-tool" onclick="rotateSelected(-45)" title="Girar 45° Izquierda">↺ -45°</button>
-    <button class="btn btn-tool" onclick="rotateSelected(45)" title="Girar 45° Derecha">↻ +45°</button>
-    <button class="btn btn-tool" onclick="setSelectedAngle(90)" title="Perfilar hacia la Derecha">➡️ Der</button>
-    <button class="btn btn-tool" onclick="setSelectedAngle(-90)" title="Perfilar hacia la Izquierda">⬅️ Izq</button>
-    <button class="btn btn-tool" onclick="setSelectedAngle(0)" title="Perfilar hacia Arriba">⬆️ Arriba</button>
-    <button class="btn btn-tool" onclick="setSelectedAngle(180)" title="Perfilar hacia Abajo">⬇️ Abajo</button>
-  </div>
-
-  <!-- PANEL DE ANIMACIÓN Y EXPORTACIÓN -->
-  <div class="controls-panel">
-    <button class="btn btn-anim" onclick="saveFrame()">➕ Guardar Paso</button>
-    <button class="btn btn-play" id="btnPlay" onclick="playAnimation()">▶️ Reproducir</button>
-    <button class="btn btn-video" id="btnVideo" onclick="exportVideo()">🎥 Descargar Video</button>
-    <button class="btn btn-clear" style="background:#555;" onclick="clearAnimation()">🗑️ Limpiar Pasos</button>
-    <div class="anim-counter" id="stepCounter">Pasos: 0</div>
-    <button class="btn btn-download" onclick="downloadPhoto()">📷 Descargar Foto</button>
-  </div>
-
-  <!-- CANCHA CANVAS (1200x720 HD) -->
-  <div class="board-container">
-    <canvas id="futsalCanvas" width="1200" height="720"></canvas>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('futsalCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let mode = 'move';
-    let isDrawing = false;
-    let activePiece = null;
-    let selectedPiece = null;
-    let isRotating = false;
-    let steps = [];
-    let isPlaying = false;
-
-    let drawings = [];
-    let currentPath = [];
-
-    // CONFIGURACIÓN DE EQUIPOS
-    // Verde (#00c853), Azul (#1565c0), Arqueros Negros (#121212)
-    // angle: Math.PI / 2 (90°) = Mira a la derecha | -Math.PI / 2 (-90°) = Mira a la izquierda
-    const initialPieces = [
-      // EQUIPO VERDE (Mirando hacia la derecha)
-      { id: 'g1', type: 'gk', team: 'green', label: '1', x: 80, y: 360, r: 28, color: '#121212', border: '#00e676', angle: Math.PI / 2 },
-      { id: 'g2', type: 'player', team: 'green', label: '2', x: 230, y: 150, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
-      { id: 'g3', type: 'player', team: 'green', label: '3', x: 230, y: 570, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
-      { id: 'g4', type: 'player', team: 'green', label: '4', x: 390, y: 270, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
-      { id: 'g5', type: 'player', team: 'green', label: '5', x: 390, y: 450, r: 28, color: '#00c853', border: '#ffffff', angle: Math.PI / 2 },
-
-      // EQUIPO AZUL (Mirando hacia la izquierda)
-      { id: 'b1', type: 'gk', team: 'blue', label: '1', x: 1120, y: 360, r: 28, color: '#121212', border: '#29b6f6', angle: -Math.PI / 2 },
-      { id: 'b2', type: 'player', team: 'blue', label: '2', x: 970, y: 150, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
-      { id: 'b3', type: 'player', team: 'blue', label: '3', x: 970, y: 570, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
-      { id: 'b4', type: 'player', team: 'blue', label: '10', x: 810, y: 270, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
-      { id: 'b5', type: 'player', team: 'blue', label: '5', x: 810, y: 450, r: 28, color: '#1565c0', border: '#ffffff', angle: -Math.PI / 2 },
-
-      // PELOTA
-      { id: 'ball', type: 'ball', team: 'ball', label: '⚽', x: 600, y: 360, r: 18, angle: 0 }
-    ];
-
-    let pieces = JSON.parse(JSON.stringify(initialPieces));
-
-    function setMode(newMode) {
-      mode = newMode;
-      document.getElementById('modeMove').classList.toggle('active', mode === 'move');
-      document.getElementById('modeDraw').classList.toggle('active', mode === 'draw');
-    }
-
-    // DIBUJAR FICHA CON ROTACIÓN
-    function drawCustomChip(x, y, scale, teamColor, borderColor, label, isGK, angle) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-
-      const s = scale;
-
-      // 1. SILUETA DEL CUERPO (Hombros curvos y base redondeada)
-      ctx.beginPath();
-      ctx.moveTo(-s * 1.15, -s * 0.15);
-      ctx.quadraticCurveTo(-s * 0.8, -s * 0.65, -s * 0.45, -s * 0.55); // Hombro Izq
-      ctx.quadraticCurveTo(0, -s * 0.35, s * 0.45, -s * 0.55);          // Escote
-      ctx.quadraticCurveTo(s * 0.8, -s * 0.65, s * 1.15, -s * 0.15);   // Hombro Der
-      ctx.quadraticCurveTo(s * 1.25, s * 0.25, s * 0.8, s * 0.6);      // Lateral Der
-      ctx.quadraticCurveTo(0, s * 1.05, -s * 0.8, s * 0.6);             // Base Inferior
-      ctx.quadraticCurveTo(-s * 1.25, s * 0.25, -s * 1.15, -s * 0.15); // Lateral Izq
-      ctx.closePath();
-
-      ctx.fillStyle = teamColor;
-      ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      // 2. APLIQUES DE MANGAS / HOMBRERAS
-      ctx.beginPath();
-      ctx.moveTo(-s * 1.15, -s * 0.15);
-      ctx.quadraticCurveTo(-s * 0.8, -s * 0.65, -s * 0.6, -s * 0.25);
-      ctx.quadraticCurveTo(-s * 0.85, s * 0.3, -s * 1.15, -s * 0.15);
-      ctx.fillStyle = '#cfd8dc';
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(s * 1.15, -s * 0.15);
-      ctx.quadraticCurveTo(s * 0.8, -s * 0.65, s * 0.6, -s * 0.25);
-      ctx.quadraticCurveTo(s * 0.85, s * 0.3, s * 1.15, -s * 0.15);
-      ctx.fillStyle = '#cfd8dc';
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      // 3. CÍRCULO CENTRAL DE LA FICHA
-      ctx.beginPath();
-      ctx.arc(0, 0.05 * s, s * 0.52, 0, Math.PI * 2);
-      ctx.fillStyle = teamColor;
-      ctx.fill();
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      // 4. TEXTO DEL NÚMERO
-      if (isGK) {
-        ctx.fillStyle = borderColor;
-        ctx.font = 'bold 9px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('ARQ', 0, -s * 0.18);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, 0, s * 0.22);
-      } else {
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, 0, s * 0.08);
-      }
-
-      ctx.restore();
-    }
-
-    // RENDERIZADO GENERAL
-    function render() {
-      // 1. Césped de la cancha
-      ctx.fillStyle = '#2e7d32';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 2. Líneas tácticas
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4;
-
-      const pad = 20;
-      const w = canvas.width - pad * 2;
-      const h = canvas.height - pad * 2;
-
-      ctx.strokeRect(pad, pad, w, h);
-
-      // Línea Central
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, pad);
-      ctx.lineTo(canvas.width / 2, canvas.height - pad);
-      ctx.stroke();
-
-      // Círculo Central
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 75, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Punto Central
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-
-      // Áreas de 6m
-      ctx.beginPath();
-      ctx.arc(pad, canvas.height / 2, 150, -Math.PI / 2, Math.PI / 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(canvas.width - pad, canvas.height / 2, 150, Math.PI / 2, 3 * Math.PI / 2);
-      ctx.stroke();
-
-      // Puntos de Penal
-      ctx.beginPath();
-      ctx.arc(pad + 150, canvas.height / 2, 4, 0, Math.PI * 2);
-      ctx.arc(canvas.width - pad - 150, canvas.height / 2, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Arcos
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#e0e0e0';
-      ctx.strokeRect(pad - 12, canvas.height / 2 - 60, 12, 120);
-      ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 60, 12, 120);
-
-      // 3. Trazos Tácticos
-      ctx.strokeStyle = '#ffeb3b';
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      for (const path of drawings) {
-        if (path.length < 2) continue;
-        ctx.beginPath();
-        ctx.moveTo(path[0].x, path[0].y);
-        for (let i = 1; i < path.length; i++) {
-          ctx.lineTo(path[i].x, path[i].y);
+    <!-- SCRIPT DE NAVEGACIÓN -->
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
         }
-        ctx.stroke();
-      }
-
-      // 4. Dibujar Jugadores
-      for (const p of pieces) {
-        if (p.type === 'player' || p.type === 'gk') {
-          drawCustomChip(p.x, p.y, p.r, p.color, p.border, p.label, p.type === 'gk', p.angle || 0);
-        } else if (p.type === 'ball') {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = '#ffffff';
-          ctx.fill();
-          ctx.lineWidth = 3;
-          ctx.strokeStyle = '#000000';
-          ctx.stroke();
-
-          ctx.font = '20px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('⚽', p.x, p.y + 1);
-        }
-      }
-
-      // 5. MARCADOR DE SELECCIÓN Y MANIJA DE GIRO
-      if (selectedPiece && selectedPiece.type !== 'ball') {
-        const p = selectedPiece;
-        const handleDist = p.r + 28;
-        const hx = p.x + handleDist * Math.sin(p.angle || 0);
-        const hy = p.y - handleDist * Math.cos(p.angle || 0);
-
-        ctx.save();
-        // Círculo Punteado alrededor de la ficha
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r + 8, 0, Math.PI * 2);
-        ctx.strokeStyle = '#00e676';
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([6, 4]);
-        ctx.stroke();
-
-        // Línea hacia la manija de giro
-        ctx.beginPath();
-        ctx.setLineDash([]);
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(hx, hy);
-        ctx.strokeStyle = '#00e676';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Círculo de la Manija
-        ctx.beginPath();
-        ctx.arc(hx, hy, 14, 0, Math.PI * 2);
-        ctx.fillStyle = '#00e676';
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Ícono de giro dentro de la manija
-        ctx.fillStyle = '#121212';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🔄', hx, hy);
-
-        ctx.restore();
-      }
-    }
-
-    function getCanvasCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-      return {
-        x: (clientX - rect.left) * (canvas.width / rect.width),
-        y: (clientY - rect.top) * (canvas.height / rect.height)
-      };
-    }
-
-    function findPiece(x, y) {
-      for (let i = pieces.length - 1; i >= 0; i--) {
-        const p = pieces[i];
-        const dx = x - p.x;
-        const dy = y - p.y;
-        if (dx * dx + dy * dy <= (p.r + 14) * (p.r + 14)) {
-          return p;
-        }
-      }
-      return null;
-    }
-
-    function getRotationHandleCoords(p) {
-      const handleDist = p.r + 28;
-      return {
-        x: p.x + handleDist * Math.sin(p.angle || 0),
-        y: p.y - handleDist * Math.cos(p.angle || 0)
-      };
-    }
-
-    function handleStart(e) {
-      if (isPlaying) return;
-      const pos = getCanvasCoords(e);
-
-      if (mode === 'move') {
-        // Verificar si hizo clic en la manija de giro de la ficha seleccionada
-        if (selectedPiece && selectedPiece.type !== 'ball') {
-          const handlePos = getRotationHandleCoords(selectedPiece);
-          const dx = pos.x - handlePos.x;
-          const dy = pos.y - handlePos.y;
-          if (dx * dx + dy * dy <= 22 * 22) {
-            isRotating = true;
-            activePiece = selectedPiece;
-            return;
-          }
-        }
-
-        // Buscar si hizo clic en una ficha
-        const p = findPiece(pos.x, pos.y);
-        if (p) {
-          activePiece = p;
-          selectedPiece = p;
-          render();
-        } else {
-          selectedPiece = null;
-          render();
-        }
-      } else if (mode === 'draw') {
-        isDrawing = true;
-        currentPath = [pos];
-        drawings.push(currentPath);
-        render();
-      }
-    }
-
-    function handleMove(e) {
-      if (isPlaying) return;
-      const pos = getCanvasCoords(e);
-
-      if (mode === 'move') {
-        if (isRotating && activePiece) {
-          const dx = pos.x - activePiece.x;
-          const dy = pos.y - activePiece.y;
-          // Calcular ángulo de orientación respecto al centro
-          activePiece.angle = Math.atan2(dx, -dy);
-          render();
-        } else if (activePiece) {
-          activePiece.x = Math.max(activePiece.r + 20, Math.min(canvas.width - activePiece.r - 20, pos.x));
-          activePiece.y = Math.max(activePiece.r + 20, Math.min(canvas.height - activePiece.r - 20, pos.y));
-          render();
-        }
-      } else if (mode === 'draw' && isDrawing) {
-        currentPath.push(pos);
-        render();
-      }
-    }
-
-    function handleEnd() {
-      isDrawing = false;
-      isRotating = false;
-      activePiece = null;
-    }
-
-    // ROTAR FICHA SELECCIONADA POR BOTONES
-    function rotateSelected(deg) {
-      if (!selectedPiece || selectedPiece.type === 'ball') {
-        alert('Haz clic primero sobre un jugador para seleccionarlo y girarlo.');
-        return;
-      }
-      selectedPiece.angle = (selectedPiece.angle || 0) + (deg * Math.PI) / 180;
-      render();
-    }
-
-    function setSelectedAngle(deg) {
-      if (!selectedPiece || selectedPiece.type === 'ball') {
-        alert('Haz clic primero sobre un jugador para seleccionarlo y orientarlo.');
-        return;
-      }
-      selectedPiece.angle = (deg * Math.PI) / 180;
-      render();
-    }
-
-    canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
-
-    canvas.addEventListener('dblclick', (e) => {
-      const pos = getCanvasCoords(e);
-      const p = findPiece(pos.x, pos.y);
-      if (p && p.type !== 'ball') {
-        p.angle = (p.angle || 0) + Math.PI / 4;
-        selectedPiece = p;
-        render();
-      }
-    });
-
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
-    canvas.addEventListener('touchend', handleEnd);
-
-    function clearDrawings() {
-      drawings = [];
-      render();
-    }
-
-    function resetPositions() {
-      pieces = JSON.parse(JSON.stringify(initialPieces));
-      drawings = [];
-      selectedPiece = null;
-      isPlaying = false;
-      render();
-    }
-
-    function saveFrame() {
-      const frame = {
-        pieces: pieces.map(p => ({ id: p.id, x: p.x, y: p.y, angle: p.angle || 0 })),
-        drawings: JSON.parse(JSON.stringify(drawings))
-      };
-      steps.push(frame);
-      document.getElementById('stepCounter').innerText = `Pasos: ${steps.length}`;
-    }
-
-    function clearAnimation() {
-      steps = [];
-      isPlaying = false;
-      document.getElementById('stepCounter').innerText = `Pasos: 0`;
-    }
-
-    function playAnimation() {
-      if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos antes de reproducir.');
-        return;
-      }
-      isPlaying = false;
-      animateSteps();
-    }
-
-    function animateSteps(onComplete) {
-      if (steps.length === 0) {
-        isPlaying = false;
-        if (onComplete) onComplete();
-        return;
-      }
-
-      isPlaying = true;
-      selectedPiece = null;
-
-      const firstFrame = steps[0];
-      const firstPieces = firstFrame.pieces || firstFrame;
-
-      firstPieces.forEach(s => {
-        const p = pieces.find(item => item.id === s.id);
-        if (p) { p.x = s.x; p.y = s.y; p.angle = s.angle; }
-      });
-
-      if (firstFrame.drawings !== undefined) {
-        drawings = JSON.parse(JSON.stringify(firstFrame.drawings));
-      }
-
-      render();
-
-      if (steps.length === 1) {
-        isPlaying = false;
-        if (onComplete) onComplete();
-        return;
-      }
-
-      const durationPerStep = 1100;
-
-      function runNextStep(stepIdx) {
-        if (stepIdx >= steps.length - 1) {
-          isPlaying = false;
-          if (onComplete) onComplete();
-          return;
-        }
-
-        const startFrame = steps[stepIdx];
-        const endFrame = steps[stepIdx + 1];
-        let startTime = null;
-
-        if (startFrame.drawings !== undefined) {
-          drawings = JSON.parse(JSON.stringify(startFrame.drawings));
-        }
-
-        function stepAnimation(timestamp) {
-          if (!startTime) startTime = timestamp;
-          const progress = Math.min((timestamp - startTime) / durationPerStep, 1);
-          
-          const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-
-          const startPieces = startFrame.pieces || startFrame;
-          const endPieces = endFrame.pieces || endFrame;
-
-          for (let i = 0; i < pieces.length; i++) {
-            const p = pieces[i];
-            const startP = startPieces.find(s => s.id === p.id);
-            const endP = endPieces.find(s => s.id === p.id);
-            if (startP && endP) {
-              p.x = startP.x + (endP.x - startP.x) * ease;
-              p.y = startP.y + (endP.y - startP.y) * ease;
-
-              let startA = startP.angle || 0;
-              let endA = endP.angle || 0;
-              let diffA = endA - startA;
-              while (diffA < -Math.PI) diffA += Math.PI * 2;
-              while (diffA > Math.PI) diffA -= Math.PI * 2;
-
-              p.angle = startA + diffA * ease;
-            }
-          }
-
-          render();
-
-          if (progress < 1) {
-            requestAnimationFrame(stepAnimation);
-          } else {
-            if (endFrame.drawings !== undefined) {
-              drawings = JSON.parse(JSON.stringify(endFrame.drawings));
-              render();
-            }
-            setTimeout(() => runNextStep(stepIdx + 1), 250);
-          }
-        }
-
-        requestAnimationFrame(stepAnimation);
-      }
-
-      setTimeout(() => runNextStep(0), 300);
-    }
-
-    function downloadPhoto() {
-      const tempSelected = selectedPiece;
-      selectedPiece = null;
-      render();
-
-      const link = document.createElement('a');
-      link.download = `pizarra-tactica-${new Date().toISOString().slice(0, 10)}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-
-      selectedPiece = tempSelected;
-      render();
-    }
-
-    function exportVideo() {
-      if (steps.length < 2) {
-        alert('Guarda al menos 2 pasos antes de exportar el video.');
-        return;
-      }
-
-      const btnVideo = document.getElementById('btnVideo');
-      btnVideo.innerText = '⏳ Procesando Video...';
-      btnVideo.disabled = true;
-
-      let isRecording = true;
-
-      // Renderizado continuo mientras dure la grabación
-      function recordLoop() {
-        render();
-        if (isRecording) {
-          requestAnimationFrame(recordLoop);
-        }
-      }
-
-      // Capturar stream a 30 FPS
-      const stream = canvas.captureStream(30);
-
-      // Intentar usar MP4 si el navegador lo soporta, o WebM VP9/WebM por defecto
-      let mimeType = 'video/webm;codecs=vp9';
-      let isWebm = true;
-
-      if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')) {
-        mimeType = 'video/mp4;codecs=avc1';
-        isWebm = false;
-      } else if (!MediaRecorder.isTypeSupported(mimeType)) {
-        mimeType = 'video/webm';
-      }
-
-      let mediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(stream, { mimeType });
-      } catch (e) {
-        mediaRecorder = new MediaRecorder(stream);
-      }
-
-      const chunks = [];
-      const startTime = Date.now();
-
-      mediaRecorder.ondataavailable = e => {
-        if (e.data && e.data.size > 0) chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        isRecording = false; // Detiene el loop de renderizado una vez frenado el recorder
-        const totalDuration = Date.now() - startTime;
-        const extension = isWebm ? 'webm' : 'mp4';
-        const rawBlob = new Blob(chunks, { type: mediaRecorder.mimeType || `video/${extension}` });
-
-        const triggerDownload = (finalBlob) => {
-          const url = URL.createObjectURL(finalBlob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `jugada-tactica-${new Date().toISOString().slice(0, 10)}.${extension}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-
-          btnVideo.innerText = '🎥 Descargar Video';
-          btnVideo.disabled = false;
-        };
-
-        // Si es WebM y la librería está cargada, se corrigen los metadatos de duración
-        if (isWebm && typeof ysFixWebmDuration === 'function') {
-          ysFixWebmDuration(rawBlob, totalDuration, function(fixedBlob) {
-            triggerDownload(fixedBlob);
-          });
-        } else {
-          triggerDownload(rawBlob);
-        }
-      };
-
-      // Iniciar renderizado y grabación
-      isRecording = true;
-      requestAnimationFrame(recordLoop);
-      
-      // Guardar fragmentos cada 100ms
-      mediaRecorder.start(100);
-
-      // Ejecutar la animación de pasos
-      animateSteps(() => {
-        // Pausa final de 1.5 segundos asegurando que el canvas se siga renderizando
-        // antes de llamar a stop() para evitar que el video se corte al final.
-        setTimeout(() => {
-          if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-            mediaRecorder.stop();
-          }
-        }, 1500);
-      });
-    }
-
-    render();
-  </script>
+    </script>
 </body>
 </html>
