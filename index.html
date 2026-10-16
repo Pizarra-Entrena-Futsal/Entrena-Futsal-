@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrena Futsal Staff Hub</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS & FontAwesome CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -28,7 +28,7 @@
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
     <!-- NAV BAR SUPERIOR -->
-    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <img src="logo.png.jpg" alt="Entrena Futsal Logo" class="h-10 w-10 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
             <div>
@@ -38,7 +38,7 @@
         </div>
 
         <!-- Indicador de Próximo Partido -->
-        <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 text-sm">
+        <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700 text-sm">
             <div class="flex items-center space-x-2 text-amber-400 font-semibold">
                 <i class="fa-solid fa-trophy"></i>
                 <span>MD-2 vs. Rival Directo</span>
@@ -58,57 +58,57 @@
     <!-- CUERPO PRINCIPAL -->
     <div class="flex flex-1 overflow-hidden">
 
-        <!-- BARRA LATERAL -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
-            <div class="p-4 space-y-6">
-                <!-- HERRAMIENTAS TÁCTICAS EXISTENTES -->
+        <!-- BARRA LATERAL (NAVEGACIÓN) -->
+        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
+            <div class="p-4 space-y-6 overflow-y-auto">
+                <!-- HERRAMIENTAS TÁCTICAS -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Herramientas Tácticas</h3>
                     <nav class="space-y-1">
-                        <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800 border-l-4 border-emerald-500">
+                        <button onclick="showTab('dashboard', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800 border-l-4 border-emerald-500">
                             <i class="fa-solid fa-chart-pie w-5"></i>
                             <span>Panel Principal</span>
                         </button>
-                        <a href="pizarra.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <button onclick="showTab('pizarra', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-chalkboard w-5 text-blue-400"></i>
                             <span>Pizarra Online</span>
-                        </a>
-                        <a href="analisis.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        </button>
+                        <button onclick="showTab('analisis', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-video w-5 text-purple-400"></i>
                             <span>Videoanálisis</span>
-                        </a>
-                        <a href="stats.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        </button>
+                        <button onclick="showTab('stats', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-chart-line w-5 text-emerald-400"></i>
                             <span>Tracking & Stats</span>
-                        </a>
-                        <a href="arqueros.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        </button>
+                        <button onclick="showTab('arqueros', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-hand-paper w-5 text-amber-400"></i>
                             <span>Específico Arqueros</span>
-                        </a>
-                        <a href="planillas.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        </button>
+                        <button onclick="showTab('planillas', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-file-pdf w-5 text-rose-400"></i>
-                            <span>Planillas Descargables</span>
-                        </a>
+                            <span>Planillas Papel</span>
+                        </button>
                     </nav>
                 </div>
 
-                <!-- NUEVOS MÓDULOS DE GESTIÓN DE STAFF -->
+                <!-- GESTIÓN DE CUERPOS TÉCNICOS -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Gestión de Cuerpos Técnicos</h3>
                     <nav class="space-y-1">
-                        <button onclick="showTab('kanban')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <button onclick="showTab('kanban', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-list-check w-5 text-cyan-400"></i>
                             <span>Control de Staff (Kanban)</span>
                         </button>
-                        <button onclick="showTab('plantel')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <button onclick="showTab('plantel', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-users-gear w-5 text-green-400"></i>
                             <span>Equipo & Carga RPE</span>
                         </button>
-                        <button onclick="showTab('calendario')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <button onclick="showTab('calendario', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-calendar-days w-5 text-amber-400"></i>
                             <span>Planificación Torneos</span>
                         </button>
-                        <button onclick="showTab('academia')" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                        <button onclick="showTab('academia', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
                             <i class="fa-solid fa-graduation-cap w-5 text-indigo-400"></i>
                             <span>Academia / Charlas <span class="bg-indigo-900 text-indigo-300 text-[10px] px-1.5 py-0.5 rounded font-bold ml-1">$</span></span>
                         </button>
@@ -130,36 +130,36 @@
             </div>
         </aside>
 
-        <!-- ÁREA DE CONTENIDO -->
-        <main class="flex-1 overflow-y-auto p-6 bg-slate-950">
+        <!-- ÁREA DE CONTENIDO DINÁMICO -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-950 flex flex-col">
 
             <!-- TAB 1: DASHBOARD PRINCIPAL -->
             <div id="tab-dashboard" class="tab-content space-y-6">
-                <!-- ACCESOS RÁPIDOS A TUS HERRAMIENTAS -->
+                <!-- ACCESOS RÁPIDOS SUPERIORES -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <a href="pizarra.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition group text-center">
+                    <button onclick="showTab('pizarra')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Pizarra Online</span>
-                    </a>
-                    <a href="analisis.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-purple-500 p-4 rounded-xl transition group text-center">
+                    </button>
+                    <button onclick="showTab('analisis')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-purple-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-video text-2xl text-purple-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Videoanálisis</span>
-                    </a>
-                    <a href="stats.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 p-4 rounded-xl transition group text-center">
+                    </button>
+                    <button onclick="showTab('stats')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-chart-line text-2xl text-emerald-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Stats Futsal</span>
-                    </a>
-                    <a href="arqueros.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 p-4 rounded-xl transition group text-center">
+                    </button>
+                    <button onclick="showTab('arqueros')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-hand-paper text-2xl text-amber-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Arqueros</span>
-                    </a>
-                    <a href="planillas.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-rose-500 p-4 rounded-xl transition group text-center">
+                    </button>
+                    <button onclick="showTab('planillas')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-rose-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-file-pdf text-2xl text-rose-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Planillas Papel</span>
-                    </a>
+                    </button>
                 </div>
 
-                <!-- MÉTRICAS Y CARDS DEL STAFF -->
+                <!-- CARDS DE MÉTRICAS -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
@@ -190,7 +190,7 @@
 
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Ingresos Charlas</span>
+                            <span>Ventas de Charlas</span>
                             <i class="fa-solid fa-dollar-sign text-indigo-400"></i>
                         </div>
                         <p class="text-3xl font-extrabold text-indigo-400">$1,450 <span class="text-xs text-slate-400">USD</span></p>
@@ -198,7 +198,7 @@
                     </div>
                 </div>
 
-                <!-- VISTA PREVIA DE SQUAD & QUINTETO -->
+                <!-- QUINTETO Y KANBAN RÁPIDO -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <h3 class="font-bold text-white mb-4 flex items-center justify-between">
@@ -234,11 +234,10 @@
                         </div>
                     </div>
 
-                    <!-- RESUMEN DE TAREAS KANBAN -->
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
                         <div>
                             <h3 class="font-bold text-white mb-4 flex items-center justify-between">
-                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Pendientes del Staff</span>
+                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Tareas Prioritarias Staff</span>
                                 <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero</button>
                             </h3>
                             <div class="space-y-3">
@@ -259,69 +258,129 @@
                             </div>
                         </div>
                         <button onclick="showTab('kanban')" class="mt-4 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-bold rounded-lg border border-slate-700 transition">
-                            + Gestionar Tablero Kanban
+                            + Abrir Tablero Kanban
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 2: CONTROL DE STAFF (KANBAN) -->
-            <div id="tab-kanban" class="tab-content hidden space-y-6">
-                <div>
-                    <h2 class="text-xl font-bold text-white">Tablero Kanban - Cuerpo Técnico</h2>
-                    <p class="text-xs text-slate-400">Coordinación de áreas: DT, Preparación Física, Kinesiología y Videoanálisis</p>
+            <!-- VISOR EMBEBIDO: PIZARRA ONLINE -->
+            <div id="tab-pizarra" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
+                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-chalkboard text-blue-400"></i>
+                        <h2 class="font-bold text-white text-sm">Pizarra Táctica Online</h2>
+                    </div>
+                    <a href="pizarra.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Abrir en Pestaña Completa</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
                 </div>
+                <iframe src="pizarra.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Pizarra Táctica Futsal"></iframe>
+            </div>
 
+            <!-- VISOR EMBEBIDO: VIDEOANÁLISIS -->
+            <div id="tab-analisis" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
+                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-video text-purple-400"></i>
+                        <h2 class="font-bold text-white text-sm">Módulo de Videoanálisis</h2>
+                    </div>
+                    <a href="analisis.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Abrir en Pestaña Completa</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+                <iframe src="analisis.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Videoanálisis Futsal"></iframe>
+            </div>
+
+            <!-- VISOR EMBEBIDO: STATS -->
+            <div id="tab-stats" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
+                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                        <h2 class="font-bold text-white text-sm">Tracking & Estadísticas</h2>
+                    </div>
+                    <a href="stats.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Abrir en Pestaña Completa</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+                <iframe src="stats.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Tracking Futsal"></iframe>
+            </div>
+
+            <!-- VISOR EMBEBIDO: ARQUEROS -->
+            <div id="tab-arqueros" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
+                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-hand-paper text-amber-400"></i>
+                        <h2 class="font-bold text-white text-sm">Entrenamiento de Arqueros</h2>
+                    </div>
+                    <a href="arqueros.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Abrir en Pestaña Completa</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+                <iframe src="arqueros.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Específico Arqueros"></iframe>
+            </div>
+
+            <!-- VISOR EMBEBIDO: PLANILLAS -->
+            <div id="tab-planillas" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
+                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                        <h2 class="font-bold text-white text-sm">Planillas Imprimibles</h2>
+                    </div>
+                    <a href="planillas.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Abrir en Pestaña Completa</span>
+                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+                <iframe src="planillas.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Planillas Futsal"></iframe>
+            </div>
+
+            <!-- TAB 2: KANBAN -->
+            <div id="tab-kanban" class="tab-content hidden space-y-6">
+                <h2 class="text-xl font-bold text-white">Tablero Kanban - Cuerpo Técnico</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
                         <h3 class="font-bold text-slate-300 text-sm mb-4">📋 Pendientes</h3>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700">
-                                <span class="text-xs font-bold text-purple-400">Video</span>
-                                <p class="text-sm font-semibold text-white mt-1">Cortes de pelota parada 5v4</p>
-                            </div>
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700">
+                            <span class="text-xs font-bold text-purple-400">Video</span>
+                            <p class="text-sm font-semibold text-white mt-1">Cortes de pelota parada 5v4</p>
                         </div>
                     </div>
-
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
                         <h3 class="font-bold text-blue-400 text-sm mb-4">⚙️ En Proceso</h3>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-blue-500">
-                                <span class="text-xs font-bold text-emerald-400">Físico</span>
-                                <p class="text-sm font-semibold text-white mt-1">Evaluación de fatiga RPE post-entreno</p>
-                            </div>
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-blue-500">
+                            <span class="text-xs font-bold text-emerald-400">Físico</span>
+                            <p class="text-sm font-semibold text-white mt-1">Evaluación RPE post-entreno</p>
                         </div>
                     </div>
-
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
                         <h3 class="font-bold text-amber-400 text-sm mb-4">🔍 En Revisión DT</h3>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-amber-500">
-                                <span class="text-xs font-bold text-amber-400">Táctica</span>
-                                <p class="text-sm font-semibold text-white mt-1">Ajuste de saques de banda ofensivos</p>
-                            </div>
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-amber-500">
+                            <span class="text-xs font-bold text-amber-400">Táctica</span>
+                            <p class="text-sm font-semibold text-white mt-1">Ajuste de saques de banda</p>
                         </div>
                     </div>
-
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
                         <h3 class="font-bold text-emerald-400 text-sm mb-4">✅ Completado</h3>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-emerald-500">
-                                <span class="text-xs font-bold text-emerald-400">Administrativo</span>
-                                <p class="text-sm font-semibold text-white mt-1">Planillas de partido impresas</p>
-                            </div>
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 border-l-4 border-emerald-500">
+                            <span class="text-xs font-bold text-emerald-400">Administrativo</span>
+                            <p class="text-sm font-semibold text-white mt-1">Planillas impresas</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: ACADEMIA Y CHARLAS -->
+            <!-- TAB 3: ACADEMIA -->
             <div id="tab-academia" class="tab-content hidden space-y-6">
                 <div class="bg-gradient-to-r from-indigo-900 to-slate-900 border border-indigo-700 p-6 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
                         <span class="bg-indigo-500 text-white font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider">Monetización @entrenafutsal</span>
                         <h2 class="text-2xl font-black text-white mt-1">Plataforma de Charlas y Capacitaciones</h2>
-                        <p class="text-sm text-slate-300">Publica masterclasses tácticas y capacitaciones aranceladas para la comunidad de futsal.</p>
+                        <p class="text-sm text-slate-300">Publica masterclasses tácticas y capacitaciones aranceladas para la comunidad.</p>
                     </div>
                 </div>
 
@@ -339,7 +398,7 @@
                 </div>
             </div>
 
-            <!-- TABS DE APOYO -->
+            <!-- TABS MÓDULOS SECUNDARIOS -->
             <div id="tab-plantel" class="tab-content hidden p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-300">
                 <h2 class="text-lg font-bold text-white mb-2">Control de Plantel y RPE</h2>
                 <p class="text-xs text-slate-400">Seguimiento físico y fisiológico de los 14 jugadores.</p>
@@ -353,13 +412,33 @@
         </main>
     </div>
 
-    <!-- SCRIPT DE INTERACTIVIDAD DE PESTAÑAS -->
+    <!-- SCRIPT DE NAVEGACIÓN DE PESTAÑAS Y ESTILOS ACTIVOS -->
     <script>
-        function showTab(tabId) {
+        function showTab(tabId, btnElement) {
+            // Ocultar todos los contenidos
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
+                tab.classList.remove('flex');
             });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Mostrar el seleccionado
+            const activeTab = document.getElementById('tab-' + tabId);
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+                if (tabId === 'pizarra' || tabId === 'analisis' || tabId === 'stats' || tabId === 'arqueros' || tabId === 'planillas') {
+                    activeTab.classList.add('flex');
+                }
+            }
+
+            // Actualizar estilo de botones del menú lateral
+            if (btnElement) {
+                document.querySelectorAll('.nav-link').forEach(btn => {
+                    btn.classList.remove('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
+                    btn.classList.add('text-slate-300');
+                });
+                btnElement.classList.remove('text-slate-300');
+                btnElement.classList.add('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
+            }
         }
     </script>
 </body>
