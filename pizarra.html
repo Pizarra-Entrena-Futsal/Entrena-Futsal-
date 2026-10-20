@@ -720,6 +720,20 @@
     }
 
     render();
+    function enviarJugadaAKanban() {
+    const canvas = document.querySelector('canvas');
+    const capturaCancha = canvas ? canvas.toDataURL('image/png') : '';
+    const tituloJugada = prompt("Nombre de la jugada / tarea para el DT:", "Salida de Presión 3-1");
+    if (!tituloJugada) return;
+
+    window.parent.postMessage({
+        type: 'ADD_KANBAN_TASK',
+        title: tituloJugada,
+        area: 'DT',
+        priority: 'MD-2',
+        image: capturaCancha
+    }, '*');
+}
   </script>
 </body>
 </html>
