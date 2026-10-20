@@ -25,20 +25,25 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
 
     <!-- NAV BAR SUPERIOR -->
-    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
+    <header class="bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-3 flex items-center justify-between gap-4 sticky top-0 z-40">
         <div class="flex items-center space-x-3">
-            <img src="logo.png.jpg" alt="Entrena Futsal Logo" class="h-10 w-10 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
+            <!-- BOTÓN MENÚ MÓVIL (HAMBURGUESA) -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white text-xl p-1 focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <img src="logo.png.jpg" alt="Entrena Futsal Logo" class="h-9 w-9 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
             <div>
-                <h1 class="font-bold text-lg text-white leading-none">ENTRENA FUTSAL <span class="text-emerald-400 text-xs px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 ml-2">STAFF HUB</span></h1>
-                <p class="text-xs text-slate-400 mt-1">Plataforma Integral de Gestión y Rendimiento</p>
+                <h1 class="font-bold text-base md:text-lg text-white leading-none">ENTRENA FUTSAL <span class="text-emerald-400 text-[10px] md:text-xs px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 ml-1">STAFF HUB</span></h1>
+                <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Plataforma Integral de Gestión y Rendimiento</p>
             </div>
         </div>
 
-        <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700 text-sm">
-            <div class="flex items-center space-x-2 text-amber-400 font-semibold">
+        <div class="hidden lg:flex items-center space-x-4 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700 text-sm">
+            <div class="flex items-center space-x-2 text-amber-400 font-semibold text-xs">
                 <i class="fa-solid fa-trophy"></i>
                 <span>MD-2 vs. Rival Directo</span>
             </div>
@@ -48,29 +53,57 @@
 
         <!-- USUARIO Y PERFIL -->
         <div class="flex items-center space-x-3">
-            <div id="user-profile-badge" class="hidden items-center space-x-3 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl">
-                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs text-white uppercase" id="user-avatar-initials">DT</div>
+            <div id="user-profile-badge" class="hidden items-center space-x-2.5 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl">
+                <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs text-white uppercase" id="user-avatar-initials">DT</div>
                 <div class="text-xs">
                     <p class="font-bold text-white leading-none" id="user-display-name">Usuario</p>
                     <span class="text-[10px] text-emerald-400 font-mono" id="user-display-role">Director Técnico</span>
                 </div>
-                <button onclick="logoutUser()" title="Cerrar Sesión" class="text-slate-400 hover:text-rose-400 transition ml-2 text-sm">
+                <button onclick="logoutUser()" title="Cerrar Sesión" class="text-slate-400 hover:text-rose-400 transition ml-1 text-sm">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
 
-            <button id="btn-login-trigger" onclick="openAuthModal('login')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg transition flex items-center space-x-1.5">
+            <button id="btn-login-trigger" onclick="openAuthModal('login')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/10">
                 <i class="fa-solid fa-user"></i>
                 <span>Iniciar Sesión</span>
             </button>
         </div>
     </header>
 
+    <!-- MENÚ DESPLEGABLE MÓVIL (PARA CELULARES) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 py-3 space-y-3">
+        <div>
+            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Herramientas Tácticas (Gratis)</h3>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <button onclick="showTab('dashboard'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chart-pie mr-1 text-emerald-400"></i> Dashboard</button>
+                <button onclick="showTab('pizarra'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chalkboard mr-1 text-blue-400"></i> Pizarra</button>
+                <button onclick="showTab('analisis'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-video mr-1 text-purple-400"></i> Video</button>
+                <button onclick="showTab('stats'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chart-line mr-1 text-emerald-400"></i> Stats</button>
+                <button onclick="showTab('arqueros'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-hand-paper mr-1 text-amber-400"></i> Arqueros</button>
+                <button onclick="showTab('planillas'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-file-pdf mr-1 text-rose-400"></i> Planillas</button>
+            </div>
+        </div>
+        <div class="pt-2 border-t border-slate-800">
+            <h3 class="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-2">Módulos de Gestión Staff (PRO)</h3>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <button onclick="showTab('kanban'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left flex justify-between items-center">
+                    <span><i class="fa-solid fa-list-check mr-1 text-cyan-400"></i> Kanban</span>
+                    <i class="fa-solid fa-lock text-[10px] text-amber-400 pro-lock-icon"></i>
+                </button>
+                <button onclick="showTab('plantel'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left flex justify-between items-center">
+                    <span><i class="fa-solid fa-users-gear mr-1 text-green-400"></i> RPE / Plantel</span>
+                    <i class="fa-solid fa-lock text-[10px] text-amber-400 pro-lock-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- CUERPO PRINCIPAL -->
     <div class="flex flex-1 overflow-hidden">
 
-        <!-- BARRA LATERAL (NAVEGACIÓN) -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
+        <!-- BARRA LATERAL ESCRITORIO (NAVEGACIÓN) -->
+        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col justify-between hidden md:flex shrink-0">
             <div class="p-4 space-y-6 overflow-y-auto">
                 <!-- HERRAMIENTAS TÁCTICAS (GRATIS) -->
                 <div>
@@ -106,7 +139,7 @@
                     </nav>
                 </div>
 
-                <!-- GESTIÓN DE CUERPOS TÉCNICOS (MÓDULOS PRO DE PAGO) -->
+                <!-- GESTIÓN DE CUERPOS TÉCNICOS (MÓDULOS PRO) -->
                 <div>
                     <div class="flex items-center justify-between mb-3 px-3">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Gestión Cuerpos Técnicos</h3>
@@ -167,7 +200,7 @@
 
             <!-- TAB 1: DASHBOARD PRINCIPAL -->
             <div id="tab-dashboard" class="tab-content space-y-6">
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
                     <button onclick="showTab('pizarra')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
                         <span class="text-xs font-bold text-slate-200">Pizarra Online</span>
@@ -190,40 +223,40 @@
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
                             <span>Plantel Disponible</span>
                             <i class="fa-solid fa-user-check text-emerald-400"></i>
                         </div>
-                        <p class="text-3xl font-extrabold text-white">12 / 14</p>
+                        <p class="text-2xl md:text-3xl font-extrabold text-white">12 / 14</p>
                         <p class="text-xs text-rose-400 mt-2"><i class="fa-solid fa-kit-medical"></i> 2 Jugadores en Sanidad</p>
                     </div>
 
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
                             <span>Promedio Carga RPE</span>
                             <i class="fa-solid fa-gauge-high text-amber-400"></i>
                         </div>
-                        <p class="text-3xl font-extrabold text-amber-400">7.2 <span class="text-xs text-slate-400">/ 10</span></p>
+                        <p class="text-2xl md:text-3xl font-extrabold text-amber-400">7.2 <span class="text-xs text-slate-400">/ 10</span></p>
                         <p class="text-xs text-slate-400 mt-2">Microciclo Competitivo</p>
                     </div>
 
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
                             <span>Tareas Mi Staff</span>
                             <i class="fa-solid fa-tasks text-blue-400"></i>
                         </div>
-                        <p class="text-3xl font-extrabold text-white" id="dashboard-task-count">0</p>
+                        <p class="text-2xl md:text-3xl font-extrabold text-white" id="dashboard-task-count">0</p>
                         <p class="text-xs text-slate-400 mt-2" id="dashboard-task-status">Cargando tareas...</p>
                     </div>
 
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
                             <span>Módulo de Gestión</span>
                             <i class="fa-solid fa-crown text-amber-400"></i>
                         </div>
-                        <p class="text-2xl font-extrabold text-amber-400" id="dash-sub-label">Plan Gratuito</p>
+                        <p class="text-xl md:text-2xl font-extrabold text-amber-400" id="dash-sub-label">Plan Gratuito</p>
                         <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">12 USD/mes (Hasta 3 integrantes)</p>
                     </div>
                 </div>
@@ -235,30 +268,30 @@
                             <span class="text-xs text-slate-400">Sistema 3-1</span>
                         </h3>
                         <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                                <span class="text-xs font-bold bg-amber-950 text-amber-400 px-2 py-1 rounded">ARQ</span>
-                                <span class="font-semibold text-sm text-white">1. Arquero Principal</span>
-                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
+                                <span class="font-bold bg-amber-950 text-amber-400 px-2 py-1 rounded">ARQ</span>
+                                <span class="font-semibold text-white">1. Arquero Principal</span>
+                                <span class="text-emerald-400">100% Apto</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                                <span class="text-xs font-bold bg-blue-950 text-blue-400 px-2 py-1 rounded">CIE</span>
-                                <span class="font-semibold text-sm text-white">3. Cierre Central</span>
-                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
+                                <span class="font-bold bg-blue-950 text-blue-400 px-2 py-1 rounded">CIE</span>
+                                <span class="font-semibold text-white">3. Cierre Central</span>
+                                <span class="text-emerald-400">100% Apto</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                                <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-sm text-white">8. Ala Izquierdo</span>
-                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
+                                <span class="font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
+                                <span class="font-semibold text-white">8. Ala Izquierdo</span>
+                                <span class="text-emerald-400">100% Apto</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                                <span class="text-xs font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-sm text-white">10. Ala Derecho</span>
-                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
+                                <span class="font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
+                                <span class="font-semibold text-white">10. Ala Derecho</span>
+                                <span class="text-emerald-400">100% Apto</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                                <span class="text-xs font-bold bg-rose-950 text-rose-400 px-2 py-1 rounded">PIV</span>
-                                <span class="font-semibold text-sm text-white">9. Pívot</span>
-                                <span class="text-xs text-emerald-400">100% Apto</span>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
+                                <span class="font-bold bg-rose-950 text-rose-400 px-2 py-1 rounded">PIV</span>
+                                <span class="font-semibold text-white">9. Pívot</span>
+                                <span class="text-emerald-400">100% Apto</span>
                             </div>
                         </div>
                     </div>
@@ -528,79 +561,4 @@
                     <span><strong>Equipo & Carga RPE:</strong> Monitoreo de fatiga y escala Borg (1-10) por jugador.</span>
                 </div>
                 <div class="flex items-center space-x-2 text-slate-200">
-                    <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Planificación & Torneos:</strong> Calendario de microciclos (MD-5 a MD-Day).</span>
-                </div>
-            </div>
-
-            <!-- SECCIÓN DE PAGO CON MERCADO PAGO ALIAS "entrenafutsal" -->
-            <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-wallet text-sky-400 text-lg"></i>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Mercado Pago / CVU / Bancos</p>
-                            <p class="text-[10px] text-slate-400">Transferir monto equivalente a 12 USD al alias:</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] bg-sky-950 text-sky-400 font-mono px-2 py-1 rounded border border-sky-800 font-bold">Alias MP</span>
-                </div>
-
-                <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
-                    <span class="font-mono text-sm font-black text-emerald-400 tracking-wider">entrenafutsal</span>
-                    <button onclick="copiarAlias()" id="btn-copy-alias" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1">
-                        <i class="fa-solid fa-copy"></i>
-                        <span>Copiar Alias</span>
-                    </button>
-                </div>
-
-                <div class="pt-2 border-t border-slate-800">
-                    <p class="text-[11px] text-slate-400 mb-1.5">Una vez realizada la transferencia, ingresa tu clave de activación:</p>
-                    <div class="flex space-x-2">
-                        <input type="text" id="license-key-input" placeholder="Ej: EF-PRO-2026" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-amber-500 uppercase">
-                        <button onclick="activateLicense()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs transition">Activar PRO</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PARA NUEVA TAREA DE STAFF -->
-    <div id="modal-task" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-white text-base">Asignar Tarea al Staff</h3>
-                <button onclick="closeTaskModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="form-task" onsubmit="saveTask(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Título de la Tarea / Jugada</label>
-                    <input type="text" id="task-title" required placeholder="Ej: Salida de presión 3-1 contra rival" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Área / Rol</label>
-                        <select id="task-area" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                            <option value="DT">Director Técnico (DT)</option>
-                            <option value="PF">Preparador Físico (PF)</option>
-                            <option value="Kine">Kinesiología / Médico</option>
-                            <option value="Video">Analista de Video</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Prioridad</label>
-                        <select id="task-priority" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                            <option value="MD-2">MD-2 (Urgente)</option>
-                            <option value="MD-1">MD-1 (Media)</option>
-                            <option value="MD-Day">Match Day</option>
-                            <option value="Rutina">Rutina Semanal</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Captura de Pizarra (Imagen)</label>
-                    <input type="file" id="task-image-file" accept="image/*" onchange
+                    <i class="fa-solid fa-check text-emerald-40
