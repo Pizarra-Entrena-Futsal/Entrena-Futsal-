@@ -37,7 +37,6 @@
             </div>
         </div>
 
-        <!-- Indicador de Próximo Partido -->
         <div class="hidden md:flex items-center space-x-4 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700 text-sm">
             <div class="flex items-center space-x-2 text-amber-400 font-semibold">
                 <i class="fa-solid fa-trophy"></i>
@@ -149,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- ESTADO DE SUSCRIPCIÓN LATERAL -->
             <div class="p-4 border-t border-slate-800">
                 <div id="subscription-status-card" class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 flex items-center justify-between">
                     <div class="flex items-center space-x-2">
@@ -169,7 +167,6 @@
 
             <!-- TAB 1: DASHBOARD PRINCIPAL -->
             <div id="tab-dashboard" class="tab-content space-y-6">
-                <!-- ACCESOS RÁPIDOS SUPERIORES -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     <button onclick="showTab('pizarra')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
@@ -193,7 +190,6 @@
                     </button>
                 </div>
 
-                <!-- CARDS DE MÉTRICAS -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
@@ -227,12 +223,11 @@
                             <span>Módulo de Gestión</span>
                             <i class="fa-solid fa-crown text-amber-400"></i>
                         </div>
-                        <p class="text-2xl font-extrabold text-amber-400" id="dash-sub-label">Licencia PRO</p>
-                        <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">Acceso a Kanban & RPE</p>
+                        <p class="text-2xl font-extrabold text-amber-400" id="dash-sub-label">Plan Gratuito</p>
+                        <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">Desbloquea con Licencia PRO</p>
                     </div>
                 </div>
 
-                <!-- QUINTETO Y KANBAN RÁPIDO -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
                         <h3 class="font-bold text-white mb-4 flex items-center justify-between">
@@ -274,9 +269,7 @@
                                 <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Tareas Prioritarias Staff</span>
                                 <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero</button>
                             </h3>
-                            <div class="space-y-3" id="dashboard-recent-tasks">
-                                <!-- Se renderiza con JS -->
-                            </div>
+                            <div class="space-y-3" id="dashboard-recent-tasks"></div>
                         </div>
                         <button onclick="openTaskModal()" class="mt-4 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-bold rounded-lg border border-slate-700 transition">
                             + Crear Nueva Tarea de Staff
@@ -446,11 +439,9 @@
         </main>
     </div>
 
-    <!-- MODAL AUTENTICACIÓN (LOGIN / REGISTRO DE USUARIOS) -->
+    <!-- MODAL AUTENTICACIÓN (LOGIN / REGISTRO) -->
     <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5">
-            
-            <!-- CONTROLES PESTAÑAS LOGIN / REGISTRO -->
             <div class="flex border-b border-slate-800 pb-3 justify-between items-center">
                 <div class="flex space-x-4">
                     <button id="tab-btn-login" onclick="switchAuthTab('login')" class="font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1">Iniciar Sesión</button>
@@ -459,7 +450,6 @@
                 <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
-            <!-- FORMULARIO 1: INICIAR SESIÓN -->
             <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">Correo Electrónico</label>
@@ -474,7 +464,6 @@
                 </button>
             </form>
 
-            <!-- FORMULARIO 2: REGISTRO DE USUARIO -->
             <form id="form-register" onsubmit="handleRegisterSubmit(event)" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">Nombre Completo</label>
@@ -635,27 +624,35 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL: USUARIOS, LICENCIA Y KANBAN -->
+    <!-- SCRIPT PRINCIPAL CON PROTECCIÓN ANTI-ERRORES -->
     <script>
-        const VALID_KEY = "EF-PRO-2026"; // Código de prueba para activar la Licencia PRO
+        const VALID_KEY = "EF-PRO-2026";
 
-        let currentUser = JSON.parse(localStorage.getItem('ef_current_user')) || null;
-        let usersDb = JSON.parse(localStorage.getItem('ef_users_db')) || [];
+        let currentUser = null;
+        try {
+            currentUser = JSON.parse(localStorage.getItem('ef_current_user')) || null;
+        } catch(e) { currentUser = null; }
+
+        let usersDb = [];
+        try {
+            usersDb = JSON.parse(localStorage.getItem('ef_users_db')) || [];
+        } catch(e) { usersDb = []; }
+
         let currentUploadedImage = "";
         let tasks = [];
 
-        // INICIALIZAR BASE DE DATOS DE TAREAS SEGÚN EL USUARIO ACTUAL
         function loadUserTasks() {
             if (!currentUser) {
                 tasks = [];
                 return;
             }
             const storageKey = `ef_kanban_tasks_${currentUser.email}`;
-            tasks = JSON.parse(localStorage.getItem(storageKey)) || [
-                { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
-                { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
-                { id: 3, title: 'Evaluación RPE post-entreno', area: 'PF', priority: 'MD-1', status: 'proceso', image: '', videoUrl: '' }
-            ];
+            try {
+                tasks = JSON.parse(localStorage.getItem(storageKey)) || [
+                    { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
+                    { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' }
+                ];
+            } catch(e) { tasks = []; }
         }
 
         function saveTasksToStorage() {
@@ -666,7 +663,6 @@
             updateDashboardTaskWidget();
         }
 
-        // CONTROL DE SESIONES DE USUARIO
         function updateAuthUI() {
             const badge = document.getElementById('user-profile-badge');
             const btnLogin = document.getElementById('btn-login-trigger');
@@ -687,21 +683,21 @@
                         icon.classList.remove('fa-lock', 'text-amber-400');
                         icon.classList.add('fa-check', 'text-emerald-400');
                     });
-                    subLabel.innerText = "Licencia PRO ✅";
-                    subDesc.innerText = "Acceso Ilimitado";
+                    if (subLabel) subLabel.innerText = "Licencia PRO ✅";
+                    if (subDesc) subDesc.innerText = "Acceso Ilimitado";
                 } else {
                     document.querySelectorAll('.pro-lock-icon').forEach(icon => {
                         icon.classList.remove('fa-check', 'text-emerald-400');
                         icon.classList.add('fa-lock', 'text-amber-400');
                     });
-                    subLabel.innerText = "Plan Gratuito 🔒";
-                    subDesc.innerText = "Modulo de Gestión Bloqueado";
+                    if (subLabel) subLabel.innerText = "Plan Gratuito 🔒";
+                    if (subDesc) subDesc.innerText = "Modulo de Gestión Bloqueado";
                 }
             } else {
                 badge.classList.add('hidden');
                 btnLogin.classList.remove('hidden');
-                subLabel.innerText = "Sin Sesión 🔒";
-                subDesc.innerText = "Inicia Sesión para ver tareas";
+                if (subLabel) subLabel.innerText = "Sin Sesión 🔒";
+                if (subDesc) subDesc.innerText = "Inicia Sesión para ver tareas";
             }
         }
 
@@ -795,7 +791,7 @@
 
         function activateLicense() {
             if (!currentUser) {
-                alert("Debes iniciar sesión para activar tu Licencia PRO.");
+                alert("Debes iniciar sesión primero para activar tu Licencia PRO.");
                 openAuthModal('login');
                 return;
             }
@@ -805,7 +801,6 @@
                 currentUser.isPro = true;
                 localStorage.setItem('ef_current_user', JSON.stringify(currentUser));
 
-                // Actualizar en BD
                 const idx = usersDb.findIndex(u => u.email === currentUser.email);
                 if (idx !== -1) {
                     usersDb[idx].isPro = true;
@@ -814,9 +809,9 @@
 
                 updateAuthUI();
                 closePaywallModal();
-                alert('🎉 ¡Licencia PRO activada con éxito! Todos los módulos de Gestión han sido desbloqueados.');
+                alert('🎉 ¡Licencia PRO activada con éxito! Módulos de gestión desbloqueados.');
             } else {
-                alert('❌ Código de licencia inválido. Usa "EF-PRO-2026" para probar la activación.');
+                alert('❌ Código de licencia inválido. Usa "EF-PRO-2026" para probar.');
             }
         }
 
@@ -825,7 +820,7 @@
 
             if (proTabs.includes(tabId)) {
                 if (!currentUser) {
-                    alert("Debes registrarte o iniciar sesión para ingresar a los módulos de Gestión.");
+                    alert("Por favor inicia sesión o regístrate para ingresar a los módulos de Gestión.");
                     openAuthModal('login');
                     return;
                 }
@@ -863,4 +858,250 @@
         }
 
         function closePaywallModal() {
-            document.getElementById('modal
+            document.getElementById('modal-paywall').classList.add('hidden');
+        }
+
+        function openTaskModal(presetTitle = "", presetImage = "") {
+            if (!currentUser) {
+                alert("Inicia sesión para crear o recibir tareas.");
+                openAuthModal('login');
+                return;
+            }
+            document.getElementById('modal-task').classList.remove('hidden');
+            if (presetTitle) document.getElementById('task-title').value = presetTitle;
+            if (presetImage) {
+                currentUploadedImage = presetImage;
+                document.getElementById('image-preview').src = presetImage;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            }
+        }
+
+        function closeTaskModal() {
+            document.getElementById('modal-task').classList.add('hidden');
+            document.getElementById('form-task').reset();
+            document.getElementById('image-preview-container').classList.add('hidden');
+            currentUploadedImage = "";
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentUploadedImage = event.target.result;
+                    document.getElementById('image-preview').src = currentUploadedImage;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('task-title').value.trim();
+            const area = document.getElementById('task-area').value;
+            const priority = document.getElementById('task-priority').value;
+            const status = document.getElementById('task-status').value;
+            const videoUrl = document.getElementById('task-video-url').value.trim();
+
+            if (!title) return;
+
+            const newTask = {
+                id: Date.now(),
+                title: title,
+                area: area,
+                priority: priority,
+                status: status,
+                image: currentUploadedImage,
+                videoUrl: videoUrl
+            };
+
+            tasks.push(newTask);
+            saveTasksToStorage();
+            closeTaskModal();
+        }
+
+        function moveTask(id, newStatus) {
+            tasks = tasks.map(t => t.id === id ? { ...t, status: newStatus } : t);
+            saveTasksToStorage();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasksToStorage();
+        }
+
+        function openViewer(title, imageSrc) {
+            document.getElementById('viewer-title').innerText = title;
+            document.getElementById('viewer-image').src = imageSrc;
+            document.getElementById('modal-viewer').classList.remove('hidden');
+        }
+
+        function closeViewerModal() {
+            document.getElementById('modal-viewer').classList.add('hidden');
+        }
+
+        function getAreaBadge(area) {
+            switch(area) {
+                case 'DT': return 'bg-amber-950 text-amber-400 border-amber-800';
+                case 'PF': return 'bg-emerald-950 text-emerald-400 border-emerald-800';
+                case 'Kine': return 'bg-rose-950 text-rose-400 border-rose-800';
+                case 'Video': return 'bg-purple-950 text-purple-400 border-purple-800';
+                default: return 'bg-slate-800 text-slate-300 border-slate-700';
+            }
+        }
+
+        function renderKanban() {
+            const filterEl = document.getElementById('kanban-filter');
+            if (!filterEl) return;
+            const filter = filterEl.value;
+
+            const cols = {
+                pendiente: document.getElementById('col-pendiente'),
+                proceso: document.getElementById('col-proceso'),
+                revision: document.getElementById('col-revision'),
+                completado: document.getElementById('col-completado')
+            };
+
+            if (!cols.pendiente) return;
+
+            Object.values(cols).forEach(col => col.innerHTML = '');
+            const counts = { pendiente: 0, proceso: 0, revision: 0, completado: 0 };
+
+            tasks.forEach(task => {
+                if (filter !== 'todos' && task.area !== filter) return;
+
+                counts[task.status]++;
+                const badgeClass = getAreaBadge(task.area);
+
+                let moveButtons = '';
+                if (task.status === 'pendiente') {
+                    moveButtons = `<button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-blue-400 hover:underline">Iniciar ➔</button>`;
+                } else if (task.status === 'proceso') {
+                    moveButtons = `
+                        <button onclick="moveTask(${task.id}, 'pendiente')" class="text-xs text-slate-400 hover:underline">⬅ Volver</button>
+                        <button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-amber-400 hover:underline">Revisión ➔</button>
+                    `;
+                } else if (task.status === 'revision') {
+                    moveButtons = `
+                        <button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-slate-400 hover:underline">⬅ Corregir</button>
+                        <button onclick="moveTask(${task.id}, 'completado')" class="text-xs text-emerald-400 hover:underline">Aprobar ➔</button>
+                    `;
+                } else if (task.status === 'completado') {
+                    moveButtons = `<button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-slate-400 hover:underline">⬅ Reabrir</button>`;
+                }
+
+                let imageHtml = '';
+                if (task.image) {
+                    imageHtml = `
+                        <div class="mt-2 cursor-pointer relative group" onclick="openViewer('${task.title}', '${task.image}')">
+                            <img src="${task.image}" class="w-full h-28 object-cover rounded-lg border border-slate-700/80">
+                            <span class="absolute bottom-1 right-1 bg-slate-950/80 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
+                                <i class="fa-solid fa-expand"></i> Ampliar
+                            </span>
+                        </div>
+                    `;
+                }
+
+                let videoHtml = '';
+                if (task.videoUrl) {
+                    videoHtml = `
+                        <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
+                            <i class="fa-solid fa-circle-play text-purple-400"></i>
+                            <span class="font-bold">Ver Videoanálisis</span>
+                        </a>
+                    `;
+                }
+
+                const cardHtml = `
+                    <div class="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 hover:border-slate-600 transition flex flex-col justify-between space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">${task.area}</span>
+                            <span class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-clock text-[9px] mr-1"></i>${task.priority}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-white leading-snug">${task.title}</p>
+                        ${imageHtml}
+                        ${videoHtml}
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-700/50 mt-1">
+                            <div class="flex space-x-2">${moveButtons}</div>
+                            <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+
+                cols[task.status].innerHTML += cardHtml;
+            });
+
+            if (document.getElementById('badge-pendiente')) {
+                document.getElementById('badge-pendiente').innerText = counts.pendiente;
+                document.getElementById('badge-proceso').innerText = counts.proceso;
+                document.getElementById('badge-revision').innerText = counts.revision;
+                document.getElementById('badge-completado').innerText = counts.completado;
+            }
+        }
+
+        function updateDashboardTaskWidget() {
+            const countEl = document.getElementById('dashboard-task-count');
+            const statusEl = document.getElementById('dashboard-task-status');
+            const listEl = document.getElementById('dashboard-recent-tasks');
+
+            if (!countEl) return;
+
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.status === 'completado').length;
+            const pending = total - completed;
+
+            countEl.innerText = total;
+            statusEl.innerText = `${completed} Completadas (${pending} Pendientes)`;
+
+            const priorityTasks = tasks.filter(t => t.status !== 'completado').slice(0, 2);
+            listEl.innerHTML = '';
+
+            if (priorityTasks.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-500 italic p-2">No hay tareas pendientes en el tablero.</p>`;
+            } else {
+                priorityTasks.forEach(task => {
+                    listEl.innerHTML += `
+                        <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-cyan-500 flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-semibold text-white">${task.title}</p>
+                                <span class="text-[10px] text-slate-400">Área: ${task.area}</span>
+                            </div>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold border border-slate-700">${task.priority}</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'ADD_KANBAN_TASK') {
+                if (!currentUser) {
+                    alert("Inicia sesión en la plataforma para recibir y guardar jugadas.");
+                    openAuthModal('login');
+                    return;
+                }
+                const newTask = {
+                    id: Date.now(),
+                    title: event.data.title || 'Nueva Jugada Táctica',
+                    area: event.data.area || 'DT',
+                    priority: event.data.priority || 'MD-2',
+                    status: 'pendiente',
+                    image: event.data.image || '',
+                    videoUrl: event.data.videoUrl || ''
+                };
+                tasks.push(newTask);
+                saveTasksToStorage();
+                showTab('kanban');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserTasks();
+            updateAuthUI();
+            renderKanban();
+            updateDashboardTaskWidget();
+        });
+    </script>
+</body>
+</html>
