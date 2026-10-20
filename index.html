@@ -624,7 +624,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON PROTECCIÓN ANTI-ERRORES -->
+    <!-- SCRIPT PRINCIPAL CON REPRODUCTOR INTERACTIVO DE VIDEO EN KANBAN Y PROTECCIÓN DE DATOS -->
     <script>
         const VALID_KEY = "EF-PRO-2026";
 
@@ -1005,12 +1005,23 @@
 
                 let videoHtml = '';
                 if (task.videoUrl) {
-                    videoHtml = `
-                        <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
-                            <i class="fa-solid fa-circle-play text-purple-400"></i>
-                            <span class="font-bold">Ver Videoanálisis</span>
-                        </a>
-                    `;
+                    if (task.videoUrl.startsWith('data:video') || task.videoUrl.startsWith('blob:') || task.videoUrl.endsWith('.mp4') || task.videoUrl.endsWith('.webm')) {
+                        videoHtml = `
+                            <div class="mt-2 space-y-1">
+                                <span class="text-[10px] text-purple-400 font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-film"></i> Video Animado de la Jugada:
+                                </span>
+                                <video controls src="${task.videoUrl}" class="w-full rounded-lg border border-purple-800/80 bg-black max-h-48 object-contain shadow-md"></video>
+                            </div>
+                        `;
+                    } else {
+                        videoHtml = `
+                            <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
+                                <i class="fa-solid fa-circle-play text-purple-400"></i>
+                                <span class="font-bold">Abrir Videoanálisis Externo</span>
+                            </a>
+                        `;
+                    }
                 }
 
                 const cardHtml = `
