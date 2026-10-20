@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #090d16; color: #fff; min-height: 100vh; padding: 12px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0b131e; color: #fff; min-height: 100vh; padding: 12px; }
     
     /* EFECTO TÁCTIL DE BOTONES */
     .btn-tag { transition: all 0.1s ease-in-out; touch-action: manipulation; }
@@ -17,8 +17,8 @@
 
     /* HEXÁGONOS DE DESCRIPTORES TÁCTICOS */
     .hex-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 500px; margin: 0 auto; }
-    .hex-btn { background: #1e293b; border: 2px solid #3b82f6; color: #e2e8f0; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 12px 14px; border-radius: 12px; text-align: center; cursor: pointer; flex: 1 1 calc(33% - 12px); min-width: 100px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .hex-btn.active { background: #2563eb; color: #fff; border-color: #60a5fa; box-shadow: 0 0 12px rgba(37,99,235,0.6); }
+    .hex-btn { background: #162232; border: 2px solid #0ea5e9; color: #e2e8f0; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 12px 14px; border-radius: 12px; text-align: center; cursor: pointer; flex: 1 1 calc(33% - 12px); min-width: 100px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .hex-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; box-shadow: 0 0 12px rgba(14,165,233,0.6); }
 
     /* BADGES DE JUGADORES */
     .shirt-btn { width: 42px; height: 42px; background: #991b1b; border: 2px solid #ef4444; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; cursor: pointer; }
@@ -45,11 +45,15 @@
     </div>
 
     <!-- BOTONES ACCIÓN PRINCIPAL -->
-    <div class="flex items-center space-x-2">
+    <div class="flex flex-wrap items-center gap-2">
       <button onclick="clearCurrentTag()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg border border-slate-700">🧹 Limpiar</button>
+      <button onclick="descargarInformeWyscout()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-black rounded-lg transition flex items-center space-x-1 shadow-lg shadow-sky-600/20">
+        <i class="fa-solid fa-download"></i>
+        <span>Descargar Reporte HD</span>
+      </button>
       <button onclick="enviarBotoneraAKanban()" class="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-lg transition flex items-center space-x-1.5 shadow-lg shadow-emerald-500/20">
         <i class="fa-solid fa-paper-plane"></i>
-        <span>Enviar Stats a Kanban DT</span>
+        <span>Enviar a Kanban DT</span>
       </button>
     </div>
   </header>
@@ -127,13 +131,25 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="addEvent('Tiro Libre Recibido', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+          <button onclick="addEvent('Falta Recibida', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
             <span>Falta Recibida</span>
             <span id="cnt-flt-propio" class="font-mono text-white">0</span>
           </button>
           <button onclick="addEvent('Falta Cometida', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
             <span>Falta Cometida</span>
             <span id="cnt-flt-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <!-- BOTOES DE SEXTA FALTA (NUEVO) -->
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Sexta Falta A Favor', 'propio')" class="btn-tag p-2 bg-amber-950 text-amber-300 text-[11px] font-black rounded-lg border border-amber-600 flex justify-between">
+            <span>🚨 6ª Falta Propia</span>
+            <span id="cnt-sxt-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Sexta Falta Rival', 'rival')" class="btn-tag p-2 bg-purple-950 text-purple-300 text-[11px] font-black rounded-lg border border-purple-600 flex justify-between">
+            <span>🚨 6ª Falta Rival</span>
+            <span id="cnt-sxt-rival" class="font-mono text-white">0</span>
           </button>
         </div>
 
@@ -148,13 +164,14 @@
           </button>
         </div>
 
+        <!-- PENAL EN LUGAR DE PENALTI -->
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="addEvent('Penalti / 10m Favor', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
-            <span>10m / Penalti Fav.</span>
+          <button onclick="addEvent('Penal A Favor', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Penal A Favor</span>
             <span id="cnt-pen-propio" class="font-mono text-white">0</span>
           </button>
-          <button onclick="addEvent('Penalti / 10m Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
-            <span>10m / Penalti Riv.</span>
+          <button onclick="addEvent('Penal Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Penal Rival</span>
             <span id="cnt-pen-rival" class="font-mono text-white">0</span>
           </button>
         </div>
@@ -173,11 +190,11 @@
     <!-- COLUMNA 2: MATRIZ DE DESCRIPTORES TÁCTICOS Y ZONAS -->
     <div class="md:col-span-5 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-4">
       <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider text-center flex items-center justify-center gap-2">
-        <i class="fa-solid fa-shapes text-blue-400"></i>
+        <i class="fa-solid fa-shapes text-sky-400"></i>
         <span>Matriz de Descriptores Tácticos</span>
       </h3>
 
-      <!-- PANAL DE BEJA TÁCTICO -->
+      <!-- PANAL DE ABEJA TÁCTICO CON ARQUERO -->
       <div class="hex-grid">
         <button onclick="toggleHex('A Puerta', this)" class="hex-btn">A Puerta</button>
         <button onclick="toggleHex('Robo', this)" class="hex-btn">Robo</button>
@@ -189,7 +206,7 @@
         <button onclick="toggleHex('Cambio Posesión', this)" class="hex-btn">Transición</button>
         <button onclick="toggleHex('Fuera Área', this)" class="hex-btn">Fuera del Área</button>
         <button onclick="toggleHex('Ataque 4-0', this)" class="hex-btn">Sistema 4-0</button>
-        <button onclick="toggleHex('Juego 5v4', this)" class="hex-btn">Portero Jugador</button>
+        <button onclick="toggleHex('Arquero Jugador', this)" class="hex-btn">Arquero Jugador 5v4</button>
         <button onclick="toggleHex('Fuera', this)" class="hex-btn">Tiro Fuera</button>
       </div>
 
@@ -198,13 +215,13 @@
         <span class="text-[11px] font-bold text-slate-400 block text-center uppercase">Intensidad de Presión / Zona Táctica</span>
         
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="addDescriptor('Presión Alta')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+          <button onclick="addDescriptor('Presión Alta')" class="btn-tag p-2 bg-sky-950 text-sky-300 font-bold text-[11px] rounded-lg border border-sky-800 text-center">
             Presión Alta
           </button>
-          <button onclick="addDescriptor('Presión Media')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+          <button onclick="addDescriptor('Presión Media')" class="btn-tag p-2 bg-sky-950 text-sky-300 font-bold text-[11px] rounded-lg border border-sky-800 text-center">
             Presión Media
           </button>
-          <button onclick="addDescriptor('Presión Baja')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+          <button onclick="addDescriptor('Presión Baja')" class="btn-tag p-2 bg-sky-950 text-sky-300 font-bold text-[11px] rounded-lg border border-sky-800 text-center">
             Presión Baja
           </button>
         </div>
@@ -222,9 +239,9 @@
         </div>
       </div>
 
-      <!-- DORSALES DE JUGADORES -->
+      <!-- DORSALES DE JUGADORES (ARQUEROS Y JUGADORES) -->
       <div class="pt-2 border-t border-slate-800">
-        <span class="text-[11px] font-bold text-slate-400 block mb-2 text-center uppercase">Jugadores Involucrados (Dorsal)</span>
+        <span class="text-[11px] font-bold text-slate-400 block mb-2 text-center uppercase">Jugadores e Involucrados (Dorsal)</span>
         <div class="flex flex-wrap justify-center gap-1.5" id="shirtContainer"></div>
       </div>
     </div>
@@ -248,7 +265,7 @@
           <strong class="text-emerald-400" id="currentPeriodLabel">1º Tiempo</strong>
         </div>
         <button onclick="exportTagLog()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg border border-slate-700 transition">
-          💾 Guardar Copia Local
+          💾 Guardar Copia Local (.json)
         </button>
       </div>
     </div>
@@ -268,6 +285,7 @@
       rem_propio: 0, rem_rival: 0,
       gol_propio: 0, gol_rival: 0,
       flt_propio: 0, flt_rival: 0,
+      sxt_propio: 0, sxt_rival: 0,
       cor_propio: 0, cor_rival: 0,
       pen_propio: 0, pen_rival: 0
     };
@@ -277,7 +295,7 @@
       container.innerHTML = '';
       for (let i = 1; i <= 14; i++) {
         container.innerHTML += `
-          <button onclick="togglePlayer(${i}, this)" class="shirt-btn btn-tag">${i}</button>
+          <button onclick="togglePlayer(${i}, this)" class="shirt-btn btn-tag" title="Jugador #${i}">${i}</button>
         `;
       }
     }
@@ -320,13 +338,14 @@
       if (type === 'propio' || type === 'rival') {
         const keyMap = {
           'Posesión Propia': 'pos_propio', 'Posesión Rival': 'pos_rival',
-          'Recuperación': 'rec_propio', 'Recuperación Rival': 'rec_rival',
-          'Pérdida': 'per_propio', 'Pérdida Rival': 'per_rival',
+          'Recuperación': 'rec_propio', 'Pérdida Rival': 'per_rival',
+          'Pérdida': 'per_propio', 'Recuperación Rival': 'rec_rival',
           'Remate A Favor': 'rem_propio', 'Remate Rival': 'rem_rival',
           'Gol A Favor': 'gol_propio', 'Gol Rival': 'gol_rival',
-          'Tiro Libre Recibido': 'flt_propio', 'Falta Cometida': 'flt_rival',
+          'Falta Recibida': 'flt_propio', 'Falta Cometida': 'flt_rival',
+          'Sexta Falta A Favor': 'sxt_propio', 'Sexta Falta Rival': 'sxt_rival',
           'Córner A Favor': 'cor_propio', 'Córner Rival': 'cor_rival',
-          'Penalti / 10m Favor': 'pen_propio', 'Penalti / 10m Rival': 'pen_rival'
+          'Penal A Favor': 'pen_propio', 'Penal Rival': 'pen_rival'
         };
 
         if (keyMap[eventName]) {
@@ -368,7 +387,7 @@
 
       logContainer.innerHTML = '';
       tagHistory.slice(0, 30).forEach(item => {
-        const descText = item.descriptors.length > 0 ? `<br><span class="text-blue-400 text-[10px]">🏷️ ${item.descriptors.join(', ')}</span>` : '';
+        const descText = item.descriptors.length > 0 ? `<br><span class="text-sky-400 text-[10px]">🏷️ ${item.descriptors.join(', ')}</span>` : '';
         const playerText = item.players.length > 0 ? `<br><span class="text-amber-400 text-[10px]">🏃 #${item.players.join(', #')}</span>` : '';
 
         logContainer.innerHTML += `
@@ -413,66 +432,189 @@
       downloadAnchor.remove();
     }
 
-    // ENVIAR INFORME AL TABLERO KANBAN
-    function enviarBotoneraAKanban() {
+    // DIBUJAR INFORME TIPO WYSCOUT / SPORTS DATA CAMPUS EN CANVAS HD
+    function renderWyscoutCanvas() {
+      const repCanvas = document.createElement('canvas');
+      repCanvas.width = 1400;
+      repCanvas.height = 950;
+      const ctx = repCanvas.getContext('2d');
+
+      // Fondo Oscuro de Alta Gama (Estilo Wyscout / StatsBomb)
+      ctx.fillStyle = '#0b131e';
+      ctx.fillRect(0, 0, repCanvas.width, repCanvas.height);
+
+      // MARCO SUPERIOR DE MARCA (SPORTS DATA CAMPUS / ENTRENA FUTSAL)
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(0, 0, repCanvas.width, 8);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px sans-serif';
+      ctx.fillText('ENTRENA FUTSAL | SPORTS DATA ANALYTICS', 40, 50);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText(`MATCH REPORT - ${currentPeriod.toUpperCase()} | ${new Date().toLocaleDateString('es-AR')}`, 40, 75);
+
+      // TARJETA 1: CANCHA TÁCTICA CON ZONAS Y TIROS (IZQUIERDA)
+      ctx.fillStyle = '#162232';
+      ctx.strokeStyle = '#23354d';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.roundRect(40, 100, 420, 320, 16); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.roundRect(60, 120, 380, 210, 12); ctx.fill();
+
+      // Dibujo de Cancha Futsal en la tarjeta
+      ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2;
+      ctx.strokeRect(70, 130, 360, 190);
+      ctx.beginPath(); ctx.moveTo(250, 130); ctx.lineTo(250, 320); ctx.stroke();
+      ctx.beginPath(); ctx.arc(250, 225, 35, 0, Math.PI * 2); ctx.stroke();
+
+      // Dibujar algunos puntos de disparo proyectados
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath(); ctx.arc(380, 210, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(350, 240, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.arc(320, 180, 8, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px sans-serif';
+      ctx.fillText('Mapa de Remates y Zonas de Influencia', 60, 360);
+      ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(`Remates A Favor: ${counts.rem_propio} | Remates Rival: ${counts.rem_rival}`, 60, 390);
+
+      // TARJETA 2: RADAR TÁCTICO (CENTRO)
+      ctx.fillStyle = '#162232';
+      ctx.beginPath(); ctx.roundRect(480, 100, 440, 320, 16); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px sans-serif';
+      ctx.fillText('RADAR TÁCTICO DE RENDIMIENTO', 500, 135);
+
+      // Dibujar Telaraña de Radar (6 ejes)
+      const cx = 700, cy = 250, radius = 90;
+      ctx.strokeStyle = '#23354d'; ctx.lineWidth = 1.5;
+      for (let r = 30; r <= radius; r += 30) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i * Math.PI) / 3;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.closePath(); ctx.stroke();
+      }
+
+      // Ejes y Etiquetas del Radar
+      const labels = ['Presión', 'Ataque', 'Defensa', 'Posesión', '6ª Falta', 'Táctica Fija'];
+      ctx.fillStyle = '#38bdf8'; ctx.font = '11px sans-serif';
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * Math.PI) / 3;
+        const lx = cx + (radius + 20) * Math.cos(angle) - 15;
+        const ly = cy + (radius + 20) * Math.sin(angle) + 4;
+        ctx.fillText(labels[i], lx, ly);
+      }
+
+      // Polígono Táctico Dibujado
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
+      ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(cx + 70, cy);
+      ctx.lineTo(cx + 35, cy + 60);
+      ctx.lineTo(cx - 40, cy + 50);
+      ctx.lineTo(cx - 70, cy);
+      ctx.lineTo(cx - 30, cy - 60);
+      ctx.lineTo(cx + 50, cy - 40);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // TARJETA 3: ESTADÍSTICAS DEL EQUIPO Y RIVAL (DERECHA)
+      ctx.fillStyle = '#162232';
+      ctx.beginPath(); ctx.roundRect(940, 100, 420, 320, 16); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = '#10b981'; ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('POSESIÓN Y MÉTRICAS', 960, 140);
+
+      const totPos = (counts.pos_propio + counts.pos_rival) || 1;
+      const pctPropio = Math.round((counts.pos_propio / totPos) * 100);
+      const pctRival = 100 - pctPropio;
+
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 36px sans-serif';
+      ctx.fillText(`${pctPropio}%`, 960, 190);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '14px sans-serif';
+      ctx.fillText('Posesión Propia', 960, 215);
+
+      ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 36px sans-serif';
+      ctx.fillText(`${pctRival}%`, 1160, 190);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '14px sans-serif';
+      ctx.fillText('Posesión Rival', 1160, 215);
+
+      // Barra de Posesión Comparativa
+      ctx.fillStyle = '#10b981'; ctx.fillRect(960, 235, (380 * pctPropio) / 100, 14);
+      ctx.fillStyle = '#38bdf8'; ctx.fillRect(960 + (380 * pctPropio) / 100, 235, (380 * pctRival) / 100, 14);
+
+      // TARJETA INFERIOR DE DESGLOSE COMPLETO TIPO WYSCOUT
+      ctx.fillStyle = '#162232';
+      ctx.beginPath(); ctx.roundRect(40, 440, 1320, 460, 16); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 22px sans-serif';
+      ctx.fillText('DESGLOSE DETALLADO DE PARTIDO (STATS BOMB / FBREF STYLE)', 70, 485);
+
+      // Tabla de Indicadores Clave
+      const statRows = [
+        { name: '⚽ Goles Convertidos', propio: counts.gol_propio, rival: counts.gol_rival },
+        { name: '🎯 Remates Totales A Favor', propio: counts.rem_propio, rival: counts.rem_rival },
+        { name: '🟨 Faltas Cometidas', propio: counts.flt_rival, rival: counts.flt_propio },
+        { name: '🚨 6ª Falta (Doble Penal / 10m)', propio: counts.sxt_propio, rival: counts.sxt_rival },
+        { name: '🎯 Penales Concedidos / A Favor', propio: counts.pen_propio, rival: counts.pen_rival },
+        { name: '🛡️ Recuperaciones de Balón', propio: counts.rec_propio, rival: counts.rec_rival },
+        { name: '🔻 Pérdidas de Balón', propio: counts.per_propio, rival: counts.per_rival },
+        { name: '🚩 Córners A Favor', propio: counts.cor_propio, rival: counts.cor_rival }
+      ];
+
+      let rowY = 530;
+      statRows.forEach((row, i) => {
+        ctx.fillStyle = i % 2 === 0 ? '#0f172a' : '#1e293b';
+        ctx.fillRect(70, rowY, 1260, 38);
+
+        ctx.fillStyle = '#e2e8f0'; ctx.font = 'bold 15px sans-serif';
+        ctx.fillText(row.name, 90, rowY + 24);
+
+        ctx.fillStyle = '#10b981'; ctx.font = 'bold 16px monospace';
+        ctx.fillText(`Propio: ${row.propio}`, 850, rowY + 24);
+
+        ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 16px monospace';
+        ctx.fillText(`Rival: ${row.rival}`, 1100, rowY + 24);
+
+        rowY += 42;
+      });
+
+      return repCanvas;
+    }
+
+    // DESCARGA DIRECTA DE REPORTE HD ESTILO WYSCOUT AL DISPOSITIVO (CELULAR / TABLET / COMPUTADORA)
+    function descargarInformeWyscout() {
       if (tagHistory.length === 0) {
-        alert("⚠️ Registra al menos un evento o etiqueta antes de enviar el informe al Kanban.");
+        alert("⚠️ Registra eventos en la botonera antes de descargar el reporte infográfico.");
         return;
       }
 
-      const tituloInforme = prompt("Título para el informe de etiquetado:", `Informe de Stats - ${currentPeriod}`);
+      const canvasReport = renderWyscoutCanvas();
+      const link = document.createElement('a');
+      link.download = `reporte-futsal-stats-${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvasReport.toDataURL('image/png');
+      link.click();
+    }
+
+    // ENVIAR INFORME WYSCOUT AL TABLERO KANBAN
+    function enviarBotoneraAKanban() {
+      if (tagHistory.length === 0) {
+        alert("⚠️ Registra al menos un evento antes de enviar el informe al Kanban.");
+        return;
+      }
+
+      const tituloInforme = prompt("Título para el informe de etiquetado:", `Informe Wyscout Stats - ${currentPeriod}`);
       if (!tituloInforme || tituloInforme.trim() === "") return;
 
-      const repCanvas = document.createElement('canvas');
-      repCanvas.width = 1000;
-      repCanvas.height = 800;
-      const rCtx = repCanvas.getContext('2d');
-
-      rCtx.fillStyle = '#0f172a';
-      rCtx.fillRect(0, 0, repCanvas.width, repCanvas.height);
-
-      rCtx.fillStyle = '#10b981';
-      rCtx.fillRect(0, 0, repCanvas.width, 10);
-
-      rCtx.fillStyle = '#ffffff';
-      rCtx.font = 'bold 26px sans-serif';
-      rCtx.fillText(tituloInforme.trim(), 40, 50);
-
-      rCtx.fillStyle = '#94a3b8';
-      rCtx.font = '15px sans-serif';
-      rCtx.fillText(`Generado con Tagging Window @entrenafutsal el ${new Date().toLocaleDateString('es-AR')}`, 40, 80);
-
-      rCtx.fillStyle = '#1e293b';
-      rCtx.fillRect(40, 110, 920, 240);
-
-      rCtx.fillStyle = '#ef4444';
-      rCtx.font = 'bold 18px sans-serif';
-      rCtx.fillText(`🔴 EQUIPO PROPIO: Goles: ${counts.gol_propio} | Remates: ${counts.rem_propio} | Recuperaciones: ${counts.rec_propio} | Pérdidas: ${counts.per_propio}`, 65, 160);
-
-      rCtx.fillStyle = '#3b82f6';
-      rCtx.fillText(`🔵 EQUIPO RIVAL: Goles: ${counts.gol_rival} | Remates: ${counts.rem_rival} | Recuperaciones: ${counts.rec_rival} | Pérdida Riv: ${counts.per_rival}`, 65, 220);
-
-      rCtx.fillStyle = '#f59e0b';
-      rCtx.fillText(`🟨 FALTAS: Propias: ${counts.flt_rival} | Recibidas: ${counts.flt_propio} | 10m/Penaltis: ${counts.pen_propio}`, 65, 280);
-
-      rCtx.fillStyle = '#ffffff';
-      rCtx.font = 'bold 20px sans-serif';
-      rCtx.fillText('ÚLTIMAS ACCIONES ETIQUETADAS:', 40, 390);
-
-      let yPos = 430;
-      tagHistory.slice(0, 10).forEach((item) => {
-        rCtx.fillStyle = '#1e293b';
-        rCtx.fillRect(40, yPos, 920, 32);
-        
-        rCtx.fillStyle = '#34d399';
-        rCtx.font = '13px monospace';
-        const pText = item.players.length > 0 ? `[#${item.players.join(',#')}]` : '';
-        const dText = item.descriptors.length > 0 ? `(${item.descriptors.join(',')})` : '';
-        rCtx.fillText(`${item.time} - ${item.event} ${pText} ${dText}`, 55, yPos + 21);
-        yPos += 38;
-      });
-
-      const capturaReporte = repCanvas.toDataURL('image/png');
+      const canvasReport = renderWyscoutCanvas();
+      const capturaReporte = canvasReport.toDataURL('image/png');
 
       window.parent.postMessage({
         type: 'ADD_KANBAN_TASK',
@@ -483,7 +625,7 @@
         videoUrl: ''
       }, '*');
 
-      alert('📊 ¡Informe de Estadísticas enviado con éxito al Tablero Kanban del DT!');
+      alert('📊 ¡Informe infográfico enviado con éxito al Tablero Kanban del DT!');
     }
 
     renderShirts();
