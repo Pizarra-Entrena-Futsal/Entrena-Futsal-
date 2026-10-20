@@ -154,7 +154,7 @@
                         <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
                         <div class="text-xs">
                             <p class="font-bold text-white">Plan Gratuito</p>
-                            <p class="text-slate-400 text-[10px]">Actualiza a PRO para desbloquear</p>
+                            <p class="text-slate-400 text-[10px]">Pasa a PRO por 12 USD/mes</p>
                         </div>
                     </div>
                     <button onclick="openPaywallModal()" class="text-[10px] bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-2 py-1 rounded transition">PRO</button>
@@ -224,7 +224,7 @@
                             <i class="fa-solid fa-crown text-amber-400"></i>
                         </div>
                         <p class="text-2xl font-extrabold text-amber-400" id="dash-sub-label">Plan Gratuito</p>
-                        <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">Desbloquea con Licencia PRO</p>
+                        <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">12 USD/mes (Hasta 3 integrantes)</p>
                     </div>
                 </div>
 
@@ -499,23 +499,29 @@
         </div>
     </div>
 
-    <!-- MODAL PAYWALL (VENTANA DE PAGO PRO) -->
+    <!-- MODAL PAYWALL CON PRECIO 12 USD / MES Y ALIAS MERCADO PAGO -->
     <div id="modal-paywall" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl w-full max-w-lg p-6 space-y-6 shadow-2xl relative">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl relative">
             <button onclick="closePaywallModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
 
             <div class="text-center space-y-2">
                 <div class="w-14 h-14 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto text-2xl">
                     <i class="fa-solid fa-crown"></i>
                 </div>
-                <h3 class="text-xl font-extrabold text-white">Módulo de Gestión PRO</h3>
-                <p class="text-xs text-slate-300">Accede a las herramientas profesionales para la gestión integral de tu cuerpo técnico y plantel.</p>
+                <h3 class="text-xl font-extrabold text-white">Suscripción Cuerpo Técnico PRO</h3>
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-3xl font-black text-amber-400">12 USD</span>
+                    <span class="text-xs text-slate-400 font-normal">/ mes (o equivalente en ARS)</span>
+                </div>
+                <p class="text-xs text-emerald-400 font-semibold bg-emerald-950/60 py-1 px-3 rounded-full border border-emerald-800/60 inline-block">
+                    👥 Incluye acceso completo para hasta 3 personas de tu Staff
+                </p>
             </div>
 
-            <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-2.5 text-xs">
+            <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-2 text-xs">
                 <div class="flex items-center space-x-2 text-slate-200">
                     <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Control de Staff (Kanban):</strong> Asignación y seguimiento de tareas en tiempo real.</span>
+                    <span><strong>Control de Staff (Kanban):</strong> Asignación e integración de jugadas y recortes.</span>
                 </div>
                 <div class="flex items-center space-x-2 text-slate-200">
                     <i class="fa-solid fa-check text-emerald-400"></i>
@@ -525,23 +531,34 @@
                     <i class="fa-solid fa-check text-emerald-400"></i>
                     <span><strong>Planificación & Torneos:</strong> Calendario de microciclos (MD-5 a MD-Day).</span>
                 </div>
-                <div class="flex items-center space-x-2 text-slate-200">
-                    <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Academia / Charlas:</strong> Capacitaciones exclusivas para el cuerpo técnico.</span>
-                </div>
             </div>
 
-            <div class="space-y-3">
-                <a href="https://mpago.la/TULINKDEMERCADOPAGO" target="_blank" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-bolt"></i>
-                    <span>Obtener Licencia PRO - Suscribirme</span>
-                </a>
+            <!-- SECCIÓN DE PAGO CON MERCADO PAGO ALIAS "entrenafutsal" -->
+            <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-wallet text-sky-400 text-lg"></i>
+                        <div>
+                            <p class="text-xs font-bold text-white leading-tight">Mercado Pago / CVU / Bancos</p>
+                            <p class="text-[10px] text-slate-400">Transferir monto equivalente a 12 USD al alias:</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-sky-950 text-sky-400 font-mono px-2 py-1 rounded border border-sky-800 font-bold">Alias MP</span>
+                </div>
+
+                <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                    <span class="font-mono text-sm font-black text-emerald-400 tracking-wider">entrenafutsal</span>
+                    <button onclick="copiarAlias()" id="btn-copy-alias" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copiar Alias</span>
+                    </button>
+                </div>
 
                 <div class="pt-2 border-t border-slate-800">
-                    <p class="text-[11px] text-slate-400 mb-1 text-center">¿Ya compraste tu suscripción? Ingresa tu código de activación:</p>
+                    <p class="text-[11px] text-slate-400 mb-1.5">Una vez realizada la transferencia, ingresa tu clave de activación:</p>
                     <div class="flex space-x-2">
                         <input type="text" id="license-key-input" placeholder="Ej: EF-PRO-2026" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-amber-500 uppercase">
-                        <button onclick="activateLicense()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-lg text-xs transition">Activar</button>
+                        <button onclick="activateLicense()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs transition">Activar PRO</button>
                     </div>
                 </div>
             </div>
@@ -586,533 +603,4 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">Captura de Pizarra (Imagen)</label>
-                    <input type="file" id="task-image-file" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700">
-                    <div id="image-preview-container" class="mt-2 hidden">
-                        <img id="image-preview" src="" alt="Vista previa de la Pizarra" class="w-full h-32 object-cover rounded-lg border border-slate-700">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Enlace de Videoanálisis (YouTube / Drive / Vimeo)</label>
-                    <input type="url" id="task-video-url" placeholder="https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Estado Inicial</label>
-                    <select id="task-status" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                        <option value="pendiente">📋 Pendiente</option>
-                        <option value="proceso">⚙️ En Proceso</option>
-                        <option value="revision">🔍 En Revisión DT</option>
-                        <option value="completado">✅ Completado</option>
-                    </select>
-                </div>
-
-                <div class="pt-3 flex space-x-2">
-                    <button type="button" onclick="closeTaskModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-lg transition">Cancelar</button>
-                    <button type="submit" class="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold rounded-lg transition">Guardar Tarea</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE VISUALIZACIÓN DE IMÁGENES -->
-    <div id="modal-viewer" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4" onclick="closeViewerModal()">
-        <div class="max-w-3xl w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl relative" onclick="event.stopPropagation()">
-            <button onclick="closeViewerModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="viewer-title" class="font-bold text-white text-base mb-3"></h3>
-            <img id="viewer-image" src="" alt="Captura Pizarra Táctica" class="w-full max-h-[70vh] object-contain rounded-lg border border-slate-800">
-        </div>
-    </div>
-
-    <!-- SCRIPT PRINCIPAL CON REPRODUCTOR INTERACTIVO DE VIDEO EN KANBAN Y PROTECCIÓN DE DATOS -->
-    <script>
-        const VALID_KEY = "EF-PRO-2026";
-
-        let currentUser = null;
-        try {
-            currentUser = JSON.parse(localStorage.getItem('ef_current_user')) || null;
-        } catch(e) { currentUser = null; }
-
-        let usersDb = [];
-        try {
-            usersDb = JSON.parse(localStorage.getItem('ef_users_db')) || [];
-        } catch(e) { usersDb = []; }
-
-        let currentUploadedImage = "";
-        let tasks = [];
-
-        function loadUserTasks() {
-            if (!currentUser) {
-                tasks = [];
-                return;
-            }
-            const storageKey = `ef_kanban_tasks_${currentUser.email}`;
-            try {
-                tasks = JSON.parse(localStorage.getItem(storageKey)) || [
-                    { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
-                    { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' }
-                ];
-            } catch(e) { tasks = []; }
-        }
-
-        function saveTasksToStorage() {
-            if (!currentUser) return;
-            const storageKey = `ef_kanban_tasks_${currentUser.email}`;
-            localStorage.setItem(storageKey, JSON.stringify(tasks));
-            renderKanban();
-            updateDashboardTaskWidget();
-        }
-
-        function updateAuthUI() {
-            const badge = document.getElementById('user-profile-badge');
-            const btnLogin = document.getElementById('btn-login-trigger');
-            const subLabel = document.getElementById('dash-sub-label');
-            const subDesc = document.getElementById('dash-sub-desc');
-
-            if (currentUser) {
-                badge.classList.remove('hidden');
-                badge.classList.add('flex');
-                btnLogin.classList.add('hidden');
-
-                document.getElementById('user-display-name').innerText = currentUser.name;
-                document.getElementById('user-display-role').innerText = currentUser.role;
-                document.getElementById('user-avatar-initials').innerText = currentUser.name.substring(0, 2).toUpperCase();
-
-                if (currentUser.isPro) {
-                    document.querySelectorAll('.pro-lock-icon').forEach(icon => {
-                        icon.classList.remove('fa-lock', 'text-amber-400');
-                        icon.classList.add('fa-check', 'text-emerald-400');
-                    });
-                    if (subLabel) subLabel.innerText = "Licencia PRO ✅";
-                    if (subDesc) subDesc.innerText = "Acceso Ilimitado";
-                } else {
-                    document.querySelectorAll('.pro-lock-icon').forEach(icon => {
-                        icon.classList.remove('fa-check', 'text-emerald-400');
-                        icon.classList.add('fa-lock', 'text-amber-400');
-                    });
-                    if (subLabel) subLabel.innerText = "Plan Gratuito 🔒";
-                    if (subDesc) subDesc.innerText = "Modulo de Gestión Bloqueado";
-                }
-            } else {
-                badge.classList.add('hidden');
-                btnLogin.classList.remove('hidden');
-                if (subLabel) subLabel.innerText = "Sin Sesión 🔒";
-                if (subDesc) subDesc.innerText = "Inicia Sesión para ver tareas";
-            }
-        }
-
-        function openAuthModal(mode = 'login') {
-            document.getElementById('modal-auth').classList.remove('hidden');
-            switchAuthTab(mode);
-        }
-
-        function closeAuthModal() {
-            document.getElementById('modal-auth').classList.add('hidden');
-        }
-
-        function switchAuthTab(mode) {
-            const formLogin = document.getElementById('form-login');
-            const formReg = document.getElementById('form-register');
-            const btnLogin = document.getElementById('tab-btn-login');
-            const btnReg = document.getElementById('tab-btn-register');
-
-            if (mode === 'login') {
-                formLogin.classList.remove('hidden');
-                formReg.classList.add('hidden');
-                btnLogin.className = "font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1";
-                btnReg.className = "font-bold text-sm text-slate-400 hover:text-white pb-1";
-            } else {
-                formLogin.classList.add('hidden');
-                formReg.classList.remove('hidden');
-                btnReg.className = "font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1";
-                btnLogin.className = "font-bold text-sm text-slate-400 hover:text-white pb-1";
-            }
-        }
-
-        function handleRegisterSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const role = document.getElementById('reg-role').value;
-            const club = document.getElementById('reg-club').value.trim();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
-            const password = document.getElementById('reg-password').value;
-
-            if (usersDb.find(u => u.email === email)) {
-                alert("❌ Este correo ya está registrado. Por favor inicia sesión.");
-                return;
-            }
-
-            const newUser = { name, role, club, email, password, isPro: false };
-            usersDb.push(newUser);
-            localStorage.setItem('ef_users_db', JSON.stringify(usersDb));
-
-            currentUser = newUser;
-            localStorage.setItem('ef_current_user', JSON.stringify(currentUser));
-
-            closeAuthModal();
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            alert(`🎉 ¡Bienvenido/a, ${name}! Tu cuenta ha sido creada.`);
-        }
-
-        function handleLoginSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
-
-            const user = usersDb.find(u => u.email === email && u.password === password);
-            if (!user) {
-                alert("❌ Correo o contraseña incorrectos.");
-                return;
-            }
-
-            currentUser = user;
-            localStorage.setItem('ef_current_user', JSON.stringify(currentUser));
-
-            closeAuthModal();
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            alert(`✅ ¡Hola de nuevo, ${currentUser.name}!`);
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('ef_current_user');
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            showTab('dashboard');
-        }
-
-        function activateLicense() {
-            if (!currentUser) {
-                alert("Debes iniciar sesión primero para activar tu Licencia PRO.");
-                openAuthModal('login');
-                return;
-            }
-
-            const inputKey = document.getElementById('license-key-input').value.trim().toUpperCase();
-            if (inputKey === VALID_KEY) {
-                currentUser.isPro = true;
-                localStorage.setItem('ef_current_user', JSON.stringify(currentUser));
-
-                const idx = usersDb.findIndex(u => u.email === currentUser.email);
-                if (idx !== -1) {
-                    usersDb[idx].isPro = true;
-                    localStorage.setItem('ef_users_db', JSON.stringify(usersDb));
-                }
-
-                updateAuthUI();
-                closePaywallModal();
-                alert('🎉 ¡Licencia PRO activada con éxito! Módulos de gestión desbloqueados.');
-            } else {
-                alert('❌ Código de licencia inválido. Usa "EF-PRO-2026" para probar.');
-            }
-        }
-
-        function showTab(tabId, btnElement) {
-            const proTabs = ['kanban', 'plantel', 'calendario', 'academia'];
-
-            if (proTabs.includes(tabId)) {
-                if (!currentUser) {
-                    alert("Por favor inicia sesión o regístrate para ingresar a los módulos de Gestión.");
-                    openAuthModal('login');
-                    return;
-                }
-                if (!currentUser.isPro) {
-                    openPaywallModal();
-                    return;
-                }
-            }
-
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-                tab.classList.remove('flex');
-            });
-
-            const activeTab = document.getElementById('tab-' + tabId);
-            if (activeTab) {
-                activeTab.classList.remove('hidden');
-                if (['pizarra', 'analisis', 'stats', 'arqueros', 'planillas'].includes(tabId)) {
-                    activeTab.classList.add('flex');
-                }
-            }
-
-            if (btnElement) {
-                document.querySelectorAll('.nav-link').forEach(btn => {
-                    btn.classList.remove('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
-                    btn.classList.add('text-slate-300');
-                });
-                btnElement.classList.remove('text-slate-300');
-                btnElement.classList.add('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
-            }
-        }
-
-        function openPaywallModal() {
-            document.getElementById('modal-paywall').classList.remove('hidden');
-        }
-
-        function closePaywallModal() {
-            document.getElementById('modal-paywall').classList.add('hidden');
-        }
-
-        function openTaskModal(presetTitle = "", presetImage = "") {
-            if (!currentUser) {
-                alert("Inicia sesión para crear o recibir tareas.");
-                openAuthModal('login');
-                return;
-            }
-            document.getElementById('modal-task').classList.remove('hidden');
-            if (presetTitle) document.getElementById('task-title').value = presetTitle;
-            if (presetImage) {
-                currentUploadedImage = presetImage;
-                document.getElementById('image-preview').src = presetImage;
-                document.getElementById('image-preview-container').classList.remove('hidden');
-            }
-        }
-
-        function closeTaskModal() {
-            document.getElementById('modal-task').classList.add('hidden');
-            document.getElementById('form-task').reset();
-            document.getElementById('image-preview-container').classList.add('hidden');
-            currentUploadedImage = "";
-        }
-
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    currentUploadedImage = event.target.result;
-                    document.getElementById('image-preview').src = currentUploadedImage;
-                    document.getElementById('image-preview-container').classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveTask(e) {
-            e.preventDefault();
-            const title = document.getElementById('task-title').value.trim();
-            const area = document.getElementById('task-area').value;
-            const priority = document.getElementById('task-priority').value;
-            const status = document.getElementById('task-status').value;
-            const videoUrl = document.getElementById('task-video-url').value.trim();
-
-            if (!title) return;
-
-            const newTask = {
-                id: Date.now(),
-                title: title,
-                area: area,
-                priority: priority,
-                status: status,
-                image: currentUploadedImage,
-                videoUrl: videoUrl
-            };
-
-            tasks.push(newTask);
-            saveTasksToStorage();
-            closeTaskModal();
-        }
-
-        function moveTask(id, newStatus) {
-            tasks = tasks.map(t => t.id === id ? { ...t, status: newStatus } : t);
-            saveTasksToStorage();
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasksToStorage();
-        }
-
-        function openViewer(title, imageSrc) {
-            document.getElementById('viewer-title').innerText = title;
-            document.getElementById('viewer-image').src = imageSrc;
-            document.getElementById('modal-viewer').classList.remove('hidden');
-        }
-
-        function closeViewerModal() {
-            document.getElementById('modal-viewer').classList.add('hidden');
-        }
-
-        function getAreaBadge(area) {
-            switch(area) {
-                case 'DT': return 'bg-amber-950 text-amber-400 border-amber-800';
-                case 'PF': return 'bg-emerald-950 text-emerald-400 border-emerald-800';
-                case 'Kine': return 'bg-rose-950 text-rose-400 border-rose-800';
-                case 'Video': return 'bg-purple-950 text-purple-400 border-purple-800';
-                default: return 'bg-slate-800 text-slate-300 border-slate-700';
-            }
-        }
-
-        function renderKanban() {
-            const filterEl = document.getElementById('kanban-filter');
-            if (!filterEl) return;
-            const filter = filterEl.value;
-
-            const cols = {
-                pendiente: document.getElementById('col-pendiente'),
-                proceso: document.getElementById('col-proceso'),
-                revision: document.getElementById('col-revision'),
-                completado: document.getElementById('col-completado')
-            };
-
-            if (!cols.pendiente) return;
-
-            Object.values(cols).forEach(col => col.innerHTML = '');
-            const counts = { pendiente: 0, proceso: 0, revision: 0, completado: 0 };
-
-            tasks.forEach(task => {
-                if (filter !== 'todos' && task.area !== filter) return;
-
-                counts[task.status]++;
-                const badgeClass = getAreaBadge(task.area);
-
-                let moveButtons = '';
-                if (task.status === 'pendiente') {
-                    moveButtons = `<button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-blue-400 hover:underline">Iniciar ➔</button>`;
-                } else if (task.status === 'proceso') {
-                    moveButtons = `
-                        <button onclick="moveTask(${task.id}, 'pendiente')" class="text-xs text-slate-400 hover:underline">⬅ Volver</button>
-                        <button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-amber-400 hover:underline">Revisión ➔</button>
-                    `;
-                } else if (task.status === 'revision') {
-                    moveButtons = `
-                        <button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-slate-400 hover:underline">⬅ Corregir</button>
-                        <button onclick="moveTask(${task.id}, 'completado')" class="text-xs text-emerald-400 hover:underline">Aprobar ➔</button>
-                    `;
-                } else if (task.status === 'completado') {
-                    moveButtons = `<button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-slate-400 hover:underline">⬅ Reabrir</button>`;
-                }
-
-                let imageHtml = '';
-                if (task.image) {
-                    imageHtml = `
-                        <div class="mt-2 cursor-pointer relative group" onclick="openViewer('${task.title}', '${task.image}')">
-                            <img src="${task.image}" class="w-full h-28 object-cover rounded-lg border border-slate-700/80">
-                            <span class="absolute bottom-1 right-1 bg-slate-950/80 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
-                                <i class="fa-solid fa-expand"></i> Ampliar
-                            </span>
-                        </div>
-                    `;
-                }
-
-                let videoHtml = '';
-                if (task.videoUrl) {
-                    if (task.videoUrl.startsWith('data:video') || task.videoUrl.startsWith('blob:') || task.videoUrl.endsWith('.mp4') || task.videoUrl.endsWith('.webm')) {
-                        videoHtml = `
-                            <div class="mt-2 space-y-1">
-                                <span class="text-[10px] text-purple-400 font-bold flex items-center gap-1">
-                                    <i class="fa-solid fa-film"></i> Video Animado de la Jugada:
-                                </span>
-                                <video controls src="${task.videoUrl}" class="w-full rounded-lg border border-purple-800/80 bg-black max-h-48 object-contain shadow-md"></video>
-                            </div>
-                        `;
-                    } else {
-                        videoHtml = `
-                            <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
-                                <i class="fa-solid fa-circle-play text-purple-400"></i>
-                                <span class="font-bold">Abrir Videoanálisis Externo</span>
-                            </a>
-                        `;
-                    }
-                }
-
-                const cardHtml = `
-                    <div class="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 hover:border-slate-600 transition flex flex-col justify-between space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">${task.area}</span>
-                            <span class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-clock text-[9px] mr-1"></i>${task.priority}</span>
-                        </div>
-                        <p class="text-xs font-semibold text-white leading-snug">${task.title}</p>
-                        ${imageHtml}
-                        ${videoHtml}
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-700/50 mt-1">
-                            <div class="flex space-x-2">${moveButtons}</div>
-                            <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-
-                cols[task.status].innerHTML += cardHtml;
-            });
-
-            if (document.getElementById('badge-pendiente')) {
-                document.getElementById('badge-pendiente').innerText = counts.pendiente;
-                document.getElementById('badge-proceso').innerText = counts.proceso;
-                document.getElementById('badge-revision').innerText = counts.revision;
-                document.getElementById('badge-completado').innerText = counts.completado;
-            }
-        }
-
-        function updateDashboardTaskWidget() {
-            const countEl = document.getElementById('dashboard-task-count');
-            const statusEl = document.getElementById('dashboard-task-status');
-            const listEl = document.getElementById('dashboard-recent-tasks');
-
-            if (!countEl) return;
-
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.status === 'completado').length;
-            const pending = total - completed;
-
-            countEl.innerText = total;
-            statusEl.innerText = `${completed} Completadas (${pending} Pendientes)`;
-
-            const priorityTasks = tasks.filter(t => t.status !== 'completado').slice(0, 2);
-            listEl.innerHTML = '';
-
-            if (priorityTasks.length === 0) {
-                listEl.innerHTML = `<p class="text-xs text-slate-500 italic p-2">No hay tareas pendientes en el tablero.</p>`;
-            } else {
-                priorityTasks.forEach(task => {
-                    listEl.innerHTML += `
-                        <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-cyan-500 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs font-semibold text-white">${task.title}</p>
-                                <span class="text-[10px] text-slate-400">Área: ${task.area}</span>
-                            </div>
-                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold border border-slate-700">${task.priority}</span>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'ADD_KANBAN_TASK') {
-                if (!currentUser) {
-                    alert("Inicia sesión en la plataforma para recibir y guardar jugadas.");
-                    openAuthModal('login');
-                    return;
-                }
-                const newTask = {
-                    id: Date.now(),
-                    title: event.data.title || 'Nueva Jugada Táctica',
-                    area: event.data.area || 'DT',
-                    priority: event.data.priority || 'MD-2',
-                    status: 'pendiente',
-                    image: event.data.image || '',
-                    videoUrl: event.data.videoUrl || ''
-                };
-                tasks.push(newTask);
-                saveTasksToStorage();
-                showTab('kanban');
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-        });
-    </script>
-</body>
-</html>
+                    <input type="file" id="task-image-file" accept="image/*" onchange
