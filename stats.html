@@ -3,320 +3,375 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estadísticas de Futsal en Vivo - @entrenafutsal</title>
-  <!-- Librería para capturar la placa como imagen -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <title>Stats & Tracking Futsal - @entrenafutsal</title>
+  <!-- Tailwind CSS & FontAwesome CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
     
     /* ENCABEZADO */
-    header { width: 100%; max-width: 500px; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px; background: #1e1e1e; border-radius: 8px; border-bottom: 3px solid #00e676; margin-bottom: 12px; }
-    .header-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
-    .header-text { text-align: center; }
-    .header-text strong { font-size: 18px; color: #fff; }
-    .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
+    header { width: 100%; max-width: 950px; display: flex; items-center: justify-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #10b981; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .header-info { display: flex; align-items: center; gap: 12px; }
+    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981; }
+    .header-text strong { font-size: 18px; color: #fff; display: block; }
+    .header-text .handle { color: #34d399; font-weight: bold; font-size: 14px; }
 
-    /* CONTENEDOR PRINCIPAL / TARJETA PARA EXPORTAR */
-    #report-card { width: 100%; max-width: 500px; background: #1a1a1a; border-radius: 12px; padding: 16px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 15px; }
-
-    /* MARCADOR PRINCIPAL */
-    .scoreboard { display: flex; justify-content: space-between; align-items: center; background: #262626; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-    .team-input { background: transparent; border: none; border-bottom: 1px dashed #00e676; color: #fff; font-size: 16px; font-weight: bold; text-align: center; width: 110px; outline: none; }
-    .score-display { font-size: 32px; font-weight: bold; color: #00e676; letter-spacing: 2px; }
-
-    /* GRILLA DE METRICAS */
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .stat-card { background: #242424; border-radius: 8px; padding: 10px; text-align: center; border-left: 3px solid #00e676; display: flex; flex-direction: column; justify-content: space-between; }
-    .stat-title { font-size: 11px; text-transform: uppercase; color: #aaa; margin-bottom: 4px; font-weight: bold; }
-    .stat-value { font-size: 24px; font-weight: bold; color: #fff; margin: 2px 0; }
+    /* CONTROLES Y HERRAMIENTAS */
+    .controls-panel { width: 100%; max-width: 950px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; background: #1e1e1e; padding: 10px 14px; border-radius: 10px; border: 1px solid #333; }
+    .panel-label { font-size: 13px; font-weight: bold; color: #34d399; margin-right: 4px; }
     
-    /* BOTONES RAPIDOS DE CONTROL */
-    .btn-group { display: flex; gap: 6px; justify-content: center; margin-top: 4px; }
-    .btn-action { padding: 6px 14px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; user-select: none; }
-    .btn-plus { background: #00e676; color: #121212; flex: 2; }
-    .btn-minus { background: #333; color: #aaa; flex: 1; }
-
-    /* BARRAS VISUALES */
-    .efficiency-box { margin-top: 15px; background: #242424; padding: 10px; border-radius: 8px; }
-    .bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; margin-top: 6px; }
-    .bar-fill { height: 100%; background: #00e676; width: 0%; transition: width 0.3s; }
-
-    /* CONTROLES DE PAGINA */
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; max-width: 500px; }
-    .btn-main { flex: 1; min-width: 140px; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; text-align: center; }
-    #downloadImgBtn { background: #29b6f6; color: #fff; }
-    #downloadExcelBtn { background: #4caf50; color: #fff; }
-    #resetBtn { background: #ff5252; color: #fff; flex: 100%; margin-top: 4px; }
+    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
-    .footer-watermark { text-align: center; margin-top: 12px; font-size: 11px; color: #666; }
+    .btn-tool { background: #333; }
+    .btn-tool.active { background: #10b981; color: #000; }
+    .btn-emerald { background: #10b981; color: #000; font-weight: bold; }
+    .btn-emerald:hover { background: #059669; color: #fff; }
+    .btn-clear { background: #ef4444; color: #fff; }
+    .btn-clear:hover { background: #dc2626; }
+    .btn-kanban { background: #10b981; color: #000; font-weight: bold; }
+
+    /* CONTENEDOR PRINCIPAL */
+    .stats-container { width: 100%; max-width: 950px; display: grid; grid-template-cols: 1fr; gap: 16px; }
+    @media (min-width: 768px) {
+      .stats-container { grid-template-cols: 1.2fr 1fr; }
+    }
+
+    /* MAPA DE REMATES EN CANCHA */
+    .pitch-wrapper { position: relative; width: 100%; background: #1e1e1e; border-radius: 12px; padding: 8px; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
+    canvas { width: 100%; height: auto; aspect-ratio: 1200 / 720; display: block; background: #2e7d32; border-radius: 8px; cursor: crosshair; }
+
+    /* TARJETAS DE CONTADORES */
+    .counter-card { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .counter-title { font-size: 12px; font-weight: bold; color: #9ca3af; text-transform: uppercase; }
+    .counter-value { font-size: 24px; font-weight: 900; color: #fff; }
+    .counter-btn { width: 28px; height: 28px; border-radius: 6px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
 
-  <!-- BOTÓN PARA REGRESAR A LA PIZARRA -->
-  <div style="width: 100%; max-width: 500px; margin-bottom: 8px;">
-    <a href="index.html" style="color: #00e676; text-decoration: none; font-size: 13px; font-weight: bold;">← Volver a la Pizarra Táctica</a>
-  </div>
-
-  <!-- PLACA QUE SE DESCARGA COMO IMAGEN -->
-  <div id="report-card">
-    
-    <header>
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
+  <header>
+    <div class="header-info">
+      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/44/10b981/ffffff?text=EF'; this.onerror=null;">
       <div class="header-text">
-        <strong>Estadísticas del Partido</strong><br>
+        <strong>Tracking & Estadísticas Futsal</strong>
         <span class="handle">@entrenafutsal</span>
       </div>
-    </header>
-
-    <!-- MARCADOR PRINCIPAL -->
-    <div class="scoreboard">
-      <div>
-        <input type="text" id="teamA" class="team-input" value="Mi Equipo"><br>
-        <div class="btn-group" style="margin-top:6px;">
-          <button class="btn-action btn-plus" onclick="changeStat('goalsA', 1)">+ Gol</button>
-          <button class="btn-action btn-minus" onclick="changeStat('goalsA', -1)">-</button>
-        </div>
-      </div>
-
-      <div>
-        <div class="score-display"><span id="val-goalsA">0</span> - <span id="val-goalsB">0</span></div>
-        <span style="font-size:10px; color:#888;">RESULTADO</span>
-      </div>
-
-      <div>
-        <input type="text" id="teamB" class="team-input" value="Rival"><br>
-        <div class="btn-group" style="margin-top:6px;">
-          <button class="btn-action btn-plus" onclick="changeStat('goalsB', 1)">+ Gol</button>
-          <button class="btn-action btn-minus" onclick="changeStat('goalsB', -1)">-</button>
-        </div>
-      </div>
     </div>
-
-    <!-- METRICAS DE PARTIDO -->
-    <div class="stats-grid">
-      
-      <!-- Tiros al Arco -->
-      <div class="stat-card">
-        <div class="stat-title">🎯 Tiros al Arco</div>
-        <div class="stat-value" id="val-shotsOnTarget">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('shotsOnTarget', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('shotsOnTarget', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Tiros Fuera -->
-      <div class="stat-card">
-        <div class="stat-title">❌ Tiros Fuera</div>
-        <div class="stat-value" id="val-shotsOffTarget">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('shotsOffTarget', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('shotsOffTarget', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Recuperaciones -->
-      <div class="stat-card">
-        <div class="stat-title">🛡️ Recuperaciones</div>
-        <div class="stat-value" id="val-recoveries">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('recoveries', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('recoveries', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Pérdidas -->
-      <div class="stat-card">
-        <div class="stat-title">⚠️ Pérdidas</div>
-        <div class="stat-value" id="val-turnovers">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('turnovers', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('turnovers', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Faltas Cometidas -->
-      <div class="stat-card">
-        <div class="stat-title">🚨 Faltas Cometidas</div>
-        <div class="stat-value" id="val-fouls">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('fouls', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('fouls', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Faltas Recibidas -->
-      <div class="stat-card">
-        <div class="stat-title">🟨 Faltas Recibidas</div>
-        <div class="stat-value" id="val-foulsDrawn">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('foulsDrawn', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('foulsDrawn', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Atajadas Arquero -->
-      <div class="stat-card">
-        <div class="stat-title">🧤 Atajadas Arquero</div>
-        <div class="stat-value" id="val-saves">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('saves', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('saves', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Tiros de Esquina -->
-      <div class="stat-card">
-        <div class="stat-title">🚩 Tiros de Esquina</div>
-        <div class="stat-value" id="val-corners">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('corners', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('corners', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Lateral Alto -->
-      <div class="stat-card">
-        <div class="stat-title">⬆️ Lateral Alto</div>
-        <div class="stat-value" id="val-lateralAlto">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('lateralAlto', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('lateralAlto', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Lateral Medio -->
-      <div class="stat-card">
-        <div class="stat-title">↔️ Lateral Medio</div>
-        <div class="stat-value" id="val-lateralMedio">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('lateralMedio', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('lateralMedio', -1)">-</button>
-        </div>
-      </div>
-
-      <!-- Lateral Bajo -->
-      <div class="stat-card">
-        <div class="stat-title">⬇️ Lateral Bajo</div>
-        <div class="stat-value" id="val-lateralBajo">0</div>
-        <div class="btn-group">
-          <button class="btn-action btn-plus" onclick="changeStat('lateralBajo', 1)">+</button>
-          <button class="btn-action btn-minus" onclick="changeStat('lateralBajo', -1)">-</button>
-        </div>
-      </div>
-
+    <div class="text-xs font-mono text-emerald-400 bg-emerald-950 px-3 py-1.5 rounded-lg border border-emerald-800">
+      <i class="fa-solid fa-chart-pie mr-1"></i> Análisis de Rendimiento
     </div>
+  </header>
 
-    <!-- BARRA DE EFECTIVIDAD DE TIRO -->
-    <div class="efficiency-box">
-      <div style="display:flex; justify-content:space-between; font-size:12px;">
-        <span>Efectividad de Tiro al Arco</span>
-        <strong id="val-accuracy" style="color:#00e676;">0%</strong>
-      </div>
-      <div class="bar-bg">
-        <div class="bar-fill" id="accuracy-bar"></div>
-      </div>
-    </div>
+  <!-- PANEL DE HERRAMIENTAS Y SELECCIÓN DE EVENTOS -->
+  <div class="controls-panel">
+    <span class="panel-label">Marcar Evento en Cancha:</span>
+    <button class="btn btn-tool active" id="type-gol" onclick="setEventType('gol', this)">⚽ Gol</button>
+    <button class="btn btn-tool" id="type-atajada" onclick="setEventType('atajada', this)">🧤 Atajado / Bloqueado</button>
+    <button class="btn btn-tool" id="type-fuera" onclick="setEventType('fuera', this)">❌ Fuera</button>
+    <button class="btn btn-tool" id="type-falta" onclick="setEventType('falta', this)">🟨 Falta</button>
 
-    <div class="footer-watermark">Placa generada por @entrenafutsal</div>
+    <div class="h-4 w-px bg-slate-700 mx-1"></div>
+
+    <button class="btn btn-clear" onclick="resetAllStats()"><i class="fa-solid fa-rotate-left"></i> Reiniciar Stats</button>
+    <button class="btn btn-kanban" onclick="enviarStatsAKanban()"><i class="fa-solid fa-paper-plane"></i> 📊 Enviar Reporte a Kanban DT</button>
   </div>
 
-  <!-- BOTONES DE ACCION EXTERNOS -->
-  <div class="controls">
-    <button class="btn-main" id="downloadImgBtn" onclick="downloadCard()">📷 Descargar Placa</button>
-    <button class="btn-main" id="downloadExcelBtn" onclick="exportToCSV()">📥 Descargar Excel</button>
-    <button class="btn-main" id="resetBtn" onclick="resetStats()">🔄 Reiniciar Datos</button>
+  <!-- SECCIÓN PRINCIPAL: MAPA + CONTADORES -->
+  <div class="stats-container">
+
+    <!-- MAPA DE REGISTRO EN CANCHA -->
+    <div class="pitch-wrapper">
+      <div class="flex justify-between items-center mb-2 px-1">
+        <span class="text-xs font-bold text-slate-300"><i class="fa-solid fa-crosshairs text-emerald-400 mr-1"></i> Mapa de Tiros y Zonas de Evento</span>
+        <span class="text-[10px] text-slate-400">Haz clic en la cancha para ubicar la acción</span>
+      </div>
+      <canvas id="statsCanvas" width="1200" height="720"></canvas>
+    </div>
+
+    <!-- PANEL DE CONTADORES RÁPIDOS -->
+    <div class="space-y-3">
+      
+      <div class="counter-card">
+        <div>
+          <p class="counter-title">Goles A Favor</p>
+          <p class="counter-value text-emerald-400" id="val-goles">0</p>
+        </div>
+        <div class="flex space-x-1">
+          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('goles', -1)">-</button>
+          <button class="counter-btn bg-emerald-600 text-white hover:bg-emerald-500" onclick="changeCount('goles', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="counter-card">
+        <div>
+          <p class="counter-title">Remates Totales</p>
+          <p class="counter-value text-blue-400" id="val-remates">0</p>
+        </div>
+        <div class="flex space-x-1">
+          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('remates', -1)">-</button>
+          <button class="counter-btn bg-blue-600 text-white hover:bg-blue-500" onclick="changeCount('remates', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="counter-card">
+        <div>
+          <p class="counter-title">Faltas Cometidas (5ª es 10m)</p>
+          <p class="counter-value text-amber-400" id="val-faltas">0</p>
+        </div>
+        <div class="flex space-x-1">
+          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('faltas', -1)">-</button>
+          <button class="counter-btn bg-amber-600 text-white hover:bg-amber-500" onclick="changeCount('faltas', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="counter-card">
+        <div>
+          <p class="counter-title">Pérdidas de Balón</p>
+          <p class="counter-value text-rose-400" id="val-perdidas">0</p>
+        </div>
+        <div class="flex space-x-1">
+          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('perdidas', -1)">-</button>
+          <button class="counter-btn bg-rose-600 text-white hover:bg-rose-500" onclick="changeCount('perdidas', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="counter-card">
+        <div>
+          <p class="counter-title">Recuperaciones</p>
+          <p class="counter-value text-cyan-400" id="val-recuperaciones">0</p>
+        </div>
+        <div class="flex space-x-1">
+          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('recuperaciones', -1)">-</button>
+          <button class="counter-btn bg-cyan-600 text-white hover:bg-cyan-500" onclick="changeCount('recuperaciones', 1)">+</button>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
   <script>
-    // Estado completo de estadísticas
-    const stats = {
-      goalsA: 0,
-      goalsB: 0,
-      shotsOnTarget: 0,
-      shotsOffTarget: 0,
-      recoveries: 0,
-      turnovers: 0,
-      saves: 0,
-      fouls: 0,
-      foulsDrawn: 0,
-      corners: 0,
-      lateralAlto: 0,
-      lateralMedio: 0,
-      lateralBajo: 0
+    const canvas = document.getElementById('statsCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentEventType = 'gol';
+    let events = [];
+
+    const counters = {
+      goles: 0,
+      remates: 0,
+      faltas: 0,
+      perdidas: 0,
+      recuperaciones: 0
     };
 
-    function changeStat(key, amount) {
-      stats[key] = Math.max(0, stats[key] + amount);
-      updateDisplay();
+    function setEventType(type, btnElement) {
+      currentEventType = type;
+      document.querySelectorAll('.controls-panel .btn-tool').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
     }
 
-    function updateDisplay() {
-      for (const key in stats) {
-        const el = document.getElementById(`val-${key}`);
-        if (el) el.innerText = stats[key];
+    function changeCount(key, delta) {
+      counters[key] = Math.max(0, counters[key] + delta);
+      document.getElementById(`val-${key}`).innerText = counters[key];
+    }
+
+    function renderPitch() {
+      ctx.fillStyle = '#2e7d32';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+
+      const pad = 20;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+
+      ctx.strokeRect(pad, pad, w, h);
+
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, pad);
+      ctx.lineTo(canvas.width / 2, canvas.height - pad);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 75, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(pad, canvas.height / 2, 150, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(canvas.width - pad, canvas.height / 2, 150, Math.PI / 2, 3 * Math.PI / 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.strokeRect(pad - 12, canvas.height / 2 - 60, 12, 120);
+      ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 60, 12, 120);
+
+      // Renderizar eventos dibujados en la cancha
+      for (const ev of events) {
+        ctx.beginPath();
+        ctx.arc(ev.x, ev.y, 16, 0, Math.PI * 2);
+        
+        if (ev.type === 'gol') {
+          ctx.fillStyle = '#10b981';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('⚽', ev.x, ev.y);
+        } else if (ev.type === 'atajada') {
+          ctx.fillStyle = '#3b82f6';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('🧤', ev.x, ev.y);
+        } else if (ev.type === 'fuera') {
+          ctx.fillStyle = '#ef4444';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('❌', ev.x, ev.y);
+        } else if (ev.type === 'falta') {
+          ctx.fillStyle = '#f59e0b';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('🟨', ev.x, ev.y);
+        }
+      }
+    }
+
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const pos = getCanvasCoords(e);
+      events.push({ x: pos.x, y: pos.y, type: currentEventType });
+      
+      if (currentEventType === 'gol') {
+        counters.goles++;
+        counters.remates++;
+      } else if (currentEventType === 'atajada' || currentEventType === 'fuera') {
+        counters.remates++;
+      } else if (currentEventType === 'falta') {
+        counters.faltas++;
       }
 
-      // Calcular % de efectividad a puerta
-      const totalShots = stats.shotsOnTarget + stats.shotsOffTarget + stats.goalsA;
-      const onTargetTotal = stats.shotsOnTarget + stats.goalsA;
-      
-      let percentage = 0;
-      if (totalShots > 0) {
-        percentage = Math.round((onTargetTotal / totalShots) * 100);
-      }
+      document.getElementById('val-goles').innerText = counters.goles;
+      document.getElementById('val-remates').innerText = counters.remates;
+      document.getElementById('val-faltas').innerText = counters.faltas;
 
-      document.getElementById('val-accuracy').innerText = `${percentage}%`;
-      document.getElementById('accuracy-bar').style.width = `${percentage}%`;
-    }
+      renderPitch();
+    });
 
-    function resetStats() {
-      if (confirm('¿Quieres reiniciar todas las estadísticas del partido?')) {
-        for (const key in stats) stats[key] = 0;
-        updateDisplay();
+    function resetAllStats() {
+      if (confirm('¿Deseas reiniciar todas las estadísticas y marcas de la cancha?')) {
+        events = [];
+        Object.keys(counters).forEach(k => {
+          counters[k] = 0;
+          document.getElementById(`val-${k}`).innerText = '0';
+        });
+        renderPitch();
       }
     }
 
-    function downloadCard() {
-      document.querySelectorAll('.btn-group').forEach(el => el.style.visibility = 'hidden');
+    // GENERAR REPORTE COMBINADO (CANCHA + TABLA DE MÉTRICAS) Y ENVIAR AL KANBAN
+    function enviarStatsAKanban() {
+      const tituloReporte = prompt("Título o referencia del reporte de stats para el DT:", "Informe de Stats - 1er Tiempo vs Rival");
+      if (!tituloReporte || tituloReporte.trim() === "") return;
 
-      html2canvas(document.getElementById('report-card')).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `estadisticas-futsal-${new Date().toISOString().slice(0,10)}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
+      // 1. Crear canvas de alta definición para combinar Cancha + Tabla Resumen
+      const reportCanvas = document.createElement('canvas');
+      reportCanvas.width = 1200;
+      reportCanvas.height = 950;
+      const rCtx = reportCanvas.getContext('2d');
 
-        document.querySelectorAll('.btn-group').forEach(el => el.style.visibility = 'visible');
-      });
+      // Fondo oscuro elegante
+      rCtx.fillStyle = '#0f172a';
+      rCtx.fillRect(0, 0, reportCanvas.width, reportCanvas.height);
+
+      // Encabezado del Informe
+      rCtx.fillStyle = '#10b981';
+      rCtx.fillRect(0, 0, reportCanvas.width, 10);
+
+      rCtx.fillStyle = '#ffffff';
+      rCtx.font = 'bold 28px sans-serif';
+      rCtx.fillText(tituloReporte.trim(), 40, 50);
+
+      rCtx.fillStyle = '#94a3b8';
+      rCtx.font = '16px sans-serif';
+      rCtx.fillText(`Generado por @entrenafutsal el ${new Date().toLocaleDateString('es-AR')}`, 40, 80);
+
+      // Renderizar la Cancha con las marcas
+      rCtx.drawImage(canvas, 40, 100, 1120, 620);
+
+      // Tarjeta Inferior de Métricas
+      rCtx.fillStyle = '#1e293b';
+      rCtx.roundRect ? rCtx.roundRect(40, 740, 1120, 170, 16) : rCtx.fillRect(40, 740, 1120, 170);
+      rCtx.fill();
+
+      rCtx.fillStyle = '#10b981';
+      rCtx.font = 'bold 20px sans-serif';
+      rCtx.fillText('RESUMEN ESTADÍSTICO DEL PARTIDO', 65, 780);
+
+      rCtx.fillStyle = '#ffffff';
+      rCtx.font = 'bold 22px sans-serif';
+      rCtx.fillText(`⚽ Goles: ${counters.goles}`, 65, 830);
+      rCtx.fillText(`🎯 Remates: ${counters.remates}`, 300, 830);
+      rCtx.fillText(`🟨 Faltas: ${counters.faltas}`, 550, 830);
+      rCtx.fillText(`🔻 Pérdidas: ${counters.perdidas}`, 750, 830);
+      rCtx.fillText(`🛡️ Recuperaciones: ${counters.recuperaciones}`, 950, 830);
+
+      const capturaReporte = reportCanvas.toDataURL('image/png');
+
+      // 2. Enviar el informe con postMessage al Hub (index.html)
+      window.parent.postMessage({
+        type: 'ADD_KANBAN_TASK',
+        title: tituloReporte.trim(),
+        area: 'DT',
+        priority: 'MD-2',
+        image: capturaReporte,
+        videoUrl: ''
+      }, '*');
+
+      alert('📊 ¡Reporte estadístico enviado con éxito al Tablero Kanban del DT!');
     }
 
-    // EXPORTACIÓN COMPLETA A EXCEL / CSV
-    function exportToCSV() {
-      const teamA = document.getElementById('teamA').value || 'Mi Equipo';
-      const teamB = document.getElementById('teamB').value || 'Rival';
-      const today = new Date().toLocaleDateString('es-ES');
-      
-      const totalShots = stats.shotsOnTarget + stats.shotsOffTarget + stats.goalsA;
-      const onTargetTotal = stats.shotsOnTarget + stats.goalsA;
-      const accuracy = totalShots > 0 ? Math.round((onTargetTotal / totalShots) * 100) : 0;
-
-      // Encabezados y valores separados por comas
-      let csv = "\uFEFF"; // Compatibilidad UTF-8 para Excel
-      csv += "Fecha;Equipo Local;Goles Local;Equipo Visitante;Goles Visitante;Tiros al Arco;Tiros Fuera;Recuperaciones;Pérdidas;Atajadas;Faltas Cometidas;Faltas Recibidas;Tiros de Esquina;Lateral Alto;Lateral Medio;Lateral Bajo;Efectividad Tiro (%)\n";
-      csv += `"${today}";"${teamA}";${stats.goalsA};"${teamB}";${stats.goalsB};${stats.shotsOnTarget};${stats.shotsOffTarget};${stats.recoveries};${stats.turnovers};${stats.saves};${stats.fouls};${stats.foulsDrawn};${stats.corners};${stats.lateralAlto};${stats.lateralMedio};${stats.lateralBajo};"${accuracy}%"\n`;
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      const url = URL.createObjectURL(blob);
-      
-      link.setAttribute("href", url);
-      link.setAttribute("download", `Reporte_${teamA}_vs_${teamB}_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    renderPitch();
   </script>
 </body>
 </html>
