@@ -8,370 +8,485 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #090d16; color: #fff; min-height: 100vh; padding: 12px; }
     
-    /* ENCABEZADO */
-    header { width: 100%; max-width: 950px; display: flex; items-center: justify-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #10b981; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981; }
-    .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text .handle { color: #34d399; font-weight: bold; font-size: 14px; }
+    /* EFECTO TÁCTIL DE BOTONES */
+    .btn-tag { transition: all 0.1s ease-in-out; touch-action: manipulation; }
+    .btn-tag:active { transform: scale(0.95); opacity: 0.85; }
 
-    /* CONTROLES Y HERRAMIENTAS */
-    .controls-panel { width: 100%; max-width: 950px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; background: #1e1e1e; padding: 10px 14px; border-radius: 10px; border: 1px solid #333; }
-    .panel-label { font-size: 13px; font-weight: bold; color: #34d399; margin-right: 4px; }
-    
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    
-    .btn-tool { background: #333; }
-    .btn-tool.active { background: #10b981; color: #000; }
-    .btn-emerald { background: #10b981; color: #000; font-weight: bold; }
-    .btn-emerald:hover { background: #059669; color: #fff; }
-    .btn-clear { background: #ef4444; color: #fff; }
-    .btn-clear:hover { background: #dc2626; }
-    .btn-kanban { background: #10b981; color: #000; font-weight: bold; }
+    /* HEXÁGONOS DE DESCRIPTORES TÁCTICOS */
+    .hex-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 500px; margin: 0 auto; }
+    .hex-btn { background: #1e293b; border: 2px solid #3b82f6; color: #e2e8f0; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 12px 14px; border-radius: 12px; text-align: center; cursor: pointer; flex: 1 1 calc(33% - 12px); min-width: 100px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .hex-btn.active { background: #2563eb; color: #fff; border-color: #60a5fa; box-shadow: 0 0 12px rgba(37,99,235,0.6); }
 
-    /* CONTENEDOR PRINCIPAL */
-    .stats-container { width: 100%; max-width: 950px; display: grid; grid-template-cols: 1fr; gap: 16px; }
-    @media (min-width: 768px) {
-      .stats-container { grid-template-cols: 1.2fr 1fr; }
-    }
-
-    /* MAPA DE REMATES EN CANCHA */
-    .pitch-wrapper { position: relative; width: 100%; background: #1e1e1e; border-radius: 12px; padding: 8px; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
-    canvas { width: 100%; height: auto; aspect-ratio: 1200 / 720; display: block; background: #2e7d32; border-radius: 8px; cursor: crosshair; }
-
-    /* TARJETAS DE CONTADORES */
-    .counter-card { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .counter-title { font-size: 12px; font-weight: bold; color: #9ca3af; text-transform: uppercase; }
-    .counter-value { font-size: 24px; font-weight: 900; color: #fff; }
-    .counter-btn { width: 28px; height: 28px; border-radius: 6px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    /* BADGES DE JUGADORES */
+    .shirt-btn { width: 42px; height: 42px; background: #991b1b; border: 2px solid #ef4444; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; cursor: pointer; }
+    .shirt-btn.selected { background: #dc2626; border-color: #fff; box-shadow: 0 0 10px #ef4444; }
   </style>
 </head>
-<body>
+<body class="flex flex-col items-center">
 
-  <header>
-    <div class="header-info">
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/44/10b981/ffffff?text=EF'; this.onerror=null;">
-      <div class="header-text">
-        <strong>Tracking & Estadísticas Futsal</strong>
-        <span class="handle">@entrenafutsal</span>
+  <!-- ENCABEZADO -->
+  <header class="w-full max-w-6xl flex flex-wrap items-center justify-between p-3 mb-3 bg-slate-900 border-b-2 border-emerald-500 rounded-xl gap-3">
+    <div class="flex items-center space-x-3">
+      <img src="logo.png.jpg" alt="Logo" class="h-10 w-10 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
+      <div>
+        <h1 class="font-extrabold text-base text-white leading-none">TRACKING & ESTADÍSTICAS <span class="text-xs text-emerald-400 font-mono">TAGGING FUTSAL</span></h1>
+        <p class="text-[11px] text-slate-400">@entrenafutsal - Botonera Táctica de Análisis de Rendimiento</p>
       </div>
     </div>
-    <div class="text-xs font-mono text-emerald-400 bg-emerald-950 px-3 py-1.5 rounded-lg border border-emerald-800">
-      <i class="fa-solid fa-chart-pie mr-1"></i> Análisis de Rendimiento
+
+    <!-- SELECCIÓN DE PERÍODO -->
+    <div class="flex items-center space-x-2 bg-slate-950 p-1 rounded-lg border border-slate-800">
+      <button onclick="setPeriod('1º Tiempo', this)" class="btn-period px-3 py-1.5 text-xs font-black rounded-md bg-emerald-600 text-white">1º Tiempo</button>
+      <button onclick="setPeriod('2º Tiempo', this)" class="btn-period px-3 py-1.5 text-xs font-black rounded-md bg-slate-800 text-slate-400">2º Tiempo</button>
+      <button onclick="setPeriod('Prórroga / 5v4', this)" class="btn-period px-3 py-1.5 text-xs font-black rounded-md bg-slate-800 text-slate-400">5v4 / ET</button>
+    </div>
+
+    <!-- BOTONES ACCIÓN PRINCIPAL -->
+    <div class="flex items-center space-x-2">
+      <button onclick="clearCurrentTag()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg border border-slate-700">🧹 Limpiar</button>
+      <button onclick="enviarBotoneraAKanban()" class="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-lg transition flex items-center space-x-1.5 shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Enviar Stats a Kanban DT</span>
+      </button>
     </div>
   </header>
 
-  <!-- PANEL DE HERRAMIENTAS Y SELECCIÓN DE EVENTOS -->
-  <div class="controls-panel">
-    <span class="panel-label">Marcar Evento en Cancha:</span>
-    <button class="btn btn-tool active" id="type-gol" onclick="setEventType('gol', this)">⚽ Gol</button>
-    <button class="btn btn-tool" id="type-atajada" onclick="setEventType('atajada', this)">🧤 Atajado / Bloqueado</button>
-    <button class="btn btn-tool" id="type-fuera" onclick="setEventType('fuera', this)">❌ Fuera</button>
-    <button class="btn btn-tool" id="type-falta" onclick="setEventType('falta', this)">🟨 Falta</button>
+  <!-- PANEL PRINCIPAL RESPONSIVE -->
+  <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-4">
 
-    <div class="h-4 w-px bg-slate-700 mx-1"></div>
-
-    <button class="btn btn-clear" onclick="resetAllStats()"><i class="fa-solid fa-rotate-left"></i> Reiniciar Stats</button>
-    <button class="btn btn-kanban" onclick="enviarStatsAKanban()"><i class="fa-solid fa-paper-plane"></i> 📊 Enviar Reporte a Kanban DT</button>
-  </div>
-
-  <!-- SECCIÓN PRINCIPAL: MAPA + CONTADORES -->
-  <div class="stats-container">
-
-    <!-- MAPA DE REGISTRO EN CANCHA -->
-    <div class="pitch-wrapper">
-      <div class="flex justify-between items-center mb-2 px-1">
-        <span class="text-xs font-bold text-slate-300"><i class="fa-solid fa-crosshairs text-emerald-400 mr-1"></i> Mapa de Tiros y Zonas de Evento</span>
-        <span class="text-[10px] text-slate-400">Haz clic en la cancha para ubicar la acción</span>
+    <!-- COLUMNA 1: CONTADORES COMPARATIVOS (PROPIO VS RIVAL) -->
+    <div class="md:col-span-4 bg-slate-900/90 p-3 rounded-2xl border border-slate-800 space-y-2">
+      <div class="grid grid-cols-2 gap-2 text-center text-xs font-black uppercase mb-1">
+        <span class="p-1.5 bg-rose-950 text-rose-400 rounded-lg border border-rose-900/50">🔴 Equipo Propio</span>
+        <span class="p-1.5 bg-blue-950 text-blue-400 rounded-lg border border-blue-900/50">🔵 Equipo Rival</span>
       </div>
-      <canvas id="statsCanvas" width="1200" height="720"></canvas>
+
+      <!-- POSESIÓN -->
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="addEvent('Posesión Propia', 'propio')" class="btn-tag p-2.5 bg-rose-900/80 hover:bg-rose-800 text-white font-extrabold text-xs rounded-xl border border-rose-700 flex justify-between items-center">
+          <span>POSESIÓN</span>
+          <span id="cnt-pos-propio" class="bg-rose-950 px-2 py-0.5 rounded text-rose-300 font-mono">0</span>
+        </button>
+        <button onclick="addEvent('Posesión Rival', 'rival')" class="btn-tag p-2.5 bg-blue-900/80 hover:bg-blue-800 text-white font-extrabold text-xs rounded-xl border border-blue-700 flex justify-between items-center">
+          <span>POS. RIVAL</span>
+          <span id="cnt-pos-rival" class="bg-blue-950 px-2 py-0.5 rounded text-blue-300 font-mono">0</span>
+        </button>
+      </div>
+
+      <button onclick="addEvent('Balón Parado / Fuera', 'neutral')" class="btn-tag w-full p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-lg border border-slate-700 text-center">
+        ⏸️ Balón Parado / Fuera de Juego
+      </button>
+
+      <!-- FILAS COMPARATIVAS DE EVENTOS -->
+      <div class="space-y-1.5">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Recuperación', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Recuperación</span>
+            <span id="cnt-rec-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Pérdida Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Pérdida Rival</span>
+            <span id="cnt-per-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Pérdida', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Pérdida Propia</span>
+            <span id="cnt-per-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Recuperación Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Recuperación Riv.</span>
+            <span id="cnt-rec-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Remate A Favor', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Remate A Favor</span>
+            <span id="cnt-rem-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Remate Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Remate Rival</span>
+            <span id="cnt-rem-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Gol A Favor', 'propio')" class="btn-tag p-2 bg-emerald-950 text-emerald-300 text-[11px] font-black rounded-lg border border-emerald-700 flex justify-between">
+            <span>⚽ GOL PROPIO</span>
+            <span id="cnt-gol-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Gol Rival', 'rival')" class="btn-tag p-2 bg-amber-950 text-amber-300 text-[11px] font-black rounded-lg border border-amber-700 flex justify-between">
+            <span>⚽ GOL RIVAL</span>
+            <span id="cnt-gol-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Tiro Libre Recibido', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Falta Recibida</span>
+            <span id="cnt-flt-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Falta Cometida', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Falta Cometida</span>
+            <span id="cnt-flt-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Córner A Favor', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>Córner A Favor</span>
+            <span id="cnt-cor-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Córner Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>Córner Rival</span>
+            <span id="cnt-cor-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addEvent('Penalti / 10m Favor', 'propio')" class="btn-tag p-2 bg-rose-950 text-rose-200 text-[11px] font-bold rounded-lg border border-rose-800/60 flex justify-between">
+            <span>10m / Penalti Fav.</span>
+            <span id="cnt-pen-propio" class="font-mono text-white">0</span>
+          </button>
+          <button onclick="addEvent('Penalti / 10m Rival', 'rival')" class="btn-tag p-2 bg-blue-950 text-blue-200 text-[11px] font-bold rounded-lg border border-blue-800/60 flex justify-between">
+            <span>10m / Penalti Riv.</span>
+            <span id="cnt-pen-rival" class="font-mono text-white">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+        <button onclick="addDescriptor('Acción BUENA 👍')" class="btn-tag p-2.5 bg-blue-900/80 hover:bg-blue-800 text-blue-200 font-extrabold text-xs rounded-xl border border-blue-600 text-center">
+          👍 BUENA
+        </button>
+        <button onclick="addDescriptor('Acción MALA 👎')" class="btn-tag p-2.5 bg-rose-900/80 hover:bg-rose-800 text-rose-200 font-extrabold text-xs rounded-xl border border-rose-600 text-center">
+          👎 MALA
+        </button>
+      </div>
     </div>
 
-    <!-- PANEL DE CONTADORES RÁPIDOS -->
-    <div class="space-y-3">
-      
-      <div class="counter-card">
-        <div>
-          <p class="counter-title">Goles A Favor</p>
-          <p class="counter-value text-emerald-400" id="val-goles">0</p>
+    <!-- COLUMNA 2: MATRIZ DE DESCRIPTORES TÁCTICOS Y ZONAS -->
+    <div class="md:col-span-5 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-4">
+      <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider text-center flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shapes text-blue-400"></i>
+        <span>Matriz de Descriptores Tácticos</span>
+      </h3>
+
+      <!-- PANAL DE BEJA TÁCTICO -->
+      <div class="hex-grid">
+        <button onclick="toggleHex('A Puerta', this)" class="hex-btn">A Puerta</button>
+        <button onclick="toggleHex('Robo', this)" class="hex-btn">Robo</button>
+        <button onclick="toggleHex('Termina en Tiro', this)" class="hex-btn">Finaliza en Tiro</button>
+        <button onclick="toggleHex('Táctica Fija', this)" class="hex-btn">Táctica Fija</button>
+        <button onclick="toggleHex('Ataque Directo', this)" class="hex-btn">Ataque Directo</button>
+        <button onclick="toggleHex('Forzado', this)" class="hex-btn">Pérdida Forzada</button>
+        <button onclick="toggleHex('Dentro Área', this)" class="hex-btn">Dentro del Área</button>
+        <button onclick="toggleHex('Cambio Posesión', this)" class="hex-btn">Transición</button>
+        <button onclick="toggleHex('Fuera Área', this)" class="hex-btn">Fuera del Área</button>
+        <button onclick="toggleHex('Ataque 4-0', this)" class="hex-btn">Sistema 4-0</button>
+        <button onclick="toggleHex('Juego 5v4', this)" class="hex-btn">Portero Jugador</button>
+        <button onclick="toggleHex('Fuera', this)" class="hex-btn">Tiro Fuera</button>
+      </div>
+
+      <!-- PRESIÓN Y ZONAS -->
+      <div class="space-y-2 pt-2 border-t border-slate-800">
+        <span class="text-[11px] font-bold text-slate-400 block text-center uppercase">Intensidad de Presión / Zona Táctica</span>
+        
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="addDescriptor('Presión Alta')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+            Presión Alta
+          </button>
+          <button onclick="addDescriptor('Presión Media')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+            Presión Media
+          </button>
+          <button onclick="addDescriptor('Presión Baja')" class="btn-tag p-2 bg-blue-950 text-blue-300 font-bold text-[11px] rounded-lg border border-blue-800 text-center">
+            Presión Baja
+          </button>
         </div>
-        <div class="flex space-x-1">
-          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('goles', -1)">-</button>
-          <button class="counter-btn bg-emerald-600 text-white hover:bg-emerald-500" onclick="changeCount('goles', 1)">+</button>
+
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="addDescriptor('Zona 1 (Defensa)')" class="btn-tag p-2 bg-rose-950 text-rose-300 font-bold text-[11px] rounded-lg border border-rose-800 text-center">
+            1ª Línea Def.
+          </button>
+          <button onclick="addDescriptor('Zona 2 (Creación)')" class="btn-tag p-2 bg-rose-950 text-rose-300 font-bold text-[11px] rounded-lg border border-rose-800 text-center">
+            2ª Línea Med.
+          </button>
+          <button onclick="addDescriptor('Zona 3 (Ataque)')" class="btn-tag p-2 bg-rose-950 text-rose-300 font-bold text-[11px] rounded-lg border border-rose-800 text-center">
+            3ª Línea Atq.
+          </button>
         </div>
       </div>
 
-      <div class="counter-card">
-        <div>
-          <p class="counter-title">Remates Totales</p>
-          <p class="counter-value text-blue-400" id="val-remates">0</p>
-        </div>
-        <div class="flex space-x-1">
-          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('remates', -1)">-</button>
-          <button class="counter-btn bg-blue-600 text-white hover:bg-blue-500" onclick="changeCount('remates', 1)">+</button>
+      <!-- DORSALES DE JUGADORES -->
+      <div class="pt-2 border-t border-slate-800">
+        <span class="text-[11px] font-bold text-slate-400 block mb-2 text-center uppercase">Jugadores Involucrados (Dorsal)</span>
+        <div class="flex flex-wrap justify-center gap-1.5" id="shirtContainer"></div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 3: REGISTRO DE HISTORIAL EN VIVO -->
+    <div class="md:col-span-3 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-3">
+      <div>
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <span><i class="fa-solid fa-list-check text-emerald-400 mr-1"></i> Historial Etiquetas</span>
+          <span class="text-[10px] font-mono text-emerald-400" id="tagCountBadge">0 Tags</span>
+        </h3>
+
+        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 h-80 overflow-y-auto space-y-2 text-xs font-mono" id="tagHistoryLog">
+          <p class="text-slate-500 italic text-[11px] text-center pt-8">Presiona cualquier botón para comenzar el etiquetado táctico...</p>
         </div>
       </div>
 
-      <div class="counter-card">
-        <div>
-          <p class="counter-title">Faltas Cometidas (5ª es 10m)</p>
-          <p class="counter-value text-amber-400" id="val-faltas">0</p>
+      <div class="space-y-2 pt-2 border-t border-slate-800">
+        <div class="p-2 bg-slate-800/60 rounded-lg text-[11px] text-slate-300 flex justify-between items-center">
+          <span>Período Activo:</span>
+          <strong class="text-emerald-400" id="currentPeriodLabel">1º Tiempo</strong>
         </div>
-        <div class="flex space-x-1">
-          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('faltas', -1)">-</button>
-          <button class="counter-btn bg-amber-600 text-white hover:bg-amber-500" onclick="changeCount('faltas', 1)">+</button>
-        </div>
+        <button onclick="exportTagLog()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg border border-slate-700 transition">
+          💾 Guardar Copia Local
+        </button>
       </div>
-
-      <div class="counter-card">
-        <div>
-          <p class="counter-title">Pérdidas de Balón</p>
-          <p class="counter-value text-rose-400" id="val-perdidas">0</p>
-        </div>
-        <div class="flex space-x-1">
-          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('perdidas', -1)">-</button>
-          <button class="counter-btn bg-rose-600 text-white hover:bg-rose-500" onclick="changeCount('perdidas', 1)">+</button>
-        </div>
-      </div>
-
-      <div class="counter-card">
-        <div>
-          <p class="counter-title">Recuperaciones</p>
-          <p class="counter-value text-cyan-400" id="val-recuperaciones">0</p>
-        </div>
-        <div class="flex space-x-1">
-          <button class="counter-btn bg-slate-800 text-slate-300 hover:bg-slate-700" onclick="changeCount('recuperaciones', -1)">-</button>
-          <button class="counter-btn bg-cyan-600 text-white hover:bg-cyan-500" onclick="changeCount('recuperaciones', 1)">+</button>
-        </div>
-      </div>
-
     </div>
 
   </div>
 
   <script>
-    const canvas = document.getElementById('statsCanvas');
-    const ctx = canvas.getContext('2d');
+    let currentPeriod = "1º Tiempo";
+    let activeDescriptors = [];
+    let selectedPlayers = [];
+    let tagHistory = [];
 
-    let currentEventType = 'gol';
-    let events = [];
-
-    const counters = {
-      goles: 0,
-      remates: 0,
-      faltas: 0,
-      perdidas: 0,
-      recuperaciones: 0
+    const counts = {
+      pos_propio: 0, pos_rival: 0,
+      rec_propio: 0, rec_rival: 0,
+      per_propio: 0, per_rival: 0,
+      rem_propio: 0, rem_rival: 0,
+      gol_propio: 0, gol_rival: 0,
+      flt_propio: 0, flt_rival: 0,
+      cor_propio: 0, cor_rival: 0,
+      pen_propio: 0, pen_rival: 0
     };
 
-    function setEventType(type, btnElement) {
-      currentEventType = type;
-      document.querySelectorAll('.controls-panel .btn-tool').forEach(btn => btn.classList.remove('active'));
-      if (btnElement) btnElement.classList.add('active');
+    function renderShirts() {
+      const container = document.getElementById('shirtContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= 14; i++) {
+        container.innerHTML += `
+          <button onclick="togglePlayer(${i}, this)" class="shirt-btn btn-tag">${i}</button>
+        `;
+      }
     }
 
-    function changeCount(key, delta) {
-      counters[key] = Math.max(0, counters[key] + delta);
-      document.getElementById(`val-${key}`).innerText = counters[key];
+    function setPeriod(p, btn) {
+      currentPeriod = p;
+      document.getElementById('currentPeriodLabel').innerText = p;
+      document.querySelectorAll('.btn-period').forEach(b => {
+        b.className = "btn-period px-3 py-1.5 text-xs font-black rounded-md bg-slate-800 text-slate-400";
+      });
+      if (btn) btn.className = "btn-period px-3 py-1.5 text-xs font-black rounded-md bg-emerald-600 text-white";
     }
 
-    function renderPitch() {
-      ctx.fillStyle = '#2e7d32';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function toggleHex(desc, btn) {
+      btn.classList.toggle('active');
+      if (btn.classList.contains('active')) {
+        if (!activeDescriptors.includes(desc)) activeDescriptors.push(desc);
+      } else {
+        activeDescriptors = activeDescriptors.filter(d => d !== desc);
+      }
+    }
 
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4;
+    function addDescriptor(desc) {
+      if (!activeDescriptors.includes(desc)) {
+        activeDescriptors.push(desc);
+        logTagEvent(`Sub-etiqueta: ${desc}`);
+      }
+    }
 
-      const pad = 20;
-      const w = canvas.width - pad * 2;
-      const h = canvas.height - pad * 2;
+    function togglePlayer(num, btn) {
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) {
+        if (!selectedPlayers.includes(num)) selectedPlayers.push(num);
+      } else {
+        selectedPlayers = selectedPlayers.filter(n => n !== num);
+      }
+    }
 
-      ctx.strokeRect(pad, pad, w, h);
+    function addEvent(eventName, type) {
+      if (type === 'propio' || type === 'rival') {
+        const keyMap = {
+          'Posesión Propia': 'pos_propio', 'Posesión Rival': 'pos_rival',
+          'Recuperación': 'rec_propio', 'Recuperación Rival': 'rec_rival',
+          'Pérdida': 'per_propio', 'Pérdida Rival': 'per_rival',
+          'Remate A Favor': 'rem_propio', 'Remate Rival': 'rem_rival',
+          'Gol A Favor': 'gol_propio', 'Gol Rival': 'gol_rival',
+          'Tiro Libre Recibido': 'flt_propio', 'Falta Cometida': 'flt_rival',
+          'Córner A Favor': 'cor_propio', 'Córner Rival': 'cor_rival',
+          'Penalti / 10m Favor': 'pen_propio', 'Penalti / 10m Rival': 'pen_rival'
+        };
 
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, pad);
-      ctx.lineTo(canvas.width / 2, canvas.height - pad);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 75, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(pad, canvas.height / 2, 150, -Math.PI / 2, Math.PI / 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(canvas.width - pad, canvas.height / 2, 150, Math.PI / 2, 3 * Math.PI / 2);
-      ctx.stroke();
-
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#e0e0e0';
-      ctx.strokeRect(pad - 12, canvas.height / 2 - 60, 12, 120);
-      ctx.strokeRect(canvas.width - pad, canvas.height / 2 - 60, 12, 120);
-
-      // Renderizar eventos dibujados en la cancha
-      for (const ev of events) {
-        ctx.beginPath();
-        ctx.arc(ev.x, ev.y, 16, 0, Math.PI * 2);
-        
-        if (ev.type === 'gol') {
-          ctx.fillStyle = '#10b981';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 14px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('⚽', ev.x, ev.y);
-        } else if (ev.type === 'atajada') {
-          ctx.fillStyle = '#3b82f6';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🧤', ev.x, ev.y);
-        } else if (ev.type === 'fuera') {
-          ctx.fillStyle = '#ef4444';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('❌', ev.x, ev.y);
-        } else if (ev.type === 'falta') {
-          ctx.fillStyle = '#f59e0b';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🟨', ev.x, ev.y);
+        if (keyMap[eventName]) {
+          counts[keyMap[eventName]]++;
+          const elementId = `cnt-${keyMap[eventName].replace('_', '-')}`;
+          if (document.getElementById(elementId)) {
+            document.getElementById(elementId).innerText = counts[keyMap[eventName]];
+          }
         }
       }
+
+      logTagEvent(eventName, type);
     }
 
-    function getCanvasCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return {
-        x: (clientX - rect.left) * (canvas.width / rect.width),
-        y: (clientY - rect.top) * (canvas.height / rect.height)
+    function logTagEvent(mainEvent, type = 'neutral') {
+      const timeStr = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      const fullEntry = {
+        time: timeStr,
+        period: currentPeriod,
+        event: mainEvent,
+        descriptors: [...activeDescriptors],
+        players: [...selectedPlayers]
       };
+
+      tagHistory.unshift(fullEntry);
+      renderLogUI();
+      clearCurrentTag(false);
     }
 
-    canvas.addEventListener('click', (e) => {
-      const pos = getCanvasCoords(e);
-      events.push({ x: pos.x, y: pos.y, type: currentEventType });
-      
-      if (currentEventType === 'gol') {
-        counters.goles++;
-        counters.remates++;
-      } else if (currentEventType === 'atajada' || currentEventType === 'fuera') {
-        counters.remates++;
-      } else if (currentEventType === 'falta') {
-        counters.faltas++;
+    function renderLogUI() {
+      const logContainer = document.getElementById('tagHistoryLog');
+      document.getElementById('tagCountBadge').innerText = `${tagHistory.length} Tags`;
+
+      if (tagHistory.length === 0) {
+        logContainer.innerHTML = `<p class="text-slate-500 italic text-[11px] text-center pt-8">Presiona cualquier botón para comenzar el etiquetado táctico...</p>`;
+        return;
       }
 
-      document.getElementById('val-goles').innerText = counters.goles;
-      document.getElementById('val-remates').innerText = counters.remates;
-      document.getElementById('val-faltas').innerText = counters.faltas;
+      logContainer.innerHTML = '';
+      tagHistory.slice(0, 30).forEach(item => {
+        const descText = item.descriptors.length > 0 ? `<br><span class="text-blue-400 text-[10px]">🏷️ ${item.descriptors.join(', ')}</span>` : '';
+        const playerText = item.players.length > 0 ? `<br><span class="text-amber-400 text-[10px]">🏃 #${item.players.join(', #')}</span>` : '';
 
-      renderPitch();
-    });
+        logContainer.innerHTML += `
+          <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[11px] leading-tight">
+            <div class="flex justify-between items-center text-slate-500 text-[10px] mb-0.5">
+              <span>${item.period}</span>
+              <span>${item.time}</span>
+            </div>
+            <strong class="text-slate-200">${item.event}</strong>
+            ${descText}
+            ${playerText}
+          </div>
+        `;
+      });
+    }
 
-    function resetAllStats() {
-      if (confirm('¿Deseas reiniciar todas las estadísticas y marcas de la cancha?')) {
-        events = [];
-        Object.keys(counters).forEach(k => {
-          counters[k] = 0;
-          document.getElementById(`val-${k}`).innerText = '0';
+    function clearCurrentTag(clearLog = true) {
+      activeDescriptors = [];
+      selectedPlayers = [];
+
+      document.querySelectorAll('.hex-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.shirt-btn').forEach(b => b.classList.remove('selected'));
+
+      if (clearLog && confirm('¿Deseas reiniciar todo el historial de etiquetas registrado?')) {
+        tagHistory = [];
+        Object.keys(counts).forEach(k => {
+          counts[k] = 0;
+          const el = document.getElementById(`cnt-${k.replace('_', '-')}`);
+          if (el) el.innerText = '0';
         });
-        renderPitch();
+        renderLogUI();
       }
     }
 
-    // GENERAR REPORTE COMBINADO (CANCHA + TABLA DE MÉTRICAS) Y ENVIAR AL KANBAN
-    function enviarStatsAKanban() {
-      const tituloReporte = prompt("Título o referencia del reporte de stats para el DT:", "Informe de Stats - 1er Tiempo vs Rival");
-      if (!tituloReporte || tituloReporte.trim() === "") return;
+    function exportTagLog() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tagHistory, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `stats-futsal-${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
 
-      // 1. Crear canvas de alta definición para combinar Cancha + Tabla Resumen
-      const reportCanvas = document.createElement('canvas');
-      reportCanvas.width = 1200;
-      reportCanvas.height = 950;
-      const rCtx = reportCanvas.getContext('2d');
+    // ENVIAR INFORME AL TABLERO KANBAN
+    function enviarBotoneraAKanban() {
+      if (tagHistory.length === 0) {
+        alert("⚠️ Registra al menos un evento o etiqueta antes de enviar el informe al Kanban.");
+        return;
+      }
 
-      // Fondo oscuro elegante
+      const tituloInforme = prompt("Título para el informe de etiquetado:", `Informe de Stats - ${currentPeriod}`);
+      if (!tituloInforme || tituloInforme.trim() === "") return;
+
+      const repCanvas = document.createElement('canvas');
+      repCanvas.width = 1000;
+      repCanvas.height = 800;
+      const rCtx = repCanvas.getContext('2d');
+
       rCtx.fillStyle = '#0f172a';
-      rCtx.fillRect(0, 0, reportCanvas.width, reportCanvas.height);
+      rCtx.fillRect(0, 0, repCanvas.width, repCanvas.height);
 
-      // Encabezado del Informe
       rCtx.fillStyle = '#10b981';
-      rCtx.fillRect(0, 0, reportCanvas.width, 10);
+      rCtx.fillRect(0, 0, repCanvas.width, 10);
 
       rCtx.fillStyle = '#ffffff';
-      rCtx.font = 'bold 28px sans-serif';
-      rCtx.fillText(tituloReporte.trim(), 40, 50);
+      rCtx.font = 'bold 26px sans-serif';
+      rCtx.fillText(tituloInforme.trim(), 40, 50);
 
       rCtx.fillStyle = '#94a3b8';
-      rCtx.font = '16px sans-serif';
-      rCtx.fillText(`Generado por @entrenafutsal el ${new Date().toLocaleDateString('es-AR')}`, 40, 80);
+      rCtx.font = '15px sans-serif';
+      rCtx.fillText(`Generado con Tagging Window @entrenafutsal el ${new Date().toLocaleDateString('es-AR')}`, 40, 80);
 
-      // Renderizar la Cancha con las marcas
-      rCtx.drawImage(canvas, 40, 100, 1120, 620);
-
-      // Tarjeta Inferior de Métricas
       rCtx.fillStyle = '#1e293b';
-      rCtx.roundRect ? rCtx.roundRect(40, 740, 1120, 170, 16) : rCtx.fillRect(40, 740, 1120, 170);
-      rCtx.fill();
+      rCtx.fillRect(40, 110, 920, 240);
 
-      rCtx.fillStyle = '#10b981';
-      rCtx.font = 'bold 20px sans-serif';
-      rCtx.fillText('RESUMEN ESTADÍSTICO DEL PARTIDO', 65, 780);
+      rCtx.fillStyle = '#ef4444';
+      rCtx.font = 'bold 18px sans-serif';
+      rCtx.fillText(`🔴 EQUIPO PROPIO: Goles: ${counts.gol_propio} | Remates: ${counts.rem_propio} | Recuperaciones: ${counts.rec_propio} | Pérdidas: ${counts.per_propio}`, 65, 160);
+
+      rCtx.fillStyle = '#3b82f6';
+      rCtx.fillText(`🔵 EQUIPO RIVAL: Goles: ${counts.gol_rival} | Remates: ${counts.rem_rival} | Recuperaciones: ${counts.rec_rival} | Pérdida Riv: ${counts.per_rival}`, 65, 220);
+
+      rCtx.fillStyle = '#f59e0b';
+      rCtx.fillText(`🟨 FALTAS: Propias: ${counts.flt_rival} | Recibidas: ${counts.flt_propio} | 10m/Penaltis: ${counts.pen_propio}`, 65, 280);
 
       rCtx.fillStyle = '#ffffff';
-      rCtx.font = 'bold 22px sans-serif';
-      rCtx.fillText(`⚽ Goles: ${counters.goles}`, 65, 830);
-      rCtx.fillText(`🎯 Remates: ${counters.remates}`, 300, 830);
-      rCtx.fillText(`🟨 Faltas: ${counters.faltas}`, 550, 830);
-      rCtx.fillText(`🔻 Pérdidas: ${counters.perdidas}`, 750, 830);
-      rCtx.fillText(`🛡️ Recuperaciones: ${counters.recuperaciones}`, 950, 830);
+      rCtx.font = 'bold 20px sans-serif';
+      rCtx.fillText('ÚLTIMAS ACCIONES ETIQUETADAS:', 40, 390);
 
-      const capturaReporte = reportCanvas.toDataURL('image/png');
+      let yPos = 430;
+      tagHistory.slice(0, 10).forEach((item) => {
+        rCtx.fillStyle = '#1e293b';
+        rCtx.fillRect(40, yPos, 920, 32);
+        
+        rCtx.fillStyle = '#34d399';
+        rCtx.font = '13px monospace';
+        const pText = item.players.length > 0 ? `[#${item.players.join(',#')}]` : '';
+        const dText = item.descriptors.length > 0 ? `(${item.descriptors.join(',')})` : '';
+        rCtx.fillText(`${item.time} - ${item.event} ${pText} ${dText}`, 55, yPos + 21);
+        yPos += 38;
+      });
 
-      // 2. Enviar el informe con postMessage al Hub (index.html)
+      const capturaReporte = repCanvas.toDataURL('image/png');
+
       window.parent.postMessage({
         type: 'ADD_KANBAN_TASK',
-        title: tituloReporte.trim(),
+        title: tituloInforme.trim(),
         area: 'DT',
         priority: 'MD-2',
         image: capturaReporte,
         videoUrl: ''
       }, '*');
 
-      alert('📊 ¡Reporte estadístico enviado con éxito al Tablero Kanban del DT!');
+      alert('📊 ¡Informe de Estadísticas enviado con éxito al Tablero Kanban del DT!');
     }
 
-    renderPitch();
+    renderShirts();
   </script>
 </body>
 </html>
