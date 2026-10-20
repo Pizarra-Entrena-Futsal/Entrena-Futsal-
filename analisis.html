@@ -3,269 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Análisis de Video Futsal - @entrenafutsal</title>
+  <title>Videoanálisis Táctico Futsal - @entrenafutsal</title>
+  <!-- Tailwind CSS & FontAwesome CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
-
+    
     /* ENCABEZADO */
-    header { width: 100%; max-width: 960px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #00e676; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    header { width: 100%; max-width: 950px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #8b5cf6; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
     .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #00e676; }
+    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #8b5cf6; }
     .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text .handle { color: #00e676; font-weight: bold; font-size: 14px; }
-    .nav-links { display: flex; gap: 8px; }
-    .nav-link { background: #333; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
-    .nav-link:hover { background: #444; }
+    .header-text .handle { color: #a78bfa; font-weight: bold; font-size: 14px; }
+    .stats-link { background: #ff9800; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+    .stats-link:hover { background: #e68a00; }
 
-    /* CONTROLES Y PANELES */
-    .controls-panel { width: 100%; max-width: 960px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; }
-    .panel-group { display: flex; align-items: center; gap: 6px; background: #1e1e1e; padding: 6px 12px; border-radius: 8px; border: 1px solid #333; }
-    .panel-label { font-size: 12px; font-weight: bold; color: #00e676; }
-
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
+    /* CONTROLES Y HERRAMIENTAS */
+    .controls-panel { width: 100%; max-width: 950px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; background: #1e1e1e; padding: 10px 14px; border-radius: 10px; border: 1px solid #333; }
+    .panel-label { font-size: 13px; font-weight: bold; color: #a78bfa; margin-right: 4px; }
+    
+    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
     .btn:active { transform: scale(0.97); }
-    .btn-file { background: #0288d1; cursor: pointer; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
     .btn-tool { background: #333; }
-    .btn-tool.active { background: #00e676; color: #121212; }
-    .btn-play { background: #e91e63; }
-    .btn-clear { background: #f44336; }
-    .btn-mark { background: #ff9800; }
-    .btn-download { background: #9c27b0; }
-    .btn-clip { background: #e91e63; }
+    .btn-tool.active { background: #8b5cf6; color: #fff; }
+    .btn-purple { background: #8b5cf6; color: #fff; }
+    .btn-purple:hover { background: #7c3aed; }
+    .btn-clear { background: #ef4444; color: #fff; }
+    .btn-clear:hover { background: #dc2626; }
+    .btn-kanban { background: #8b5cf6; color: #ffffff; font-weight: bold; }
 
-    .color-picker { display: flex; gap: 6px; }
-    .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
-    .color-dot.active { border-color: #00e676; transform: scale(1.15); }
-
-    /* REPRODUCTOR Y CANVAS SOBREPUESTO */
-    .video-wrapper { width: 100%; max-width: 960px; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid #333; }
-    video { width: 100%; height: auto; display: block; }
-    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
-
-    /* INDICADOR DE ESTADO */
-    .status-banner { width: 100%; max-width: 960px; background: #ff9800; color: #121212; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 6px; margin-bottom: 10px; display: none; text-align: center; }
-
-    /* SECCIÓN DE CARPETAS Y BIBLIOTECA */
-    .library-container { width: 100%; max-width: 960px; background: #1e1e1e; border-radius: 10px; padding: 16px; margin-top: 16px; border: 1px solid #333; }
-    .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 8px; }
-    .library-title { font-size: 16px; font-weight: bold; color: #00e676; display: flex; align-items: center; gap: 8px; }
-
-    .folder-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
-    .folder-btn { background: #2a2a2a; color: #ccc; border: 1px solid #444; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
-    .folder-btn.active { background: #00e676; color: #121212; border-color: #00e676; }
-
-    .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
-    .clip-card { background: #2a2a2a; border-radius: 8px; padding: 10px; border: 1px solid #333; display: flex; flex-direction: column; gap: 8px; }
-    .clip-card video { width: 100%; border-radius: 4px; background: #000; }
-    .clip-info { font-size: 12px; color: #ccc; }
-    .clip-actions { display: flex; justify-content: space-between; gap: 6px; margin-top: auto; }
-    .clip-btn { padding: 4px 8px; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; color: #fff; }
-    .clip-btn-dl { background: #9c27b0; }
-    .clip-btn-del { background: #f44336; }
-
-    /* MODAL DE SELECCIÓN DE CARPETA */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal-box { background: #1e1e1e; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; border: 1px solid #00e676; }
-    .modal-box h3 { color: #00e676; margin-bottom: 12px; font-size: 16px; }
-    .modal-box label { display: block; font-size: 12px; margin: 8px 0 4px; color: #aaa; }
-    .modal-box select, .modal-box input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #333; background: #2a2a2a; color: #fff; font-size: 13px; margin-bottom: 10px; }
-    .modal-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+    /* CONTENEDOR DE VIDEO Y TELESTRADOR */
+    .video-wrapper { position: relative; width: 100%; max-width: 950px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.7); aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
+    video { width: 100%; height: 100%; object-fit: contain; }
+    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+    canvas.drawing-active { pointer-events: auto; cursor: crosshair; }
   </style>
 </head>
 <body>
 
-  <!-- ENCABEZADO -->
   <header>
     <div class="header-info">
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='logo.png'; this.onerror=null;">
+      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=EF'; this.onerror=null;">
       <div class="header-text">
-        <strong>Análisis de Video Futsal</strong>
+        <strong>Videoanálisis Táctico Futsal</strong>
         <span class="handle">@entrenafutsal</span>
       </div>
     </div>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link">📋 Pizarra Táctica</a>
-      <a href="stats.html" class="nav-link">📊 Estadísticas</a>
-    </div>
+    <a href="stats.html" class="stats-link">📊 Estadísticas</a>
   </header>
 
-  <!-- BANNER DE ESTADO -->
-  <div class="status-banner" id="statusBanner"></div>
-
-  <!-- PANEL DE CONTROLES PRINCIPALES -->
+  <!-- PANEL DE CARGA DE ARCHIVO O URL -->
   <div class="controls-panel">
-    <label class="btn btn-file">
-      📂 Cargar Video <input type="file" id="videoInput" accept="video/*" style="display:none;" onchange="loadVideo(event)">
-    </label>
-
-    <div class="panel-group">
-      <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">▶️ Reproducir</button>
-      <button class="btn btn-tool" onclick="stepFrame(-0.04)">⏮️ -1 Frame</button>
-      <button class="btn btn-tool" onclick="stepFrame(0.04)">+1 Frame ⏭️</button>
-    </div>
-
-    <div class="panel-group">
-      <span class="panel-label">Velocidad:</span>
-      <button class="btn btn-tool" onclick="setSpeed(0.5)">0.5x</button>
-      <button class="btn btn-tool active" id="speed1" onclick="setSpeed(1.0)">1x</button>
-      <button class="btn btn-tool" onclick="setSpeed(1.5)">1.5x</button>
-    </div>
+    <span class="panel-label">Cargar Video:</span>
+    <input type="file" id="videoFileInput" accept="video/*" onchange="loadLocalVideo(event)" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-purple-200 hover:file:bg-purple-800 cursor-pointer">
+    
+    <span class="text-slate-500 text-xs font-bold my-1">o Enlace:</span>
+    <input type="url" id="videoUrlInput" placeholder="https://ejemplo.com/video.mp4" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-purple-500 w-64">
+    <button class="btn btn-purple" onclick="loadUrlVideo()"><i class="fa-solid fa-link"></i> Cargar URL</button>
   </div>
 
-  <!-- PANEL DIBUJO Y RECORTE -->
+  <!-- PANEL DE REPRODUCCIÓN Y TELESTRADOR -->
   <div class="controls-panel">
-    <div class="panel-group">
-      <span class="panel-label">Dibujo:</span>
-      <button class="btn btn-tool active" id="modeDraw" onclick="toggleDrawing(true)">✏️ Activar Dibujo</button>
-      <button class="btn btn-tool" id="modeVideo" onclick="toggleDrawing(false)">✋ Controlar Video</button>
-      <button class="btn btn-clear" onclick="clearDrawings()">🧹 Borrar Trazos</button>
-    </div>
+    <button class="btn btn-tool" onclick="togglePlay()"><i class="fa-solid fa-play-pause" id="playIcon"></i> Reproducir / Pausa</button>
+    <button class="btn btn-tool" onclick="skipTime(-2)"><i class="fa-solid fa-backward-step"></i> -2s</button>
+    <button class="btn btn-tool" onclick="skipTime(2)"><i class="fa-solid fa-forward-step"></i> +2s</button>
+    
+    <span class="panel-label ml-2">Velocidad:</span>
+    <button class="btn btn-tool" onclick="setSpeed(0.25)">0.25x</button>
+    <button class="btn btn-tool" onclick="setSpeed(0.5)">0.5x</button>
+    <button class="btn btn-tool active" id="btnSpeed1" onclick="setSpeed(1)">1x</button>
 
-    <div class="panel-group">
-      <span class="panel-label">Color:</span>
-      <div class="color-picker">
-        <div class="color-dot active" style="background:#ffeb3b;" onclick="setColor('#ffeb3b', this)"></div>
-        <div class="color-dot" style="background:#ff1744;" onclick="setColor('#ff1744', this)"></div>
-        <div class="color-dot" style="background:#00e676;" onclick="setColor('#00e676', this)"></div>
-        <div class="color-dot" style="background:#ffffff;" onclick="setColor('#ffffff', this)"></div>
-      </div>
-    </div>
+    <span class="panel-label ml-2">Anotaciones:</span>
+    <button class="btn btn-tool" id="btnDrawMode" onclick="toggleDrawingMode()"><i class="fa-solid fa-pen"></i> Dibujar en Video</button>
+    <button class="btn btn-clear" onclick="clearDrawings()"><i class="fa-solid fa-eraser"></i> Borrar Dibujos</button>
 
-    <button class="btn btn-download" onclick="downloadSnapshot()">📷 Foto con Trazos</button>
-    <button class="btn btn-clip" id="btnClip" onclick="toggleClipRecording()">🎬 Recortar Clip (-5s)</button>
+    <!-- BOTÓN ENVÍO DIRECTO AL KANBAN -->
+    <button class="btn btn-kanban" onclick="enviarClipAKanban()"><i class="fa-solid fa-film"></i> 🎬 Enviar Corte a Kanban DT</button>
   </div>
 
-  <!-- CONTENEDOR VIDEO + CANVAS -->
-  <div class="video-wrapper" id="videoWrapper">
-    <video id="futsalVideo" playsinline></video>
+  <!-- REPRODUCTOR CON OVERLAY CANVAS -->
+  <div class="video-wrapper">
+    <video id="futsalVideo" controls crossorigin="anonymous" playsinline>
+      <source src="" type="video/mp4">
+      Tu navegador no soporta la reproducción de video HTML5.
+    </video>
     <canvas id="drawCanvas"></canvas>
-  </div>
-
-  <!-- BIBLIOTECA DE CLIPS POR CARPETAS -->
-  <div class="library-container">
-    <div class="library-header">
-      <div class="library-title">📁 Biblioteca de Clips Guardados</div>
-      <button class="btn btn-tool" onclick="promptNewFolder()">➕ Nueva Carpeta</button>
-    </div>
-
-    <!-- PESTAÑAS DE CARPETAS -->
-    <div class="folder-tabs" id="folderTabs"></div>
-
-    <!-- REJILLA DE CLIPS DE LA CARPETA SELECCIONADA -->
-    <div class="clip-grid" id="clipGrid">
-      <div style="color:#777; font-size:13px; text-align:center; grid-column: 1/-1; padding:20px;">No hay clips guardados en esta carpeta.</div>
-    </div>
-  </div>
-
-  <!-- MODAL PARA GUARDAR CLIP EN CARPETA -->
-  <div class="modal-overlay" id="saveModal">
-    <div class="modal-box">
-      <h3>💾 Guardar Clip en Carpeta</h3>
-      <label>Seleccionar Carpeta:</label>
-      <select id="modalFolderSelect"></select>
-
-      <label>Comentario / Nota del Clip:</label>
-      <input type="text" id="modalClipNote" placeholder="Ej: Rotación 3-1, buena presión alto">
-
-      <div class="modal-buttons">
-        <button class="btn btn-tool" onclick="cancelClipSave()">Cancelar</button>
-        <button class="btn btn-play" onclick="confirmClipSave()">Guardar Clip</button>
-      </div>
-    </div>
   </div>
 
   <script>
     const video = document.getElementById('futsalVideo');
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
-    const btnPlay = document.getElementById('btnPlay');
-    const statusBanner = document.getElementById('statusBanner');
 
-    let isDrawingMode = true;
+    let isDrawingMode = false;
     let isDrawing = false;
-    let currentColor = '#ffeb3b';
     let drawings = [];
     let currentPath = [];
 
-    // Estado de grabado
-    let isRecordingClip = false;
-    let clipStartTime = 0;
-    let pendingClipBlob = null;
-
-    // LISTA DE CARPETAS CONFIGURADAS
-    let folders = ["⚽ Ataque", "🛡️ Defensa", "⚡ Transiciones", "🎯 ABP", "🧤 Arquero Jugador", "⚽ Goles", "🚨 Infracciones"];
-    let currentFolder = folders[0];
-
-    // BASE DE DATOS LOCAL (IndexedDB)
-    let db;
-    const request = indexedDB.open("FutsalVideoDB", 1);
-    request.onupgradeneeded = (e) => {
-      db = e.target.result;
-      if (!db.objectStoreNames.contains("clips")) {
-        db.createObjectStore("clips", { keyPath: "id", autoIncrement: true });
-      }
-    };
-    request.onsuccess = (e) => {
-      db = e.target.result;
-      renderFolders();
-      loadClipsForFolder(currentFolder);
-    };
-
+    // Ajustar dimensiones del canvas al video
     function resizeCanvas() {
-      if (video.videoWidth) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      } else {
-        canvas.width = video.clientWidth || 960;
-        canvas.height = video.clientHeight || 540;
-      }
-      renderCanvas();
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      renderDrawings();
     }
 
     window.addEventListener('resize', resizeCanvas);
     video.addEventListener('loadedmetadata', resizeCanvas);
 
-    function loadVideo(event) {
-      const file = event.target.files[0];
+    // Cargar video desde archivo local
+    function loadLocalVideo(e) {
+      const file = e.target.files[0];
       if (file) {
-        video.src = URL.createObjectURL(file);
+        const url = URL.createObjectURL(file);
+        video.src = url;
         video.play();
-        btnPlay.innerText = '⏸️ Pausar';
-        drawings = [];
-        renderCanvas();
+        resizeCanvas();
       }
     }
 
+    // Cargar video desde URL
+    function loadUrlVideo() {
+      const url = document.getElementById('videoUrlInput').value.trim();
+      if (url) {
+        video.src = url;
+        video.play();
+        resizeCanvas();
+      } else {
+        alert("Por favor ingresa una URL válida de video.");
+      }
+    }
+
+    // Controles de Reproducción
     function togglePlay() {
-      if (video.paused) { video.play(); btnPlay.innerText = '⏸️ Pausar'; }
-      else { video.pause(); btnPlay.innerText = '▶️ Reproducir'; }
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
     }
 
-    function setSpeed(speed) { video.playbackRate = speed; }
-
-    function stepFrame(timeOffset) {
-      video.pause();
-      btnPlay.innerText = '▶️ Reproducir';
-      video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + timeOffset));
+    function skipTime(seconds) {
+      video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + seconds));
     }
 
-    function toggleDrawing(enable) {
-      isDrawingMode = enable;
-      canvas.style.pointerEvents = enable ? 'auto' : 'none';
-      document.getElementById('modeDraw').classList.toggle('active', enable);
-      document.getElementById('modeVideo').classList.toggle('active', !enable);
+    function setSpeed(speed) {
+      video.playbackRate = speed;
+      document.querySelectorAll('.controls-panel .btn-tool').forEach(btn => {
+        if (btn.innerText.includes('x')) btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
     }
 
-    function setColor(color, element) {
-      currentColor = color;
-      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-      element.classList.add('active');
+    // Modo Dibujo sobre Video (Telestrador)
+    function toggleDrawingMode() {
+      isDrawingMode = !isDrawingMode;
+      const btn = document.getElementById('btnDrawMode');
+      
+      if (isDrawingMode) {
+        video.pause(); // Pausar video para dibujar cómodamente
+        canvas.classList.add('drawing-active');
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Listo (Continuar Video)';
+      } else {
+        canvas.classList.remove('drawing-active');
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fa-solid fa-pen"></i> Dibujar en Video';
+      }
     }
 
-    function clearDrawings() { drawings = []; renderCanvas(); }
-
-    function getCanvasCoords(e) {
+    function getCoords(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -275,269 +185,112 @@
       };
     }
 
-    function handleStart(e) {
+    function startDrawing(e) {
       if (!isDrawingMode) return;
       isDrawing = true;
-      const pos = getCanvasCoords(e);
-      currentPath = [{ x: pos.x, y: pos.y, color: currentColor }];
+      currentPath = [getCoords(e)];
       drawings.push(currentPath);
-      renderCanvas();
+      renderDrawings();
     }
 
-    function handleMove(e) {
-      if (!isDrawing || !isDrawingMode) return;
-      const pos = getCanvasCoords(e);
-      currentPath.push({ x: pos.x, y: pos.y, color: currentColor });
-      renderCanvas();
+    function draw(e) {
+      if (!isDrawingMode || !isDrawing) return;
+      currentPath.push(getCoords(e));
+      renderDrawings();
     }
 
-    function handleEnd() { isDrawing = false; }
+    function stopDrawing() {
+      isDrawing = false;
+    }
 
-    canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
-    canvas.addEventListener('touchend', handleEnd);
-
-    function renderCanvas() {
+    function renderDrawings() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#a855f7'; // Color Morado Fluo Táctico
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
       for (const path of drawings) {
         if (path.length < 2) continue;
         ctx.beginPath();
-        ctx.strokeStyle = path[0].color || '#ffeb3b';
-        ctx.lineWidth = Math.max(4, canvas.width / 240);
-        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         ctx.moveTo(path[0].x, path[0].y);
-        for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+        for (let i = 1; i < path.length; i++) {
+          ctx.lineTo(path[i].x, path[i].y);
+        }
         ctx.stroke();
       }
     }
 
-    function downloadSnapshot() {
-      if (!video.videoWidth) return alert('Carga un video primero.');
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = video.videoWidth; tempCanvas.height = video.videoHeight;
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-      tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
-      const link = document.createElement('a');
-      link.download = `foto-futsal.png`;
-      link.href = tempCanvas.toDataURL('image/png');
-      link.click();
+    function clearDrawings() {
+      drawings = [];
+      renderDrawings();
     }
 
-    /* RECORTE DE CLIP Y GUARDADO EN CARPETAS */
-    function toggleClipRecording() {
-      if (!video.duration) return alert('Carga un video primero.');
-      const btn = document.getElementById('btnClip');
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
 
-      if (!isRecordingClip) {
-        clipStartTime = Math.max(0, video.currentTime - 5);
-        isRecordingClip = true;
-        btn.innerText = '⏹️ Finalizar y Guardar Clip';
-        btn.style.background = '#f44336';
-        statusBanner.style.display = 'block';
-        statusBanner.innerText = `🔴 Recortando desde -5s... Presioná de nuevo para finalizar.`;
-      } else {
-        const clipEndTime = video.currentTime;
-        if (clipEndTime <= clipStartTime) {
-          alert('El tiempo final debe ser mayor.');
-          resetClipUI();
-          return;
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing);
+
+    // FUNCIÓN DE ENVÍO DIRECTO AL TABLERO KANBAN DEL HUB (index.html)
+    function enviarClipAKanban() {
+      if (!video || (!video.src && !video.currentSrc) || video.readyState < 2) {
+        alert("⚠️ Primero debes cargar y seleccionar un video en el analizador.");
+        return;
+      }
+
+      // 1. Capturar la miniatura fusionando el video y los dibujos tácticos
+      let miniatura = '';
+      try {
+        const compCanvas = document.createElement('canvas');
+        compCanvas.width = video.videoWidth || 1280;
+        compCanvas.height = video.videoHeight || 720;
+        const compCtx = compCanvas.getContext('2d');
+        
+        // Dibujar el fotograma del video
+        compCtx.drawImage(video, 0, 0, compCanvas.width, compCanvas.height);
+        
+        // Dibujar la capa de anotaciones por encima
+        if (canvas) {
+          compCtx.drawImage(canvas, 0, 0, compCanvas.width, compCanvas.height);
         }
-
-        isRecordingClip = false;
-        btn.innerText = '⏳ Procesando clip...';
-        btn.disabled = true;
-        statusBanner.innerText = `⏳ Generando clip de video... Por favor esperá.`;
-
-        processClip(clipStartTime, clipEndTime, (blob) => {
-          pendingClipBlob = blob;
-          resetClipUI();
-          openSaveModal();
-        });
-      }
-    }
-
-    function resetClipUI() {
-      const btn = document.getElementById('btnClip');
-      isRecordingClip = false;
-      btn.innerText = '🎬 Recortar Clip (-5s)';
-      btn.style.background = '#e91e63';
-      btn.disabled = false;
-      statusBanner.style.display = 'none';
-    }
-
-    function processClip(start, end, onDone) {
-      const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = video.videoWidth || 1280;
-      exportCanvas.height = video.videoHeight || 720;
-      const exportCtx = exportCanvas.getContext('2d');
-
-      const stream = exportCanvas.captureStream(30);
-      let options = { mimeType: 'video/webm;codecs=vp9' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
-
-      const recorder = new MediaRecorder(stream, options);
-      const chunks = [];
-
-      recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        onDone(blob);
-      };
-
-      const originalTime = video.currentTime;
-      const originalPaused = video.paused;
-      video.muted = true;
-      video.currentTime = start;
-
-      let animId;
-      function renderFrame() {
-        if (video.currentTime >= end || video.ended) {
-          recorder.stop();
-          cancelAnimationFrame(animId);
-          video.pause();
-          video.currentTime = originalTime;
-          video.muted = false;
-          if (!originalPaused) video.play();
-          return;
-        }
-        exportCtx.drawImage(video, 0, 0, exportCanvas.width, exportCanvas.height);
-        exportCtx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
-        animId = requestAnimationFrame(renderFrame);
+        
+        miniatura = compCanvas.toDataURL('image/png');
+      } catch (e) {
+        console.warn("Captura de fotograma no disponible por restricciones del navegador.", e);
       }
 
-      video.onseeked = function () {
-        video.onseeked = null;
-        recorder.start();
-        video.play();
-        renderFrame();
-      };
-    }
-
-    /* MODAL Y GUARDADO EN INDEXEDDB */
-    function openSaveModal() {
-      const select = document.getElementById('modalFolderSelect');
-      select.innerHTML = folders.map(f => `<option value="${f}">${f}</option>`).join('');
-      document.getElementById('modalClipNote').value = '';
-      document.getElementById('saveModal').style.display = 'flex';
-    }
-
-    function cancelClipSave() {
-      pendingClipBlob = null;
-      document.getElementById('saveModal').style.display = 'none';
-    }
-
-    function confirmClipSave() {
-      if (!pendingClipBlob) return;
-      const folder = document.getElementById('modalFolderSelect').value;
-      const note = document.getElementById('modalClipNote').value || 'Sin comentario';
-
-      const transaction = db.transaction(["clips"], "readwrite");
-      const store = transaction.objectStore("clips");
-      store.add({
-        folder: folder,
-        note: note,
-        blob: pendingClipBlob,
-        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
-
-      transaction.oncomplete = () => {
-        cancelClipSave();
-        currentFolder = folder;
-        renderFolders();
-        loadClipsForFolder(currentFolder);
-      };
-    }
-
-    /* GESTIÓN DE CARPETAS Y BIBLIOTECA */
-    function promptNewFolder() {
-      const name = prompt('Nombre de la nueva carpeta:');
-      if (name && !folders.includes(name)) {
-        folders.push(name);
-        currentFolder = name;
-        renderFolders();
-        loadClipsForFolder(currentFolder);
+      // 2. Calcular minuto y segundo actual del video
+      let tiempoTexto = "";
+      if (video.currentTime) {
+        const min = Math.floor(video.currentTime / 60);
+        const seg = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+        tiempoTexto = ` (Min ${min}:${seg})`;
       }
+
+      // 3. Pedir título o nota táctica al analista
+      const tituloCorte = prompt("Nombre o detalle táctico de este corte para el DT:", `Análisis Video - Jugada Clave${tiempoTexto}`);
+      if (!tituloCorte || tituloCorte.trim() === "") return;
+
+      const srcVideo = video.currentSrc || video.src;
+
+      // 4. Enviar el mensaje mediante postMessage a index.html
+      window.parent.postMessage({
+        type: 'ADD_KANBAN_TASK',
+        title: tituloCorte.trim(),
+        area: 'Video',
+        priority: 'MD-2',
+        image: miniatura,
+        videoUrl: srcVideo
+      }, '*');
+
+      alert('🎬 ¡Corte de video enviado con éxito al Tablero Kanban!');
     }
 
-    function renderFolders() {
-      const tabs = document.getElementById('folderTabs');
-      tabs.innerHTML = folders.map(f => `
-        <button class="folder-btn ${f === currentFolder ? 'active' : ''}" onclick="selectFolder('${f}')">
-          📁 ${f}
-        </button>
-      `).join('');
-    }
-
-    function selectFolder(folderName) {
-      currentFolder = folderName;
-      renderFolders();
-      loadClipsForFolder(currentFolder);
-    }
-
-    function loadClipsForFolder(folderName) {
-      if (!db) return;
-      const grid = document.getElementById('clipGrid');
-      grid.innerHTML = '';
-
-      const transaction = db.transaction(["clips"], "readonly");
-      const store = transaction.objectStore("clips");
-      const request = store.openCursor();
-      let count = 0;
-
-      request.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) {
-          if (cursor.value.folder === folderName) {
-            count++;
-            const item = cursor.value;
-            const clipUrl = URL.createObjectURL(item.blob);
-
-            const card = document.createElement('div');
-            card.className = 'clip-card';
-            card.innerHTML = `
-              <video src="${clipUrl}" controls preload="metadata"></video>
-              <div class="clip-info">
-                <strong>📝 ${item.note}</strong><br>
-                <span style="color:#888;">🕒 ${item.date}</span>
-              </div>
-              <div class="clip-actions">
-                <button class="clip-btn clip-btn-dl" onclick="downloadClipFromDb(${item.id})">💾 Descargar</button>
-                <button class="clip-btn clip-btn-del" onclick="deleteClipFromDb(${item.id})">🗑️ Borrar</button>
-              </div>
-            `;
-            grid.appendChild(card);
-          }
-          cursor.continue();
-        } else if (count === 0) {
-          grid.innerHTML = `<div style="color:#777; font-size:13px; text-align:center; grid-column: 1/-1; padding:20px;">No hay clips guardados en "${folderName}".</div>`;
-        }
-      };
-    }
-
-    function downloadClipFromDb(id) {
-      const tx = db.transaction(["clips"], "readonly");
-      tx.objectStore("clips").get(id).onsuccess = (e) => {
-        const item = e.target.result;
-        const url = URL.createObjectURL(item.blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `futsal-${item.folder.replace(/[^a-zA-Z0-9]/g, '')}-${item.id}.webm`;
-        a.click();
-      };
-    }
-
-    function deleteClipFromDb(id) {
-      if (confirm('¿Borrar este clip de la carpeta?')) {
-        const tx = db.transaction(["clips"], "readwrite");
-        tx.objectStore("clips").delete(id).onsuccess = () => {
-          loadClipsForFolder(currentFolder);
-        };
-      }
-    }
+    // Inicializar canvas al cargar
+    resizeCanvas();
   </script>
 </body>
 </html>
