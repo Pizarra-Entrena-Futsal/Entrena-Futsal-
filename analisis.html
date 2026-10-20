@@ -32,9 +32,13 @@
     .btn-tool.active { background: #8b5cf6; color: #fff; }
     .btn-purple { background: #8b5cf6; color: #fff; }
     .btn-purple:hover { background: #7c3aed; }
+    .btn-amber { background: #d97706; color: #fff; }
+    .btn-amber:hover { background: #b45309; }
     .btn-clear { background: #ef4444; color: #fff; }
     .btn-clear:hover { background: #dc2626; }
     .btn-kanban { background: #8b5cf6; color: #ffffff; font-weight: bold; }
+
+    .clip-badge { background: #2e1065; color: #c084fc; border: 1px solid #7e22ce; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; font-family: monospace; }
 
     /* CONTENEDOR DE VIDEO Y TELESTRADOR */
     .video-wrapper { position: relative; width: 100%; max-width: 950px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.7); aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
@@ -56,7 +60,7 @@
     <a href="stats.html" class="stats-link">📊 Estadísticas</a>
   </header>
 
-  <!-- PANEL DE CARGA DE ARCHIVO O URL -->
+  <!-- PANEL 1: CARGA DE ARCHIVO O URL -->
   <div class="controls-panel">
     <span class="panel-label">Cargar Video:</span>
     <input type="file" id="videoFileInput" accept="video/*" onchange="loadLocalVideo(event)" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-purple-200 hover:file:bg-purple-800 cursor-pointer">
@@ -66,7 +70,7 @@
     <button class="btn btn-purple" onclick="loadUrlVideo()"><i class="fa-solid fa-link"></i> Cargar URL</button>
   </div>
 
-  <!-- PANEL DE REPRODUCCIÓN Y TELESTRADOR -->
+  <!-- PANEL 2: REPRODUCCIÓN Y VELOCIDAD -->
   <div class="controls-panel">
     <button class="btn btn-tool" onclick="togglePlay()"><i class="fa-solid fa-play-pause" id="playIcon"></i> Reproducir / Pausa</button>
     <button class="btn btn-tool" onclick="skipTime(-2)"><i class="fa-solid fa-backward-step"></i> -2s</button>
@@ -80,9 +84,17 @@
     <span class="panel-label ml-2">Anotaciones:</span>
     <button class="btn btn-tool" id="btnDrawMode" onclick="toggleDrawingMode()"><i class="fa-solid fa-pen"></i> Dibujar en Video</button>
     <button class="btn btn-clear" onclick="clearDrawings()"><i class="fa-solid fa-eraser"></i> Borrar Dibujos</button>
+  </div>
 
-    <!-- BOTÓN ENVÍO DIRECTO AL KANBAN -->
-    <button class="btn btn-kanban" onclick="enviarClipAKanban()"><i class="fa-solid fa-film"></i> 🎬 Enviar Corte a Kanban DT</button>
+  <!-- PANEL 3: NUEVA HERRAMIENTA DE RECORTE DE VIDEO (TRIMMING) -->
+  <div class="controls-panel">
+    <span class="panel-label">✂️ Recortar Jugada:</span>
+    <button class="btn btn-amber" onclick="setCutStart()"><i class="fa-solid fa-flag"></i> 🚩 Marcar Inicio</button>
+    <button class="btn btn-amber" onclick="setCutEnd()"><i class="fa-solid fa-flag-checkered"></i> 🏁 Marcar Fin</button>
+    <div class="clip-badge" id="clipRangeText">Corte: 00:00 ➔ 00:00 (0s)</div>
+
+    <!-- BOTÓN DE ENVÍO RECORTADO AL KANBAN -->
+    <button class="btn btn-kanban" id="btnSendClip" onclick="enviarClipAKanban()"><i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT</button>
   </div>
 
   <!-- REPRODUCTOR CON OVERLAY CANVAS -->
@@ -104,7 +116,9 @@
     let drawings = [];
     let currentPath = [];
 
-    // Ajustar dimensiones del canvas al video
+    let cutStart = 0;
+    let cutEnd = 0;
+
     function resizeCanvas() {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -114,7 +128,6 @@
     window.addEventListener('resize', resizeCanvas);
     video.addEventListener('loadedmetadata', resizeCanvas);
 
-    // Cargar video desde archivo local
     function loadLocalVideo(e) {
       const file = e.target.files[0];
       if (file) {
@@ -125,7 +138,6 @@
       }
     }
 
-    // Cargar video desde URL
     function loadUrlVideo() {
       const url = document.getElementById('videoUrlInput').value.trim();
       if (url) {
@@ -137,7 +149,6 @@
       }
     }
 
-    // Controles de Reproducción
     function togglePlay() {
       if (video.paused) {
         video.play();
@@ -158,13 +169,35 @@
       event.target.classList.add('active');
     }
 
-    // Modo Dibujo sobre Video (Telestrador)
+    // LÓGICA DE MARCADORES DE RECORTE (TRIM)
+    function formatTime(t) {
+      const m = Math.floor(t / 60);
+      const s = Math.floor(t % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function setCutStart() {
+      cutStart = video.currentTime;
+      updateCutUI();
+    }
+
+    function setCutEnd() {
+      cutEnd = video.currentTime;
+      updateCutUI();
+    }
+
+    function updateCutUI() {
+      const dur = Math.max(0, Math.round(cutEnd - cutStart));
+      document.getElementById('clipRangeText').innerText = `Corte: ${formatTime(cutStart)} ➔ ${formatTime(cutEnd)} (${dur}s)`;
+    }
+
+    // TELESTRADOR Y DIBUJO SOBRE VIDEO
     function toggleDrawingMode() {
       isDrawingMode = !isDrawingMode;
       const btn = document.getElementById('btnDrawMode');
       
       if (isDrawingMode) {
-        video.pause(); // Pausar video para dibujar cómodamente
+        video.pause();
         canvas.classList.add('drawing-active');
         btn.classList.add('active');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Listo (Continuar Video)';
@@ -205,7 +238,7 @@
 
     function renderDrawings() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#a855f7'; // Color Morado Fluo Táctico
+      ctx.strokeStyle = '#a855f7';
       ctx.lineWidth = 4;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -234,62 +267,108 @@
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
     canvas.addEventListener('touchend', stopDrawing);
 
-    // FUNCIÓN DE ENVÍO DIRECTO AL TABLERO KANBAN DEL HUB (index.html)
+    // FUNCIÓN PARA PROCESAR Y ENVIAR ÚNICAMENTE EL CLIP RECORTADO AL KANBAN
     function enviarClipAKanban() {
       if (!video || (!video.src && !video.currentSrc) || video.readyState < 2) {
-        alert("⚠️ Primero debes cargar y seleccionar un video en el analizador.");
+        alert("⚠️ Primero debes cargar un video en el analizador.");
         return;
       }
 
-      // 1. Capturar la miniatura fusionando el video y los dibujos tácticos
-      let miniatura = '';
-      try {
-        const compCanvas = document.createElement('canvas');
-        compCanvas.width = video.videoWidth || 1280;
-        compCanvas.height = video.videoHeight || 720;
-        const compCtx = compCanvas.getContext('2d');
-        
-        // Dibujar el fotograma del video
-        compCtx.drawImage(video, 0, 0, compCanvas.width, compCanvas.height);
-        
-        // Dibujar la capa de anotaciones por encima
-        if (canvas) {
-          compCtx.drawImage(canvas, 0, 0, compCanvas.width, compCanvas.height);
-        }
-        
-        miniatura = compCanvas.toDataURL('image/png');
-      } catch (e) {
-        console.warn("Captura de fotograma no disponible por restricciones del navegador.", e);
+      let start = cutStart;
+      let end = cutEnd;
+
+      // Si no marcó inicio o fin, usar por defecto un tramo de 10 segundos alrededor del segundo actual
+      if (end <= start) {
+        start = Math.max(0, video.currentTime - 5);
+        end = Math.min(video.duration || video.currentTime + 5, video.currentTime + 5);
       }
 
-      // 2. Calcular minuto y segundo actual del video
-      let tiempoTexto = "";
-      if (video.currentTime) {
-        const min = Math.floor(video.currentTime / 60);
-        const seg = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
-        tiempoTexto = ` (Min ${min}:${seg})`;
-      }
-
-      // 3. Pedir título o nota táctica al analista
-      const tituloCorte = prompt("Nombre o detalle táctico de este corte para el DT:", `Análisis Video - Jugada Clave${tiempoTexto}`);
+      const duracionSegundos = Math.max(1, Math.round(end - start));
+      const tituloCorte = prompt(`Nombre de la jugada recortada (${duracionSegundos}s) para el DT:`, `Análisis Táctico - Corte (${formatTime(start)})`);
       if (!tituloCorte || tituloCorte.trim() === "") return;
 
-      const srcVideo = video.currentSrc || video.src;
+      const btnSend = document.getElementById('btnSendClip');
+      btnSend.disabled = true;
+      btnSend.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Recortando (${duracionSegundos}s)...`;
 
-      // 4. Enviar el mensaje mediante postMessage a index.html
-      window.parent.postMessage({
-        type: 'ADD_KANBAN_TASK',
-        title: tituloCorte.trim(),
-        area: 'Video',
-        priority: 'MD-2',
-        image: miniatura,
-        videoUrl: srcVideo
-      }, '*');
+      // 1. Crear canvas oculto de renderizado que combina el Video + Dibujos
+      const recCanvas = document.createElement('canvas');
+      recCanvas.width = video.videoWidth || 1280;
+      recCanvas.height = video.videoHeight || 720;
+      const recCtx = recCanvas.getContext('2d');
 
-      alert('🎬 ¡Corte de video enviado con éxito al Tablero Kanban!');
+      video.pause();
+      video.currentTime = start;
+
+      // Generar miniatura estática
+      recCtx.drawImage(video, 0, 0, recCanvas.width, recCanvas.height);
+      if (canvas) recCtx.drawImage(canvas, 0, 0, recCanvas.width, recCanvas.height);
+      const miniatura = recCanvas.toDataURL('image/png');
+
+      // 2. Grabar el fragmento de video con MediaRecorder
+      const stream = recCanvas.captureStream(30);
+      let mimeType = 'video/webm;codecs=vp9';
+      if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+      let mediaRecorder;
+      try {
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+      } catch (e) {
+        mediaRecorder = new MediaRecorder(stream);
+      }
+
+      const chunks = [];
+      mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+
+      let isRecording = true;
+
+      function renderFrame() {
+        if (!isRecording) return;
+        
+        // Renderizar frame del video + telestrador arriba
+        recCtx.drawImage(video, 0, 0, recCanvas.width, recCanvas.height);
+        if (canvas) recCtx.drawImage(canvas, 0, 0, recCanvas.width, recCanvas.height);
+
+        if (video.currentTime >= end || video.ended) {
+          isRecording = false;
+          video.pause();
+          if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+          return;
+        }
+        requestAnimationFrame(renderFrame);
+      }
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/webm' });
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const videoBase64 = reader.result;
+
+          // 3. Enviar el clip recortado al Kanban
+          window.parent.postMessage({
+            type: 'ADD_KANBAN_TASK',
+            title: tituloCorte.trim(),
+            area: 'Video',
+            priority: 'MD-2',
+            image: miniatura,
+            videoUrl: videoBase64
+          }, '*');
+
+          btnSend.disabled = false;
+          btnSend.innerHTML = `<i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT`;
+          alert('🎬 ¡Clip de video recortado y enviado con éxito al Tablero Kanban del DT!');
+        };
+      };
+
+      video.onseeked = function onSeekedOnce() {
+        video.onseeked = null;
+        mediaRecorder.start(100);
+        video.play();
+        requestAnimationFrame(renderFrame);
+      };
     }
 
-    // Inicializar canvas al cargar
     resizeCanvas();
   </script>
 </body>
