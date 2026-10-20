@@ -135,7 +135,6 @@
 
             <!-- TAB 1: DASHBOARD PRINCIPAL -->
             <div id="tab-dashboard" class="tab-content space-y-6">
-                <!-- ACCESOS RÁPIDOS SUPERIORES -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     <button onclick="showTab('pizarra')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition text-center group">
                         <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
@@ -251,7 +250,7 @@
                 </div>
             </div>
 
-            <!-- TAB 2: CONTROL DE STAFF (KANBAN INTERACTIVO) -->
+            <!-- TAB 2: TABLERO KANBAN CON SOPORTE MULTIMEDIA -->
             <div id="tab-kanban" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-5 rounded-xl border border-slate-800">
                     <div>
@@ -259,11 +258,10 @@
                             <i class="fa-solid fa-list-check text-cyan-400"></i>
                             <span>Tablero Kanban - Cuerpo Técnico</span>
                         </h2>
-                        <p class="text-xs text-slate-400 mt-1">Asigna, supervisa y mueve tareas entre las áreas de DT, PF, Kinesiología y Videoanálisis</p>
+                        <p class="text-xs text-slate-400 mt-1">Recibe capturas de la Pizarra, enlaces de Videoanálisis y tareas del staff.</p>
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <!-- Filtros por área -->
                         <select id="kanban-filter" onchange="renderKanban()" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-lg px-3 py-2 outline-none focus:border-cyan-500">
                             <option value="todos">Ver Todas las Áreas</option>
                             <option value="DT">Director Técnico (DT)</option>
@@ -285,53 +283,37 @@
                     <!-- COLUMNA 1: PENDIENTE -->
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-slate-300 text-sm flex items-center space-x-2">
-                                <span>📋 Pendientes</span>
-                            </h3>
+                            <h3 class="font-bold text-slate-300 text-sm">📋 Pendientes</h3>
                             <span id="badge-pendiente" class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                         </div>
-                        <div id="col-pendiente" class="space-y-3 min-h-[150px]">
-                            <!-- Tarjetas cargadas vía JS -->
-                        </div>
+                        <div id="col-pendiente" class="space-y-3 min-h-[150px]"></div>
                     </div>
 
                     <!-- COLUMNA 2: EN PROCESO -->
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-blue-400 text-sm flex items-center space-x-2">
-                                <span>⚙️ En Proceso</span>
-                            </h3>
+                            <h3 class="font-bold text-blue-400 text-sm">⚙️ En Proceso</h3>
                             <span id="badge-proceso" class="bg-blue-950 text-blue-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                         </div>
-                        <div id="col-proceso" class="space-y-3 min-h-[150px]">
-                            <!-- Tarjetas cargadas vía JS -->
-                        </div>
+                        <div id="col-proceso" class="space-y-3 min-h-[150px]"></div>
                     </div>
 
                     <!-- COLUMNA 3: EN REVISIÓN -->
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-amber-400 text-sm flex items-center space-x-2">
-                                <span>🔍 En Revisión DT</span>
-                            </h3>
+                            <h3 class="font-bold text-amber-400 text-sm">🔍 En Revisión DT</h3>
                             <span id="badge-revision" class="bg-amber-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                         </div>
-                        <div id="col-revision" class="space-y-3 min-h-[150px]">
-                            <!-- Tarjetas cargadas vía JS -->
-                        </div>
+                        <div id="col-revision" class="space-y-3 min-h-[150px]"></div>
                     </div>
 
                     <!-- COLUMNA 4: COMPLETADO -->
                     <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-emerald-400 text-sm flex items-center space-x-2">
-                                <span>✅ Completado</span>
-                            </h3>
+                            <h3 class="font-bold text-emerald-400 text-sm">✅ Completado</h3>
                             <span id="badge-completado" class="bg-emerald-950 text-emerald-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                         </div>
-                        <div id="col-completado" class="space-y-3 min-h-[150px]">
-                            <!-- Tarjetas cargadas vía JS -->
-                        </div>
+                        <div id="col-completado" class="space-y-3 min-h-[150px]"></div>
                     </div>
 
                 </div>
@@ -452,31 +434,31 @@
 
     <!-- MODAL PARA NUEVA TAREA -->
     <div id="modal-task" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-white text-base">Asignar Tarea al Staff</h3>
+                <h3 class="font-bold text-white text-base">Asignar Tarea / Adjuntar Trabajo</h3>
                 <button onclick="closeTaskModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
             <form id="form-task" onsubmit="saveTask(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Título de la Tarea</label>
-                    <input type="text" id="task-title" required placeholder="Ej: Analizar salida de presión rival" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Título de la Tarea / Jugada</label>
+                    <input type="text" id="task-title" required placeholder="Ej: Salida de presión 3-1 contra rival" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 mb-1">Área / Rol</label>
                         <select id="task-area" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                            <option value="DT">Director Técnico</option>
-                            <option value="PF">Preparador Físico</option>
+                            <option value="DT">Director Técnico (DT)</option>
+                            <option value="PF">Preparador Físico (PF)</option>
                             <option value="Kine">Kinesiología / Médico</option>
                             <option value="Video">Analista de Video</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Prioridad / Límite</label>
+                        <label class="block text-xs font-bold text-slate-400 mb-1">Prioridad</label>
                         <select id="task-priority" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
                             <option value="MD-2">MD-2 (Urgente)</option>
                             <option value="MD-1">MD-1 (Media)</option>
@@ -484,6 +466,21 @@
                             <option value="Rutina">Rutina Semanal</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- ADJUNTAR CAPTURA DE PIZARRA / IMAGEN -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Captura de Pizarra (Imagen)</label>
+                    <input type="file" id="task-image-file" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700">
+                    <div id="image-preview-container" class="mt-2 hidden">
+                        <img id="image-preview" src="" alt="Vista previa de la Pizarra" class="w-full h-32 object-cover rounded-lg border border-slate-700">
+                    </div>
+                </div>
+
+                <!-- ADJUNTAR LINK DE VIDEO / DRIVE / YOUTUBE -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Enlace de Videoanálisis (YouTube / Drive / Vimeo)</label>
+                    <input type="url" id="task-video-url" placeholder="https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
                 </div>
 
                 <div>
@@ -504,25 +501,33 @@
         </div>
     </div>
 
-    <!-- SCRIPT KANBAN + NAVEGACIÓN -->
+    <!-- MODAL DE VISUALIZACIÓN EN TAMAÑO COMPLETO -->
+    <div id="modal-viewer" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4" onclick="closeViewerModal()">
+        <div class="max-w-3xl w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl relative" onclick="event.stopPropagation()">
+            <button onclick="closeViewerModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="viewer-title" class="font-bold text-white text-base mb-3"></h3>
+            <img id="viewer-image" src="" alt="Captura Pizarra Táctica" class="w-full max-h-[70vh] object-contain rounded-lg border border-slate-800">
+        </div>
+    </div>
+
+    <!-- SCRIPT KANBAN + MENSAJERÍA ENTRE HERRAMIENTAS -->
     <script>
-        // ESTADO INICIAL CON LOCALSTORAGE
+        let currentUploadedImage = "";
+
         let tasks = JSON.parse(localStorage.getItem('ef_kanban_tasks')) || [
-            { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente' },
-            { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente' },
-            { id: 3, title: 'Evaluación RPE post-entreno', area: 'PF', priority: 'MD-1', status: 'proceso' },
-            { id: 4, title: 'Ajuste de saques de banda', area: 'DT', priority: 'MD-1', status: 'revision' },
-            { id: 5, title: 'Planillas impresas en utilería', area: 'DT', priority: 'Rutina', status: 'completado' }
+            { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
+            { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
+            { id: 3, title: 'Evaluación RPE post-entreno', area: 'PF', priority: 'MD-1', status: 'proceso', image: '', videoUrl: '' },
+            { id: 4, title: 'Ajuste de saques de banda', area: 'DT', priority: 'MD-1', status: 'revision', image: '', videoUrl: '' },
+            { id: 5, title: 'Planillas impresas en utilería', area: 'DT', priority: 'Rutina', status: 'completado', image: '', videoUrl: '' }
         ];
 
-        // Guardar tareas en el almacenamiento del navegador
         function saveTasksToStorage() {
             localStorage.setItem('ef_kanban_tasks', JSON.stringify(tasks));
             renderKanban();
             updateDashboardTaskWidget();
         }
 
-        // CAMBIO DE PESTAÑAS
         function showTab(tabId, btnElement) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
@@ -547,23 +552,43 @@
             }
         }
 
-        // ABRIR/CERRAR MODAL
-        function openTaskModal() {
+        function openTaskModal(presetTitle = "", presetImage = "") {
             document.getElementById('modal-task').classList.remove('hidden');
+            if (presetTitle) document.getElementById('task-title').value = presetTitle;
+            if (presetImage) {
+                currentUploadedImage = presetImage;
+                document.getElementById('image-preview').src = presetImage;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            }
         }
 
         function closeTaskModal() {
             document.getElementById('modal-task').classList.add('hidden');
             document.getElementById('form-task').reset();
+            document.getElementById('image-preview-container').classList.add('hidden');
+            currentUploadedImage = "";
         }
 
-        // GUARDAR NUEVA TAREA
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentUploadedImage = event.target.result;
+                    document.getElementById('image-preview').src = currentUploadedImage;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function saveTask(e) {
             e.preventDefault();
             const title = document.getElementById('task-title').value.trim();
             const area = document.getElementById('task-area').value;
             const priority = document.getElementById('task-priority').value;
             const status = document.getElementById('task-status').value;
+            const videoUrl = document.getElementById('task-video-url').value.trim();
 
             if (!title) return;
 
@@ -572,7 +597,9 @@
                 title: title,
                 area: area,
                 priority: priority,
-                status: status
+                status: status,
+                image: currentUploadedImage,
+                videoUrl: videoUrl
             };
 
             tasks.push(newTask);
@@ -580,19 +607,26 @@
             closeTaskModal();
         }
 
-        // MOVER TAREA ENTRE COLUMNAS
         function moveTask(id, newStatus) {
             tasks = tasks.map(t => t.id === id ? { ...t, status: newStatus } : t);
             saveTasksToStorage();
         }
 
-        // ELIMINAR TAREA
         function deleteTask(id) {
             tasks = tasks.filter(t => t.id !== id);
             saveTasksToStorage();
         }
 
-        // MAPEO DE COLORES SEGÚN ÁREA
+        function openViewer(title, imageSrc) {
+            document.getElementById('viewer-title').innerText = title;
+            document.getElementById('viewer-image').src = imageSrc;
+            document.getElementById('modal-viewer').classList.remove('hidden');
+        }
+
+        function closeViewerModal() {
+            document.getElementById('modal-viewer').classList.add('hidden');
+        }
+
         function getAreaBadge(area) {
             switch(area) {
                 case 'DT': return 'bg-amber-950 text-amber-400 border-amber-800';
@@ -603,7 +637,6 @@
             }
         }
 
-        // RENDERIZAR TABLERO KANBAN
         function renderKanban() {
             const filter = document.getElementById('kanban-filter').value;
             const cols = {
@@ -613,20 +646,15 @@
                 completado: document.getElementById('col-completado')
             };
 
-            // Limpiar columnas
             Object.values(cols).forEach(col => col.innerHTML = '');
-
-            // Contadores
             const counts = { pendiente: 0, proceso: 0, revision: 0, completado: 0 };
 
             tasks.forEach(task => {
                 if (filter !== 'todos' && task.area !== filter) return;
 
                 counts[task.status]++;
-
                 const badgeClass = getAreaBadge(task.area);
-                
-                // Botones para mover según la columna actual
+
                 let moveButtons = '';
                 if (task.status === 'pendiente') {
                     moveButtons = `<button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-blue-400 hover:underline">Iniciar ➔</button>`;
@@ -644,13 +672,41 @@
                     moveButtons = `<button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-slate-400 hover:underline">⬅ Reabrir</button>`;
                 }
 
+                // Imagen de la Pizarra
+                let imageHtml = '';
+                if (task.image) {
+                    imageHtml = `
+                        <div class="mt-2 cursor-pointer relative group" onclick="openViewer('${task.title}', '${task.image}')">
+                            <img src="${task.image}" class="w-full h-28 object-cover rounded-lg border border-slate-700/80">
+                            <span class="absolute bottom-1 right-1 bg-slate-950/80 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
+                                <i class="fa-solid fa-expand"></i> Ampliar
+                            </span>
+                        </div>
+                    `;
+                }
+
+                // Link de Video
+                let videoHtml = '';
+                if (task.videoUrl) {
+                    videoHtml = `
+                        <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
+                            <i class="fa-solid fa-circle-play text-purple-400"></i>
+                            <span class="font-bold">Ver Videoanálisis</span>
+                        </a>
+                    `;
+                }
+
                 const cardHtml = `
-                    <div class="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 hover:border-slate-600 transition flex flex-col justify-between space-y-2 group">
+                    <div class="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 hover:border-slate-600 transition flex flex-col justify-between space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">${task.area}</span>
                             <span class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-clock text-[9px] mr-1"></i>${task.priority}</span>
                         </div>
                         <p class="text-xs font-semibold text-white leading-snug">${task.title}</p>
+                        
+                        ${imageHtml}
+                        ${videoHtml}
+
                         <div class="flex items-center justify-between pt-2 border-t border-slate-700/50 mt-1">
                             <div class="flex space-x-2">${moveButtons}</div>
                             <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
@@ -661,14 +717,12 @@
                 cols[task.status].innerHTML += cardHtml;
             });
 
-            // Actualizar numeración en encabezados
             document.getElementById('badge-pendiente').innerText = counts.pendiente;
             document.getElementById('badge-proceso').innerText = counts.proceso;
             document.getElementById('badge-revision').innerText = counts.revision;
             document.getElementById('badge-completado').innerText = counts.completado;
         }
 
-        // ACTUALIZAR WIDGET DE TAREAS EN EL DASHBOARD
         function updateDashboardTaskWidget() {
             const countEl = document.getElementById('dashboard-task-count');
             const statusEl = document.getElementById('dashboard-task-status');
@@ -681,7 +735,6 @@
             countEl.innerText = total;
             statusEl.innerText = `${completed} Completadas (${pending} Pendientes)`;
 
-            // Mostrar 2 tareas prioritarias no completadas
             const priorityTasks = tasks.filter(t => t.status !== 'completado').slice(0, 2);
             listEl.innerHTML = '';
 
@@ -689,7 +742,6 @@
                 listEl.innerHTML = `<p class="text-xs text-slate-500 italic p-2">No hay tareas pendientes en el tablero.</p>`;
             } else {
                 priorityTasks.forEach(task => {
-                    const badgeClass = getAreaBadge(task.area);
                     listEl.innerHTML += `
                         <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-cyan-500 flex justify-between items-center">
                             <div>
@@ -703,7 +755,14 @@
             }
         }
 
-        // INICIALIZACIÓN AL CÁRGAR
+        // RECEPTOR DE MENSAJES DESDE LA PIZARRA O VIDEOANÁLISIS
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SEND_TO_KANBAN') {
+                showTab('kanban');
+                openTaskModal(event.data.title || "Salida de presión desde Pizarra", event.data.image || "");
+            }
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             renderKanban();
             updateDashboardTaskWidget();
