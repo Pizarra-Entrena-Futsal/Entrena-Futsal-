@@ -604,31 +604,39 @@
     }
 
     // ENVIAR INFORME WYSCOUT AL TABLERO KANBAN
-    function enviarBotoneraAKanban() {
-      if (tagHistory.length === 0) {
-        alert("⚠️ Registra al menos un evento antes de enviar el informe al Kanban.");
-        return;
-      }
+function enviarBotoneraAKanban() {
+  if (tagHistory.length === 0) {
+    alert("⚠️ Registra al menos un evento antes de enviar el informe al Kanban.");
+    return;
+  }
 
-      const tituloInforme = prompt("Título para el informe de etiquetado:", `Informe Wyscout Stats - ${currentPeriod}`);
-      if (!tituloInforme || tituloInforme.trim() === "") return;
+  const tituloInforme = prompt("Título para el informe de etiquetado:", `Informe Wyscout Stats - ${currentPeriod}`);
+  if (!tituloInforme || tituloInforme.trim() === "") return;
 
-      const canvasReport = renderWyscoutCanvas();
-      const capturaReporte = canvasReport.toDataURL('image/png');
+  const canvasReport = renderWyscoutCanvas();
+  const capturaReporte = canvasReport.toDataURL('image/png');
 
-      window.parent.postMessage({
-        type: 'ADD_KANBAN_TASK',
-        title: tituloInforme.trim(),
-        area: 'DT',
-        priority: 'MD-2',
-        image: capturaReporte,
-        videoUrl: ''
-      }, '*');
+  // Guardar directo en memoria compartida
+  enviarAlKanban(tituloInforme.trim(), 'Informe de etiquetado Wyscout', 'Estadísticas');
 
-      alert('📊 ¡Informe infográfico enviado con éxito al Tablero Kanban del DT!');
-    }
+  alert('📊 ¡Informe infográfico enviado con éxito al Tablero Kanban del DT!');
+}
 
-    renderShirts();
-  </script>
+// FUNCIÓN PARA ENVIAR TAREAS AL KANBAN
+function enviarAlKanban(titulo, descripcion, modulo) {
+  const tareasPrevias = JSON.parse(localStorage.getItem('EF_KANBAN_TASKS') || '[]');
+  tareasPrevias.unshift({
+    id: "k_" + Date.now(),
+    title: titulo,
+    desc: descripcion,
+    module: modulo,
+    status: 'pending',
+    date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+  });
+  localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(tareasPrevias));
+}
+
+renderShirts();
+</script>
 </body>
 </html>
