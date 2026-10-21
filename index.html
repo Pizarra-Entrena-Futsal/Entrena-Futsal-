@@ -175,7 +175,7 @@
       <!-- TAB 2: EQUIPO & CARGA RPE -->
       <div id="plantel" class="tab-content space-y-6">
         
-        <!-- Header de la sección y Botones de Acción -->
+        <!-- Header de la sección -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white flex items-center gap-3">
@@ -185,110 +185,129 @@
           </div>
           
           <div class="flex flex-wrap items-center gap-3">
-            <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+            <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
               <i class="fa-solid fa-user-plus"></i> + Nuevo Jugador
             </button>
 
-            <button onclick="openModal('logRpeModal')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-2">
+            <button id="btnLogRpe" onclick="openModal('logRpeModal')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
               <i class="fa-solid fa-heart-pulse"></i> Cargar RPE Diario
             </button>
 
-            <select id="playerSelector" onchange="updatePlayerView(this.value)" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-400 cursor-pointer">
-              <!-- Cargado Dinámicamente -->
+            <select id="playerSelector" onchange="updatePlayerView(this.value)" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-400 cursor-pointer disabled:opacity-50">
+              <!-- Carga dinámicamente -->
             </select>
           </div>
         </div>
 
-        <!-- FICHA TÉCNICA Y MONITOREO DEL JUGADOR -->
-        <div class="bg-card p-6 rounded-2xl border border-slate-800 shadow-2xl">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            <!-- Bio & Datos Jugador -->
-            <div class="lg:col-span-5 flex items-center gap-5 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
-              <div class="w-24 h-24 rounded-2xl bg-slate-900 border-2 border-emerald-500/50 flex items-center justify-center text-4xl text-emerald-400 font-bold shadow-lg shrink-0">
-                <i class="fa-solid fa-user-ninja"></i>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 id="pName" class="font-bold text-xl text-white">Kiki Vaporaki</h3>
-                  <span id="pBadge" class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded border border-emerald-500/30">ALA IZQ</span>
-                </div>
-                <p id="pTeam" class="text-xs text-slate-400 mt-1">#10 • Selección Argentina • 34 años</p>
-                <div class="grid grid-cols-2 gap-3 mt-3 text-xs text-slate-300">
-                  <div><span class="text-slate-500">Pie:</span> <strong id="pFoot">Diestro</strong></div>
-                  <div><span class="text-slate-500">Estado:</span> <strong id="pStatus" class="text-emerald-400">100% APTO</strong></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Scores RPE y Asimilación -->
-            <div class="lg:col-span-4 grid grid-cols-2 gap-3 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
-              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
-                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Puntuación Física</span>
-                <div id="pRpeScore" class="text-2xl font-black text-emerald-400 mt-1">88.5</div>
-                <span id="pRpeStatus" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">RPE ÓPTIMO</span>
-              </div>
-              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
-                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Carga Semanal</span>
-                <div id="pUa" class="text-xl font-extrabold text-white mt-1">420 <span class="text-xs font-normal text-slate-400">U.A.</span></div>
-                <span class="text-[10px] text-slate-400">Asimilación Normal</span>
-              </div>
-            </div>
-
-            <!-- Mini Mapa Pista Futsal 40x20m -->
-            <div class="lg:col-span-3 flex flex-col items-center justify-center">
-              <span class="text-xs text-slate-400 mb-2 font-semibold flex items-center gap-1.5">
-                <i class="fa-solid fa-map-location-dot text-emerald-400"></i> Pista Futsal (40x20m)
-              </span>
-              <div class="w-full h-24 bg-emerald-950/40 rounded-xl border border-emerald-800/50 relative overflow-hidden flex items-center justify-center p-2">
-                <svg class="w-full h-full text-emerald-500/30" viewBox="0 0 400 200" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="10" y="10" width="380" height="180" rx="4" />
-                  <line x1="200" y1="10" x2="200" y2="190" />
-                  <circle cx="200" cy="100" r="30" />
-                  <path d="M 10,50 A 50,50 0 0,1 60,100 A 50,50 0 0,1 10,150 Z" />
-                  <path d="M 390,50 A 50,50 0 0,0 340,100 A 50,50 0 0,0 390,150 Z" />
-                </svg>
-                <div class="absolute inset-0 grid grid-cols-3 p-1 text-[10px] font-bold text-center items-center">
-                  <div class="bg-emerald-500/30 text-emerald-200 rounded p-1">42% Ala</div>
-                  <div class="bg-emerald-500/40 text-emerald-100 rounded p-1">38% Pívot</div>
-                  <div class="bg-emerald-500/20 text-emerald-300 rounded p-1">20% Cierre</div>
-                </div>
-              </div>
-            </div>
-
+        <!-- ESTADO VACÍO (LIENZO LIMPIO) -->
+        <div id="emptyPlayersState" class="bg-card p-12 rounded-2xl border border-slate-800 text-center space-y-4 my-6">
+          <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center justify-center text-3xl mx-auto shadow-inner">
+            <i class="fa-solid fa-users-slash"></i>
           </div>
+          <div>
+            <h3 class="text-xl font-bold text-white">Lienzo Limpio: Tu Plantel está Vacío</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">No hay jugadores registrados aún. Comienza agregando los integrantes de tu equipo para gestionar sus fichas físicas y monitoreo de carga RPE.</p>
+          </div>
+          <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-5 py-3 rounded-xl transition-all inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-user-plus"></i> Cargar Mi Primer Jugador
+          </button>
         </div>
 
-        <!-- GRÁFICO DE CARGA Y BORG -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div class="lg:col-span-8 bg-card p-6 rounded-2xl border border-slate-800">
-            <h3 class="font-bold text-base text-white mb-4">Carga Interna Acumulada (Últimos 7 días)</h3>
-            <div class="h-64 w-full">
-              <canvas id="rpeChart"></canvas>
+        <!-- CONTENEDOR CON DATOS DE JUGADOR (SE MUESTRA AL AGREGAR UN JUGADOR) -->
+        <div id="playerDetailContainer" class="space-y-6 hidden">
+          
+          <!-- FICHA TÉCNICA Y MONITOREO DEL JUGADOR -->
+          <div class="bg-card p-6 rounded-2xl border border-slate-800 shadow-2xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              
+              <!-- Bio & Datos Jugador -->
+              <div class="lg:col-span-5 flex items-center gap-5 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
+                <div class="w-24 h-24 rounded-2xl bg-slate-900 border-2 border-emerald-500/50 flex items-center justify-center text-4xl text-emerald-400 font-bold shadow-lg shrink-0">
+                  <i class="fa-solid fa-user-ninja"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 id="pName" class="font-bold text-xl text-white">-</h3>
+                    <span id="pBadge" class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded border border-emerald-500/30">-</span>
+                  </div>
+                  <p id="pTeam" class="text-xs text-slate-400 mt-1">-</p>
+                  <div class="grid grid-cols-2 gap-3 mt-3 text-xs text-slate-300">
+                    <div><span class="text-slate-500">Pie:</span> <strong id="pFoot">-</strong></div>
+                    <div><span class="text-slate-500">Estado:</span> <strong id="pStatus" class="text-emerald-400">-</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Scores RPE y Asimilación -->
+              <div class="lg:col-span-4 grid grid-cols-2 gap-3 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
+                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                  <span class="text-[10px] uppercase font-semibold text-slate-400 block">Puntuación Física</span>
+                  <div id="pRpeScore" class="text-2xl font-black text-emerald-400 mt-1">0.0</div>
+                  <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">RPE ÓPTIMO</span>
+                </div>
+                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                  <span class="text-[10px] uppercase font-semibold text-slate-400 block">Carga Semanal</span>
+                  <div id="pUa" class="text-xl font-extrabold text-white mt-1">0 <span class="text-xs font-normal text-slate-400">U.A.</span></div>
+                  <span class="text-[10px] text-slate-400">Asimilación Normal</span>
+                </div>
+              </div>
+
+              <!-- Mini Mapa Pista Futsal 40x20m -->
+              <div class="lg:col-span-3 flex flex-col items-center justify-center">
+                <span class="text-xs text-slate-400 mb-2 font-semibold flex items-center gap-1.5">
+                  <i class="fa-solid fa-map-location-dot text-emerald-400"></i> Pista Futsal (40x20m)
+                </span>
+                <div class="w-full h-24 bg-emerald-950/40 rounded-xl border border-emerald-800/50 relative overflow-hidden flex items-center justify-center p-2">
+                  <svg class="w-full h-full text-emerald-500/30" viewBox="0 0 400 200" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="10" y="10" width="380" height="180" rx="4" />
+                    <line x1="200" y1="10" x2="200" y2="190" />
+                    <circle cx="200" cy="100" r="30" />
+                    <path d="M 10,50 A 50,50 0 0,1 60,100 A 50,50 0 0,1 10,150 Z" />
+                    <path d="M 390,50 A 50,50 0 0,0 340,100 A 50,50 0 0,0 390,150 Z" />
+                  </svg>
+                  <div class="absolute inset-0 grid grid-cols-3 p-1 text-[10px] font-bold text-center items-center">
+                    <div class="bg-emerald-500/30 text-emerald-200 rounded p-1">42% Ala</div>
+                    <div class="bg-emerald-500/40 text-emerald-100 rounded p-1">38% Pívot</div>
+                    <div class="bg-emerald-500/20 text-emerald-300 rounded p-1">20% Cierre</div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <div class="lg:col-span-4 bg-card p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 class="font-bold text-base text-white">Escala Borg / Foster (1-10)</h3>
-            <div class="space-y-2 text-xs">
-              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                <span class="font-bold text-emerald-400">1 - 3: Muy Suave / Suave</span>
-                <span class="text-slate-400">Regenerativo</span>
+          <!-- GRÁFICO DE CARGA Y BORG -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-8 bg-card p-6 rounded-2xl border border-slate-800">
+              <h3 class="font-bold text-base text-white mb-4">Carga Interna Acumulada (Últimos 7 días)</h3>
+              <div class="h-64 w-full">
+                <canvas id="rpeChart"></canvas>
               </div>
-              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                <span class="font-bold text-sky-400">4 - 6: Moderado / Algo Duro</span>
-                <span class="text-slate-400">Mantenimiento</span>
-              </div>
-              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                <span class="font-bold text-amber-400">7 - 8: Duro / Muy Duro</span>
-                <span class="text-slate-400">Desarrollo Carga</span>
-              </div>
-              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                <span class="font-bold text-rose-400">9 - 10: Máximo / Extenuante</span>
-                <span class="text-slate-400">Pico de Sobrecarga</span>
+            </div>
+
+            <div class="lg:col-span-4 bg-card p-6 rounded-2xl border border-slate-800 space-y-4">
+              <h3 class="font-bold text-base text-white">Escala Borg / Foster (1-10)</h3>
+              <div class="space-y-2 text-xs">
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
+                  <span class="font-bold text-emerald-400">1 - 3: Muy Suave / Suave</span>
+                  <span class="text-slate-400">Regenerativo</span>
+                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
+                  <span class="font-bold text-sky-400">4 - 6: Moderado / Algo Duro</span>
+                  <span class="text-slate-400">Mantenimiento</span>
+                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
+                  <span class="font-bold text-amber-400">7 - 8: Duro / Muy Duro</span>
+                  <span class="text-slate-400">Desarrollo Carga</span>
+                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
+                  <span class="font-bold text-rose-400">9 - 10: Máximo / Extenuante</span>
+                  <span class="text-slate-400">Pico de Sobrecarga</span>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
 
       </div>
@@ -424,44 +443,78 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT DE CONTROL Y LOCALSTORAGE -->
+  <!-- JAVASCRIPT DE CONTROL -->
   <script>
-    // Plantilla inicial de jugadores por defecto
-    const defaultPlayers = {
-      kiki: { id: "kiki", name: "Kiki Vaporaki", team: "#10 • Selección Argentina • 34 años", badge: "ALA IZQ", foot: "Diestro", status: "100% APTO", rpe: "88.5", data: [350, 480, 520, 420, 200, 600, 0] },
-      matias: { id: "matias", name: "Matías Rosa", team: "#9 • Pívot • 29 años", badge: "PÍVOT", foot: "Zurdo", status: "100% APTO", rpe: "85.0", data: [400, 510, 550, 480, 220, 650, 0] },
-      luciano: { id: "luciano", name: "Luciano Gauna", team: "#7 • Ala Doblador • 23 años", badge: "ALA", foot: "Diestro", status: "100% APTO", rpe: "92.1", data: [320, 420, 490, 390, 180, 580, 0] },
-      cierre: { id: "cierre", name: "Constantino Vaporaki", team: "#8 • Cierre • 35 años", badge: "CIERRE", foot: "Diestro", status: "100% APTO", rpe: "90.0", data: [300, 400, 450, 370, 150, 520, 0] }
-    };
-
     let playersStore = {};
-    let currentPlayerKey = "kiki";
+    let currentPlayerKey = null;
     let rpeChartInstance = null;
 
-    // Cargar desde LocalStorage al iniciar
+    // Cargar desde LocalStorage al iniciar (Lienzo Limpio por defecto)
     window.addEventListener('DOMContentLoaded', () => {
       const savedData = localStorage.getItem('EF_PLAYERS_DATA');
       if (savedData) {
         playersStore = JSON.parse(savedData);
+        // Limpiar demostración previa si existía
+        delete playersStore.kiki;
+        delete playersStore.matias;
+        delete playersStore.luciano;
+        delete playersStore.cierre;
       } else {
-        playersStore = defaultPlayers;
-        savePlayersToStorage();
+        playersStore = {};
       }
 
-      renderPlayerSelectorOptions();
+      savePlayersToStorage();
       initRpeChart();
-      updatePlayerView(currentPlayerKey);
+      renderUI();
     });
 
     function savePlayersToStorage() {
       localStorage.setItem('EF_PLAYERS_DATA', JSON.stringify(playersStore));
     }
 
-    // Modal Handlers
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Rellenar selector desplegable
+    // Cambiar Pestañas generales
+    function showTab(tabId, buttonElement) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      if (buttonElement) buttonElement.classList.add('active');
+    }
+
+    // Renderizar la Interfaz según la presencia de jugadores
+    function renderUI() {
+      const keys = Object.keys(playersStore);
+      const emptyState = document.getElementById('emptyPlayersState');
+      const detailContainer = document.getElementById('playerDetailContainer');
+      const select = document.getElementById('playerSelector');
+      const btnLog = document.getElementById('btnLogRpe');
+
+      if (keys.length === 0) {
+        emptyState.classList.remove('hidden');
+        detailContainer.classList.add('hidden');
+        select.innerHTML = '<option value="">Sin jugadores cargados</option>';
+        select.disabled = true;
+        btnLog.disabled = true;
+      } else {
+        emptyState.classList.add('hidden');
+        detailContainer.classList.remove('hidden');
+        select.disabled = false;
+        btnLog.disabled = false;
+
+        if (!currentPlayerKey || !playersStore[currentPlayerKey]) {
+          currentPlayerKey = keys[0];
+        }
+
+        renderPlayerSelectorOptions();
+        updatePlayerView(currentPlayerKey);
+      }
+    }
+
+    // Rellenar opciones del menú desplegable
     function renderPlayerSelectorOptions() {
       const select = document.getElementById('playerSelector');
       select.innerHTML = '';
@@ -475,16 +528,6 @@
       select.value = currentPlayerKey;
     }
 
-    // Cambiar Pestañas
-    function showTab(tabId, buttonElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-      const activeTab = document.getElementById(tabId);
-      if (activeTab) activeTab.classList.remove('hidden');
-
-      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-      if (buttonElement) buttonElement.classList.add('active');
-    }
-
     // Inicializar Gráfico Chart.js
     function initRpeChart() {
       const ctx = document.getElementById('rpeChart').getContext('2d');
@@ -494,7 +537,7 @@
           labels: ['Lun (MD-5)', 'Mar (MD-4)', 'Mié (MD-3)', 'Jue (MD-2)', 'Vie (MD-1)', 'Sáb (Partido)', 'Dom (Descanso)'],
           datasets: [{
             label: 'Carga RPE (U.A.)',
-            data: playersStore[currentPlayerKey]?.data || [0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgba(16, 185, 129, 0.4)',
             borderColor: '#10b981',
             borderWidth: 2,
@@ -513,7 +556,7 @@
       });
     }
 
-    // Cambiar vista según jugador seleccionado
+    // Actualizar datos del jugador en pantalla
     function updatePlayerView(key) {
       if (!playersStore[key]) return;
       currentPlayerKey = key;
@@ -526,7 +569,6 @@
       document.getElementById('pStatus').innerText = p.status;
       document.getElementById('pRpeScore').innerText = p.rpe;
 
-      // Calcular Unidades Arbitrarias (U.A.) acumuladas
       const totalUa = p.data.reduce((a, b) => a + b, 0);
       document.getElementById('pUa').innerText = totalUa;
 
@@ -536,7 +578,7 @@
       }
     }
 
-    // Guardar Nuevo Jugador desde el Formulario Modal
+    // Guardar Nuevo Jugador
     function saveNewPlayer(event) {
       event.preventDefault();
       const name = document.getElementById('newPName').value;
@@ -559,23 +601,25 @@
       };
 
       savePlayersToStorage();
-      renderPlayerSelectorOptions();
       closeModal('addPlayerModal');
       document.getElementById('addPlayerForm').reset();
-      updatePlayerView(key);
+      
+      currentPlayerKey = key;
+      renderUI();
     }
 
-    // Guardar Carga RPE Diaria
+    // Guardar Carga RPE
     function saveDailyRpe(event) {
       event.preventDefault();
+      if (!currentPlayerKey || !playersStore[currentPlayerKey]) return;
+
       const dayIdx = parseInt(document.getElementById('rpeDayIndex').value);
       const mins = parseInt(document.getElementById('rpeDuration').value);
       const rpeVal = parseInt(document.getElementById('rpeBorgValue').value);
 
-      // U.A. = Duración x Escala Foster
       const calculatedUa = mins * rpeVal;
-
       playersStore[currentPlayerKey].data[dayIdx] = calculatedUa;
+
       savePlayersToStorage();
       closeModal('logRpeModal');
       updatePlayerView(currentPlayerKey);
