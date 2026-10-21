@@ -346,30 +346,37 @@
           const videoBase64 = reader.result;
 
           // 3. Enviar el clip recortado al Kanban
-          window.parent.postMessage({
-            type: 'ADD_KANBAN_TASK',
-            title: tituloCorte.trim(),
-            area: 'Video',
-            priority: 'MD-2',
-            image: miniatura,
-            videoUrl: videoBase64
-          }, '*');
+        enviarAlKanban(tituloCorte.trim(), 'Clip de videoanálisis recortado', 'Videoanálisis');
 
-          btnSend.disabled = false;
-          btnSend.innerHTML = `<i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT`;
-          alert('🎬 ¡Clip de video recortado y enviado con éxito al Tablero Kanban del DT!');
-        };
+        btnSend.disabled = false;
+        btnSend.innerHTML = `<i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT`;
+        alert('🎬 ¡Clip de video recortado y enviado con éxito al Tablero Kanban del DT!');
       };
+    };
 
-      video.onseeked = function onSeekedOnce() {
-        video.onseeked = null;
-        mediaRecorder.start(100);
-        video.play();
-        requestAnimationFrame(renderFrame);
-      };
-    }
+    video.onseeked = function onSeekedOnce() {
+      video.onseeked = null;
+      mediaRecorder.start(100);
+      video.play();
+      requestAnimationFrame(renderFrame);
+    };
+  }
 
-    resizeCanvas();
-  </script>
+  // FUNCIÓN PARA ENVIAR TAREAS AL KANBAN
+  function enviarAlKanban(titulo, descripcion, modulo) {
+    const tareasPrevias = JSON.parse(localStorage.getItem('EF_KANBAN_TASKS') || '[]');
+    tareasPrevias.unshift({
+      id: "k_" + Date.now(),
+      title: titulo,
+      desc: descripcion,
+      module: modulo,
+      status: 'pending',
+      date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+    });
+    localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(tareasPrevias));
+  }
+
+  resizeCanvas();
+</script>
 </body>
 </html>
