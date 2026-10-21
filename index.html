@@ -21,13 +21,8 @@
     h1, h2, h3, h4, .font-heading {
       font-family: 'Montserrat', sans-serif;
     }
-    .bg-sidebar {
-      background-color: #0b101d;
-    }
-    .bg-card {
-      background-color: #111827;
-      border: 1px solid #1f293d;
-    }
+    .bg-sidebar { background-color: #0b101d; }
+    .bg-card { background-color: #111827; border: 1px solid #1f293d; }
     .nav-link.active {
       background-color: rgba(16, 185, 129, 0.15);
       color: #10b981;
@@ -174,8 +169,6 @@
 
       <!-- TAB 2: EQUIPO & CARGA RPE -->
       <div id="plantel" class="tab-content space-y-6">
-        
-        <!-- Header de la sección -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white flex items-center gap-3">
@@ -183,44 +176,34 @@
             </h2>
             <p class="text-slate-400 text-sm mt-0.5">Seguimiento físico y fisiológico del plantel (Escala Borg 1-10).</p>
           </div>
-          
           <div class="flex flex-wrap items-center gap-3">
             <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
               <i class="fa-solid fa-user-plus"></i> + Nuevo Jugador
             </button>
-
             <button id="btnLogRpe" onclick="openModal('logRpeModal')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
               <i class="fa-solid fa-heart-pulse"></i> Cargar RPE Diario
             </button>
-
             <select id="playerSelector" onchange="updatePlayerView(this.value)" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-400 cursor-pointer disabled:opacity-50">
-              <!-- Carga dinámicamente -->
             </select>
           </div>
         </div>
 
-        <!-- ESTADO VACÍO (LIENZO LIMPIO) -->
         <div id="emptyPlayersState" class="bg-card p-12 rounded-2xl border border-slate-800 text-center space-y-4 my-6">
           <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center justify-center text-3xl mx-auto shadow-inner">
             <i class="fa-solid fa-users-slash"></i>
           </div>
           <div>
             <h3 class="text-xl font-bold text-white">Lienzo Limpio: Tu Plantel está Vacío</h3>
-            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">No hay jugadores registrados aún. Comienza agregando los integrantes de tu equipo para gestionar sus fichas físicas y monitoreo de carga RPE.</p>
+            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">No hay jugadores registrados aún. Comienza agregando los integrantes de tu equipo.</p>
           </div>
           <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-5 py-3 rounded-xl transition-all inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20">
             <i class="fa-solid fa-user-plus"></i> Cargar Mi Primer Jugador
           </button>
         </div>
 
-        <!-- CONTENEDOR CON DATOS DE JUGADOR (SE MUESTRA AL AGREGAR UN JUGADOR) -->
         <div id="playerDetailContainer" class="space-y-6 hidden">
-          
-          <!-- FICHA TÉCNICA Y MONITOREO DEL JUGADOR -->
           <div class="bg-card p-6 rounded-2xl border border-slate-800 shadow-2xl">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              
-              <!-- Bio & Datos Jugador -->
               <div class="lg:col-span-5 flex items-center gap-5 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
                 <div class="w-24 h-24 rounded-2xl bg-slate-900 border-2 border-emerald-500/50 flex items-center justify-center text-4xl text-emerald-400 font-bold shadow-lg shrink-0">
                   <i class="fa-solid fa-user-ninja"></i>
@@ -237,8 +220,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Scores RPE y Asimilación -->
               <div class="lg:col-span-4 grid grid-cols-2 gap-3 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
                 <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
                   <span class="text-[10px] uppercase font-semibold text-slate-400 block">Puntuación Física</span>
@@ -251,8 +232,6 @@
                   <span class="text-[10px] text-slate-400">Asimilación Normal</span>
                 </div>
               </div>
-
-              <!-- Mini Mapa Pista Futsal 40x20m -->
               <div class="lg:col-span-3 flex flex-col items-center justify-center">
                 <span class="text-xs text-slate-400 mb-2 font-semibold flex items-center gap-1.5">
                   <i class="fa-solid fa-map-location-dot text-emerald-400"></i> Pista Futsal (40x20m)
@@ -262,8 +241,6 @@
                     <rect x="10" y="10" width="380" height="180" rx="4" />
                     <line x1="200" y1="10" x2="200" y2="190" />
                     <circle cx="200" cy="100" r="30" />
-                    <path d="M 10,50 A 50,50 0 0,1 60,100 A 50,50 0 0,1 10,150 Z" />
-                    <path d="M 390,50 A 50,50 0 0,0 340,100 A 50,50 0 0,0 390,150 Z" />
                   </svg>
                   <div class="absolute inset-0 grid grid-cols-3 p-1 text-[10px] font-bold text-center items-center">
                     <div class="bg-emerald-500/30 text-emerald-200 rounded p-1">42% Ala</div>
@@ -272,53 +249,81 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 
-          <!-- GRÁFICO DE CARGA Y BORG -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-8 bg-card p-6 rounded-2xl border border-slate-800">
               <h3 class="font-bold text-base text-white mb-4">Carga Interna Acumulada (Últimos 7 días)</h3>
-              <div class="h-64 w-full">
-                <canvas id="rpeChart"></canvas>
-              </div>
+              <div class="h-64 w-full"><canvas id="rpeChart"></canvas></div>
             </div>
-
             <div class="lg:col-span-4 bg-card p-6 rounded-2xl border border-slate-800 space-y-4">
               <h3 class="font-bold text-base text-white">Escala Borg / Foster (1-10)</h3>
               <div class="space-y-2 text-xs">
-                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                  <span class="font-bold text-emerald-400">1 - 3: Muy Suave / Suave</span>
-                  <span class="text-slate-400">Regenerativo</span>
-                </div>
-                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                  <span class="font-bold text-sky-400">4 - 6: Moderado / Algo Duro</span>
-                  <span class="text-slate-400">Mantenimiento</span>
-                </div>
-                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                  <span class="font-bold text-amber-400">7 - 8: Duro / Muy Duro</span>
-                  <span class="text-slate-400">Desarrollo Carga</span>
-                </div>
-                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center">
-                  <span class="font-bold text-rose-400">9 - 10: Máximo / Extenuante</span>
-                  <span class="text-slate-400">Pico de Sobrecarga</span>
-                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center"><span class="font-bold text-emerald-400">1 - 3: Muy Suave</span><span class="text-slate-400">Regenerativo</span></div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center"><span class="font-bold text-sky-400">4 - 6: Moderado</span><span class="text-slate-400">Mantenimiento</span></div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center"><span class="font-bold text-amber-400">7 - 8: Duro</span><span class="text-slate-400">Desarrollo Carga</span></div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between items-center"><span class="font-bold text-rose-400">9 - 10: Extenuante</span><span class="text-slate-400">Sobrecarga</span></div>
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
 
-      <!-- OTROS TABS MANTENIDOS -->
+      <!-- TAB 3: CONTROL STAFF (KANBAN INTERACTIVO SINCRONIZADO) -->
       <div id="kanban" class="tab-content hidden space-y-6">
-        <div class="bg-card p-6 rounded-2xl border border-slate-800">
-          <h2 class="text-2xl font-bold text-white">Control Staff (Kanban)</h2>
-          <p class="text-slate-400 text-sm mt-1">Organización de tareas del cuerpo técnico.</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+              <i class="fa-solid fa-list-check text-sky-400"></i> Control Staff & Tareas Kanban
+            </h2>
+            <p class="text-slate-400 text-sm mt-0.5">Sincronización automática de jugadas, videos y análisis tácticos.</p>
+          </div>
+          <button onclick="openModal('addKanbanTaskModal')" class="bg-sky-500 hover:bg-sky-600 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-sky-500/20">
+            <i class="fa-solid fa-plus"></i> + Crear Tarea Manual
+          </button>
+        </div>
+
+        <!-- TABLERO KANBAN DE 3 COLUMNAS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Columna: Pendiente -->
+          <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="font-bold text-sm text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle text-[8px]"></i> PENDIENTES
+              </span>
+              <span id="countPending" class="bg-amber-500/20 text-amber-400 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/30">0</span>
+            </div>
+            <div id="colPending" class="space-y-3 min-h-[300px]"></div>
+          </div>
+
+          <!-- Columna: En Proceso -->
+          <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="font-bold text-sm text-sky-400 flex items-center gap-2">
+                <i class="fa-solid fa-spinner animate-spin text-xs"></i> EN PROCESO
+              </span>
+              <span id="countProgress" class="bg-sky-500/20 text-sky-400 text-xs font-bold px-2 py-0.5 rounded-full border border-sky-500/30">0</span>
+            </div>
+            <div id="colProgress" class="space-y-3 min-h-[300px]"></div>
+          </div>
+
+          <!-- Columna: Completado -->
+          <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="font-bold text-sm text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-check-double text-xs"></i> COMPLETADAS
+              </span>
+              <span id="countDone" class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">0</span>
+            </div>
+            <div id="colDone" class="space-y-3 min-h-[300px]"></div>
+          </div>
+
         </div>
       </div>
+
+      <!-- OTROS TABS -->
       <div id="torneos" class="tab-content hidden space-y-6">
         <div class="bg-card p-6 rounded-2xl border border-slate-800">
           <h2 class="text-2xl font-bold text-white">Planificación de Torneos</h2>
@@ -335,157 +340,177 @@
     </main>
   </div>
 
-  <!-- MODAL: AGREGAR NUEVO JUGADOR -->
+  <!-- MODALES -->
   <div id="addPlayerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-lg text-white flex items-center gap-2">
-          <i class="fa-solid fa-user-plus text-emerald-400"></i> Agregar Jugador al Plantel
-        </h3>
+        <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-user-plus text-emerald-400"></i> Agregar Jugador</h3>
         <button onclick="closeModal('addPlayerModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-
       <form id="addPlayerForm" onsubmit="saveNewPlayer(event)" class="space-y-4 text-xs">
-        <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Nombre y Apellido</label>
-          <input type="text" id="newPName" required placeholder="Ej: Santiago Basile" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-        </div>
-
+        <div><label class="block text-slate-400 mb-1 font-semibold">Nombre y Apellido</label><input type="text" id="newPName" required placeholder="Ej: Santiago Basile" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"></div>
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Dorsal (#)</label>
-            <input type="number" id="newPNum" required placeholder="8" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-          </div>
-          <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Posición Futsal</label>
-            <select id="newPPos" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-              <option value="ALA">ALA</option>
-              <option value="CIERRE">CIERRE</option>
-              <option value="PÍVOT">PÍVOT</option>
-              <option value="ARQUERO">ARQUERO</option>
-              <option value="UNIVERSAL">UNIVERSAL</option>
-            </select>
-          </div>
+          <div><label class="block text-slate-400 mb-1 font-semibold">Dorsal (#)</label><input type="number" id="newPNum" required placeholder="8" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"></div>
+          <div><label class="block text-slate-400 mb-1 font-semibold">Posición</label><select id="newPPos" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"><option value="ALA">ALA</option><option value="CIERRE">CIERRE</option><option value="PÍVOT">PÍVOT</option><option value="ARQUERO">ARQUERO</option></select></div>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Edad</label>
-            <input type="number" id="newPAge" required placeholder="25" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-          </div>
-          <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Pie Hábil</label>
-            <select id="newPFoot" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-              <option value="Diestro">Diestro</option>
-              <option value="Zurdo">Zurdo</option>
-              <option value="Ambidiestro">Ambidiestro</option>
-            </select>
-          </div>
+          <div><label class="block text-slate-400 mb-1 font-semibold">Edad</label><input type="number" id="newPAge" required placeholder="25" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"></div>
+          <div><label class="block text-slate-400 mb-1 font-semibold">Pie Hábil</label><select id="newPFoot" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"><option value="Diestro">Diestro</option><option value="Zurdo">Zurdo</option></select></div>
         </div>
-
-        <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Estado Médico / Disponibilidad</label>
-          <select id="newPStatus" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-            <option value="100% APTO">100% APTO</option>
-            <option value="PRECAUCIÓN">PRECAUCIÓN (Sobrecarga)</option>
-            <option value="LESIONADO">LESIONADO</option>
-          </select>
-        </div>
-
-        <div class="pt-3 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeModal('addPlayerModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold hover:bg-slate-700">Cancelar</button>
-          <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-600">Guardar Jugador</button>
-        </div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Estado Médico</label><select id="newPStatus" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400"><option value="100% APTO">100% APTO</option><option value="PRECAUCIÓN">PRECAUCIÓN</option><option value="LESIONADO">LESIONADO</option></select></div>
+        <div class="pt-3 flex items-center justify-end gap-3"><button type="button" onclick="closeModal('addPlayerModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold">Cancelar</button><button type="submit" class="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold">Guardar</button></div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: CARGAR RPE DIARIO -->
   <div id="logRpeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-lg text-white flex items-center gap-2">
-          <i class="fa-solid fa-heart-pulse text-emerald-400"></i> Registrar Sesión RPE
-        </h3>
+        <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-heart-pulse text-emerald-400"></i> Registrar Sesión RPE</h3>
         <button onclick="closeModal('logRpeModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-
       <form onsubmit="saveDailyRpe(event)" class="space-y-4 text-xs">
-        <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Día de Entrenamiento</label>
-          <select id="rpeDayIndex" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-            <option value="0">Lunes (MD-5)</option>
-            <option value="1">Martes (MD-4)</option>
-            <option value="2">Miércoles (MD-3)</option>
-            <option value="3">Jueves (MD-2)</option>
-            <option value="4">Viernes (MD-1)</option>
-            <option value="5">Sábado (Partido)</option>
-            <option value="6">Domingo (Descanso)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Duración de la Sesión (Minutos)</label>
-          <input type="number" id="rpeDuration" required value="70" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-        </div>
-
-        <div>
-          <label class="block text-slate-400 mb-1 font-semibold">RPE Subjetivo Foster (Escala 1 al 10)</label>
-          <input type="number" id="rpeBorgValue" min="1" max="10" required value="7" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-          <span class="text-[10px] text-slate-500 mt-1 block">Carga calculada = Minutos × RPE</span>
-        </div>
-
-        <div class="pt-3 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeModal('logRpeModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold hover:bg-slate-700">Cancelar</button>
-          <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-600">Actualizar Carga</button>
-        </div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Día</label><select id="rpeDayIndex" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"><option value="0">Lunes (MD-5)</option><option value="1">Martes (MD-4)</option><option value="2">Miércoles (MD-3)</option><option value="3">Jueves (MD-2)</option><option value="4">Viernes (MD-1)</option><option value="5">Sábado (Partido)</option><option value="6">Domingo (Descanso)</option></select></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Duración (Minutos)</label><input type="number" id="rpeDuration" required value="70" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">RPE Foster (1-10)</label><input type="number" id="rpeBorgValue" min="1" max="10" required value="7" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"></div>
+        <div class="pt-3 flex items-center justify-end gap-3"><button type="button" onclick="closeModal('logRpeModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold">Cancelar</button><button type="submit" class="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold">Actualizar</button></div>
       </form>
     </div>
   </div>
 
-  <!-- JAVASCRIPT DE CONTROL -->
+  <div id="addKanbanTaskModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-sky-400"></i> Nueva Tarea Kanban</h3>
+        <button onclick="closeModal('addKanbanTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form onsubmit="saveManualKanbanTask(event)" class="space-y-4 text-xs">
+        <div><label class="block text-slate-400 mb-1 font-semibold">Título de la Tarea</label><input type="text" id="kanbanTitle" required placeholder="Ej: Analizar salida de presión 3-1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-400"></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Módulo de Origen</label><select id="kanbanModule" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"><option value="Pizarra">Pizarra Táctica</option><option value="Videoanálisis">Videoanálisis</option><option value="Estadísticas">Tracking & Stats</option><option value="General">General / Staff</option></select></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Descripción</label><textarea id="kanbanDesc" rows="3" placeholder="Detalle táctico o instrucción..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-400"></textarea></div>
+        <div class="pt-3 flex items-center justify-end gap-3"><button type="button" onclick="closeModal('addKanbanTaskModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold">Cancelar</button><button type="submit" class="px-4 py-2 rounded-lg bg-sky-500 text-slate-950 font-bold">Crear Tarea</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT INTEGRADO CON LOCALSTORAGE KANBAN -->
   <script>
     let playersStore = {};
+    let kanbanTasks = [];
     let currentPlayerKey = null;
     let rpeChartInstance = null;
 
-    // Cargar desde LocalStorage al iniciar (Lienzo Limpio por defecto)
     window.addEventListener('DOMContentLoaded', () => {
-      const savedData = localStorage.getItem('EF_PLAYERS_DATA');
-      if (savedData) {
-        playersStore = JSON.parse(savedData);
-        // Limpiar demostración previa si existía
-        delete playersStore.kiki;
-        delete playersStore.matias;
-        delete playersStore.luciano;
-        delete playersStore.cierre;
-      } else {
-        playersStore = {};
-      }
+      // Cargar Jugadores
+      const savedPlayers = localStorage.getItem('EF_PLAYERS_DATA');
+      playersStore = savedPlayers ? JSON.parse(savedPlayers) : {};
+
+      // Cargar Tareas Kanban
+      const savedKanban = localStorage.getItem('EF_KANBAN_TASKS');
+      kanbanTasks = savedKanban ? JSON.parse(savedKanban) : [];
 
       savePlayersToStorage();
       initRpeChart();
       renderUI();
+      renderKanban();
     });
 
-    function savePlayersToStorage() {
-      localStorage.setItem('EF_PLAYERS_DATA', JSON.stringify(playersStore));
-    }
+    // Listener para actualizar Kanban si se envía una tarea desde otra pestaña
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'EF_KANBAN_TASKS') {
+        kanbanTasks = JSON.parse(e.newValue || '[]');
+        renderKanban();
+      }
+    });
+
+    function savePlayersToStorage() { localStorage.setItem('EF_PLAYERS_DATA', JSON.stringify(playersStore)); }
+    function saveKanbanToStorage() { localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(kanbanTasks)); renderKanban(); }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Cambiar Pestañas generales
     function showTab(tabId, buttonElement) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
       const activeTab = document.getElementById(tabId);
       if (activeTab) activeTab.classList.remove('hidden');
-
       document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
       if (buttonElement) buttonElement.classList.add('active');
     }
 
-    // Renderizar la Interfaz según la presencia de jugadores
+    // --- RENDER KANBAN ---
+    function renderKanban() {
+      const colPending = document.getElementById('colPending');
+      const colProgress = document.getElementById('colProgress');
+      const colDone = document.getElementById('colDone');
+
+      colPending.innerHTML = ''; colProgress.innerHTML = ''; colDone.innerHTML = '';
+
+      let cPending = 0, cProgress = 0, cDone = 0;
+
+      kanbanTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 p-3.5 rounded-xl space-y-2 shadow-lg relative group";
+        
+        let moduleBadgeColor = "bg-sky-500/20 text-sky-400 border-sky-500/30";
+        if(task.module === 'Pizarra') moduleBadgeColor = "bg-orange-500/20 text-orange-400 border-orange-500/30";
+        if(task.module === 'Videoanálisis') moduleBadgeColor = "bg-purple-500/20 text-purple-400 border-purple-500/30";
+        if(task.module === 'Estadísticas') moduleBadgeColor = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${moduleBadgeColor}">${task.module}</span>
+            <button onclick="deleteKanbanTask('${task.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+          <h4 class="font-bold text-xs text-white">${task.title}</h4>
+          <p class="text-[11px] text-slate-400">${task.desc || 'Sin detalles'}</p>
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px]">
+            <span class="text-slate-500">${task.date}</span>
+            <div class="flex items-center gap-1">
+              ${task.status !== 'pending' ? `<button onclick="moveTask('${task.id}', 'pending')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded">Pendiente</button>` : ''}
+              ${task.status !== 'progress' ? `<button onclick="moveTask('${task.id}', 'progress')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded">Proceso</button>` : ''}
+              ${task.status !== 'done' ? `<button onclick="moveTask('${task.id}', 'done')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded">Fin</button>` : ''}
+            </div>
+          </div>
+        `;
+
+        if (task.status === 'pending') { colPending.appendChild(card); cPending++; }
+        else if (task.status === 'progress') { colProgress.appendChild(card); cProgress++; }
+        else if (task.status === 'done') { colDone.appendChild(card); cDone++; }
+      });
+
+      document.getElementById('countPending').innerText = cPending;
+      document.getElementById('countProgress').innerText = cProgress;
+      document.getElementById('countDone').innerText = cDone;
+    }
+
+    function moveTask(id, newStatus) {
+      const task = kanbanTasks.find(t => t.id === id);
+      if (task) { task.status = newStatus; saveKanbanToStorage(); }
+    }
+
+    function deleteKanbanTask(id) {
+      kanbanTasks = kanbanTasks.filter(t => t.id !== id);
+      saveKanbanToStorage();
+    }
+
+    function saveManualKanbanTask(e) {
+      e.preventDefault();
+      const title = document.getElementById('kanbanTitle').value;
+      const module = document.getElementById('kanbanModule').value;
+      const desc = document.getElementById('kanbanDesc').value;
+
+      kanbanTasks.unshift({
+        id: "k_" + Date.now(),
+        title, module, desc,
+        status: 'pending',
+        date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+      });
+
+      saveKanbanToStorage();
+      closeModal('addKanbanTaskModal');
+    }
+
+    // --- RENDER PLANTEL Y RPE ---
     function renderUI() {
       const keys = Object.keys(playersStore);
       const emptyState = document.getElementById('emptyPlayersState');
@@ -494,135 +519,69 @@
       const btnLog = document.getElementById('btnLogRpe');
 
       if (keys.length === 0) {
-        emptyState.classList.remove('hidden');
-        detailContainer.classList.add('hidden');
+        emptyState.classList.remove('hidden'); detailContainer.classList.add('hidden');
         select.innerHTML = '<option value="">Sin jugadores cargados</option>';
-        select.disabled = true;
-        btnLog.disabled = true;
+        select.disabled = true; btnLog.disabled = true;
       } else {
-        emptyState.classList.add('hidden');
-        detailContainer.classList.remove('hidden');
-        select.disabled = false;
-        btnLog.disabled = false;
-
-        if (!currentPlayerKey || !playersStore[currentPlayerKey]) {
-          currentPlayerKey = keys[0];
-        }
-
-        renderPlayerSelectorOptions();
-        updatePlayerView(currentPlayerKey);
+        emptyState.classList.add('hidden'); detailContainer.classList.remove('hidden');
+        select.disabled = false; btnLog.disabled = false;
+        if (!currentPlayerKey || !playersStore[currentPlayerKey]) currentPlayerKey = keys[0];
+        renderPlayerSelectorOptions(); updatePlayerView(currentPlayerKey);
       }
     }
 
-    // Rellenar opciones del menú desplegable
     function renderPlayerSelectorOptions() {
-      const select = document.getElementById('playerSelector');
-      select.innerHTML = '';
+      const select = document.getElementById('playerSelector'); select.innerHTML = '';
       Object.keys(playersStore).forEach(key => {
         const p = playersStore[key];
         const option = document.createElement('option');
-        option.value = p.id;
-        option.textContent = `${p.name} (${p.badge})`;
+        option.value = p.id; option.textContent = `${p.name} (${p.badge})`;
         select.appendChild(option);
       });
       select.value = currentPlayerKey;
     }
 
-    // Inicializar Gráfico Chart.js
     function initRpeChart() {
       const ctx = document.getElementById('rpeChart').getContext('2d');
       rpeChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['Lun (MD-5)', 'Mar (MD-4)', 'Mié (MD-3)', 'Jue (MD-2)', 'Vie (MD-1)', 'Sáb (Partido)', 'Dom (Descanso)'],
-          datasets: [{
-            label: 'Carga RPE (U.A.)',
-            data: [0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgba(16, 185, 129, 0.4)',
-            borderColor: '#10b981',
-            borderWidth: 2,
-            borderRadius: 6
-          }]
+          datasets: [{ label: 'Carga RPE (U.A.)', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 2, borderRadius: 6 }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } },
-            x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
-          },
-          plugins: { legend: { display: false } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }, x: { grid: { display: false }, ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false } } }
       });
     }
 
-    // Actualizar datos del jugador en pantalla
     function updatePlayerView(key) {
       if (!playersStore[key]) return;
-      currentPlayerKey = key;
-      const p = playersStore[key];
-
-      document.getElementById('pName').innerText = p.name;
-      document.getElementById('pTeam').innerText = p.team;
-      document.getElementById('pBadge').innerText = p.badge;
-      document.getElementById('pFoot').innerText = p.foot;
-      document.getElementById('pStatus').innerText = p.status;
-      document.getElementById('pRpeScore').innerText = p.rpe;
-
-      const totalUa = p.data.reduce((a, b) => a + b, 0);
-      document.getElementById('pUa').innerText = totalUa;
-
-      if (rpeChartInstance) {
-        rpeChartInstance.data.datasets[0].data = p.data;
-        rpeChartInstance.update();
-      }
+      currentPlayerKey = key; const p = playersStore[key];
+      document.getElementById('pName').innerText = p.name; document.getElementById('pTeam').innerText = p.team;
+      document.getElementById('pBadge').innerText = p.badge; document.getElementById('pFoot').innerText = p.foot;
+      document.getElementById('pStatus').innerText = p.status; document.getElementById('pRpeScore').innerText = p.rpe;
+      const totalUa = p.data.reduce((a, b) => a + b, 0); document.getElementById('pUa').innerText = totalUa;
+      if (rpeChartInstance) { rpeChartInstance.data.datasets[0].data = p.data; rpeChartInstance.update(); }
     }
 
-    // Guardar Nuevo Jugador
-    function saveNewPlayer(event) {
-      event.preventDefault();
-      const name = document.getElementById('newPName').value;
-      const num = document.getElementById('newPNum').value;
-      const pos = document.getElementById('newPPos').value;
-      const age = document.getElementById('newPAge').value;
-      const foot = document.getElementById('newPFoot').value;
-      const status = document.getElementById('newPStatus').value;
-
+    function saveNewPlayer(e) {
+      e.preventDefault();
       const key = "p_" + Date.now();
       playersStore[key] = {
-        id: key,
-        name: name,
-        team: `#${num} • Plantel Activo • ${age} años`,
-        badge: pos,
-        foot: foot,
-        status: status,
-        rpe: "85.0",
-        data: [0, 0, 0, 0, 0, 0, 0]
+        id: key, name: document.getElementById('newPName').value,
+        team: `#${document.getElementById('newPNum').value} • Plantel Activo • ${document.getElementById('newPAge').value} años`,
+        badge: document.getElementById('newPPos').value, foot: document.getElementById('newPFoot').value,
+        status: document.getElementById('newPStatus').value, rpe: "85.0", data: [0, 0, 0, 0, 0, 0, 0]
       };
-
-      savePlayersToStorage();
-      closeModal('addPlayerModal');
-      document.getElementById('addPlayerForm').reset();
-      
-      currentPlayerKey = key;
-      renderUI();
+      savePlayersToStorage(); closeModal('addPlayerModal');
+      document.getElementById('addPlayerForm').reset(); currentPlayerKey = key; renderUI();
     }
 
-    // Guardar Carga RPE
-    function saveDailyRpe(event) {
-      event.preventDefault();
-      if (!currentPlayerKey || !playersStore[currentPlayerKey]) return;
-
+    function saveDailyRpe(e) {
+      e.preventDefault(); if (!currentPlayerKey || !playersStore[currentPlayerKey]) return;
       const dayIdx = parseInt(document.getElementById('rpeDayIndex').value);
-      const mins = parseInt(document.getElementById('rpeDuration').value);
-      const rpeVal = parseInt(document.getElementById('rpeBorgValue').value);
-
-      const calculatedUa = mins * rpeVal;
+      const calculatedUa = parseInt(document.getElementById('rpeDuration').value) * parseInt(document.getElementById('rpeBorgValue').value);
       playersStore[currentPlayerKey].data[dayIdx] = calculatedUa;
-
-      savePlayersToStorage();
-      closeModal('logRpeModal');
-      updatePlayerView(currentPlayerKey);
+      savePlayersToStorage(); closeModal('logRpeModal'); updatePlayerView(currentPlayerKey);
     }
   </script>
 </body>
