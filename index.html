@@ -341,6 +341,33 @@
     </main>
   </div>
 
+  <!-- MODAL: INICIAR SESIÓN (PANTALLA DE BLOQUEO DE CERRAR SESIÓN) -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl text-center">
+      <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto">
+        EF
+      </div>
+      <div>
+        <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL PRO</h3>
+        <p class="text-xs text-slate-400 mt-1">Ingresa a tu cuenta de Staff Hub</p>
+      </div>
+
+      <form onsubmit="iniciarSesion(event)" class="space-y-4 text-left text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Usuario / Email</label>
+          <input type="text" id="loginUser" required value="luciano.montiel" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Contraseña</label>
+          <input type="password" id="loginPass" required value="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold transition-all shadow-lg shadow-emerald-500/20">
+          Ingresar al Panel
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: AGREGAR JUGADOR -->
   <div id="addPlayerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
@@ -388,4 +415,13 @@
         <button onclick="closeModal('addKanbanTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form onsubmit="saveManualKanbanTask(event)" class="space-y-4 text-xs">
-        <div><label class="
+        <div><label class="block text-slate-400 mb-1 font-semibold">Título de la Tarea</label><input type="text" id="kanbanTitle" required placeholder="Ej: Analizar salida de presión 3-1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-400"></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Módulo de Origen</label><select id="kanbanModule" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"><option value="Pizarra">Pizarra Táctica</option><option value="Videoanálisis">Videoanálisis</option><option value="Estadísticas">Tracking & Stats</option><option value="General">General / Staff</option></select></div>
+        <div><label class="block text-slate-400 mb-1 font-semibold">Descripción</label><textarea id="kanbanDesc" rows="3" placeholder="Detalle táctico o instrucción..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-400"></textarea></div>
+        <div class="pt-3 flex items-center justify-end gap-3"><button type="button" onclick="closeModal('addKanbanTaskModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold">Cancelar</button><button type="submit" class="px-4 py-2 rounded-lg bg-sky-500 text-slate-950 font-bold">Crear Tarea</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT DE LÓGICA Y SINCRONIZACIÓN -->
+  <script>
