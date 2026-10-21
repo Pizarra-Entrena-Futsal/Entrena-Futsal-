@@ -1,1236 +1,258 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrena Futsal Staff Hub - Plataforma de Gestión</title>
-    <!-- Tailwind CSS & FontAwesome CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            panel: '#1e293b',
-                            accent: '#10b981',
-                            blue: '#3b82f6',
-                            alert: '#ef4444'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrena Futsal PRO - Dashboard Principal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #0a0e17;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .bg-card {
+      background-color: #121824;
+      border: 1px solid #1f293d;
+    }
+    .text-orange-main {
+      color: #f97316;
+    }
+    .bg-orange-main {
+      background-color: #f97316;
+    }
+    .border-orange-main {
+      border-color: #f97316;
+    }
+    .menu-item {
+      display: flex;
+      items-center: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: #9ca3af;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .menu-item:hover {
+      background-color: #1a2234;
+      color: #ffffff;
+      border-color: #1f293d;
+    }
+    .menu-item.active {
+      background-color: rgba(249, 115, 22, 0.15);
+      color: #f97316;
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+<body class="min-h-screen flex flex-col lg:flex-row">
 
-    <!-- NAV BAR SUPERIOR -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-3 flex items-center justify-between gap-4 sticky top-0 z-40">
-        <div class="flex items-center space-x-3">
-            <!-- BOTÓN MENÚ MÓVIL (HAMBURGUESA) -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white text-xl p-1 focus:outline-none">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
-            <img src="logo.png.jpg" alt="Entrena Futsal Logo" class="h-9 w-9 rounded-full object-cover border-2 border-emerald-500" onerror="this.src='https://via.placeholder.com/40/10b981/ffffff?text=EF'">
-            <div>
-                <h1 class="font-bold text-base md:text-lg text-white leading-none">ENTRENA FUTSAL <span class="text-emerald-400 text-[10px] md:text-xs px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 ml-1">STAFF HUB</span></h1>
-                <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Plataforma Integral de Gestión y Rendimiento</p>
-            </div>
-        </div>
-
-        <div class="hidden lg:flex items-center space-x-4 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700 text-sm">
-            <div class="flex items-center space-x-2 text-amber-400 font-semibold text-xs">
-                <i class="fa-solid fa-trophy"></i>
-                <span>MD-2 vs. Rival Directo</span>
-            </div>
-            <span class="text-slate-500">|</span>
-            <span class="text-emerald-400 text-xs font-mono"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-1"></i> Sesión Activa</span>
-        </div>
-
-        <!-- USUARIO Y PERFIL -->
-        <div class="flex items-center space-x-3">
-            <div id="user-profile-badge" class="hidden items-center space-x-2.5 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl">
-                <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs text-white uppercase" id="user-avatar-initials">DT</div>
-                <div class="text-xs">
-                    <p class="font-bold text-white leading-none" id="user-display-name">Usuario</p>
-                    <span class="text-[10px] text-emerald-400 font-mono" id="user-display-role">Director Técnico</span>
-                </div>
-                <button onclick="logoutUser()" title="Cerrar Sesión" class="text-slate-400 hover:text-rose-400 transition ml-1 text-sm">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </div>
-
-            <button id="btn-login-trigger" onclick="openAuthModal('login')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/10">
-                <i class="fa-solid fa-user"></i>
-                <span>Iniciar Sesión</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- MENÚ DESPLEGABLE MÓVIL (PARA CELULARES) -->
-    <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 py-3 space-y-3">
+  <!-- SIDEBAR NAVEGACIÓN PRINCIPAL -->
+  <aside class="w-full lg:w-72 bg-card border-r border-gray-800 p-5 flex flex-col justify-between shrink-0">
+    <div class="space-y-6">
+      
+      <!-- LOGO BRAND -->
+      <div class="flex items-center gap-3 px-2">
+        <div class="w-10 h-10 rounded-xl bg-orange-main flex items-center justify-center font-black text-black text-xl shadow-lg shadow-orange-500/20">EF</div>
         <div>
-            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Herramientas Tácticas (Gratis)</h3>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <button onclick="showTab('dashboard'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chart-pie mr-1 text-emerald-400"></i> Dashboard</button>
-                <button onclick="showTab('pizarra'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chalkboard mr-1 text-blue-400"></i> Pizarra</button>
-                <button onclick="showTab('analisis'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-video mr-1 text-purple-400"></i> Video</button>
-                <button onclick="showTab('stats'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-chart-line mr-1 text-emerald-400"></i> Stats</button>
-                <button onclick="showTab('arqueros'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-hand-paper mr-1 text-amber-400"></i> Arqueros</button>
-                <button onclick="showTab('planillas'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left"><i class="fa-solid fa-file-pdf mr-1 text-rose-400"></i> Planillas</button>
-            </div>
+          <h1 class="font-heading font-extrabold text-lg text-white leading-none">ENTRENA FUTSAL</h1>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-orange-main">PLATAFORMA PRO</span>
         </div>
-        <div class="pt-2 border-t border-slate-800">
-            <h3 class="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-2">Módulos de Gestión Staff (PRO)</h3>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <button onclick="showTab('kanban'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left flex justify-between items-center">
-                    <span><i class="fa-solid fa-list-check mr-1 text-cyan-400"></i> Kanban</span>
-                    <i class="fa-solid fa-lock text-[10px] text-amber-400 pro-lock-icon"></i>
-                </button>
-                <button onclick="showTab('plantel'); toggleMobileMenu();" class="p-2 bg-slate-800 rounded text-slate-200 font-semibold text-left flex justify-between items-center">
-                    <span><i class="fa-solid fa-users-gear mr-1 text-green-400"></i> RPE / Plantel</span>
-                    <i class="fa-solid fa-lock text-[10px] text-amber-400 pro-lock-icon"></i>
-                </button>
-            </div>
+      </div>
+
+      <!-- BADGE USUARIO DESBLOQUEADO -->
+      <div class="bg-gray-900/90 border border-emerald-500/30 rounded-xl p-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-bold text-emerald-400">Acceso PRO Activo</span>
         </div>
+        <i class="fa-solid fa-shield-check text-emerald-400 text-sm"></i>
+      </div>
+
+      <!-- MENÚ DE HERRAMIENTAS -->
+      <nav class="space-y-1.5">
+        <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider px-3 mb-2">Herramientas Tácticas</div>
+        
+        <a href="pizarra.html" class="menu-item">
+          <i class="fa-solid fa-chalkboard text-orange-main w-5 text-center"></i>
+          <span>Pizarra Táctica</span>
+        </a>
+
+        <a href="equipo.html" class="menu-item active">
+          <i class="fa-solid fa-users-gear text-orange-main w-5 text-center"></i>
+          <span>Equipo & Carga RPE</span>
+        </a>
+
+        <a href="stats.html" class="menu-item">
+          <i class="fa-solid fa-list-check text-orange-main w-5 text-center"></i>
+          <span>Control Staff (Kanban)</span>
+        </a>
+
+        <a href="analisis.html" class="menu-item">
+          <i class="fa-solid fa-video text-orange-main w-5 text-center"></i>
+          <span>Análisis de Video</span>
+        </a>
+
+        <a href="arqueros.html" class="menu-item">
+          <i class="fa-solid fa-hands-mitten text-orange-main w-5 text-center"></i>
+          <span>Entrenamiento Arqueros</span>
+        </a>
+
+        <a href="planillas.html" class="menu-item">
+          <i class="fa-solid fa-file-pdf text-orange-main w-5 text-center"></i>
+          <span>Planillas & PDF</span>
+        </a>
+
+        <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider px-3 mt-6 mb-2">Módulos en Desarrollo</div>
+
+        <a href="#" onclick="alert('Próximamente: Módulo de Gestión de Torneos')" class="menu-item opacity-60">
+          <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+          <span>Planificación Torneos</span>
+          <i class="fa-solid fa-lock text-xs ml-auto text-gray-600"></i>
+        </a>
+
+        <a href="#" onclick="alert('Próximamente: Academia & Charlas Tácticas')" class="menu-item opacity-60">
+          <i class="fa-solid fa-graduation-cap w-5 text-center"></i>
+          <span>Academia / Charlas</span>
+          <i class="fa-solid fa-lock text-xs ml-auto text-gray-600"></i>
+        </a>
+      </nav>
     </div>
 
-    <!-- CUERPO PRINCIPAL -->
-    <div class="flex flex-1 overflow-hidden">
+    <!-- FOOTER SIDEBAR -->
+    <div class="pt-6 border-t border-gray-800 text-xs text-gray-500 flex items-center justify-between px-2">
+      <span>Versión 2.4 PRO</span>
+      <span class="text-orange-main font-bold">2026</span>
+    </div>
+  </aside>
 
-        <!-- BARRA LATERAL ESCRITORIO (NAVEGACIÓN) -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col justify-between hidden md:flex shrink-0">
-            <div class="p-4 space-y-6 overflow-y-auto">
-                <!-- HERRAMIENTAS TÁCTICAS (GRATIS) -->
-                <div>
-                    <div class="flex items-center justify-between mb-3 px-3">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Herramientas Tácticas</h3>
-                        <span class="text-[10px] font-bold bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-800">GRATIS</span>
-                    </div>
-                    <nav class="space-y-1">
-                        <button onclick="showTab('dashboard', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800 border-l-4 border-emerald-500">
-                            <i class="fa-solid fa-chart-pie w-5"></i>
-                            <span>Panel Principal</span>
-                        </button>
-                        <button onclick="showTab('pizarra', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <i class="fa-solid fa-chalkboard w-5 text-blue-400"></i>
-                            <span>Pizarra Online</span>
-                        </button>
-                        <button onclick="showTab('analisis', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <i class="fa-solid fa-video w-5 text-purple-400"></i>
-                            <span>Videoanálisis</span>
-                        </button>
-                        <button onclick="showTab('stats', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <i class="fa-solid fa-chart-line w-5 text-emerald-400"></i>
-                            <span>Tracking & Stats</span>
-                        </button>
-                        <button onclick="showTab('arqueros', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <i class="fa-solid fa-hand-paper w-5 text-amber-400"></i>
-                            <span>Específico Arqueros</span>
-                        </button>
-                        <button onclick="showTab('planillas', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <i class="fa-solid fa-file-pdf w-5 text-rose-400"></i>
-                            <span>Planillas Papel</span>
-                        </button>
-                    </nav>
-                </div>
-
-                <!-- GESTIÓN DE CUERPOS TÉCNICOS (MÓDULOS PRO) -->
-                <div>
-                    <div class="flex items-center justify-between mb-3 px-3">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Gestión Cuerpos Técnicos</h3>
-                        <span class="text-[10px] font-bold bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/30">PRO</span>
-                    </div>
-                    <nav class="space-y-1">
-                        <button onclick="showTab('kanban', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-list-check w-5 text-cyan-400"></i>
-                                <span>Control Staff (Kanban)</span>
-                            </div>
-                            <i class="fa-solid fa-lock text-xs text-amber-400 pro-lock-icon"></i>
-                        </button>
-                        
-                        <button onclick="showTab('plantel', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-users-gear w-5 text-green-400"></i>
-                                <span>Equipo & Carga RPE</span>
-                            </div>
-                            <i class="fa-solid fa-lock text-xs text-amber-400 pro-lock-icon"></i>
-                        </button>
-
-                        <button onclick="showTab('calendario', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-calendar-days w-5 text-amber-400"></i>
-                                <span>Planificación Torneos</span>
-                            </div>
-                            <i class="fa-solid fa-lock text-xs text-amber-400 pro-lock-icon"></i>
-                        </button>
-
-                        <button onclick="showTab('academia', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-graduation-cap w-5 text-indigo-400"></i>
-                                <span>Academia / Charlas</span>
-                            </div>
-                            <i class="fa-solid fa-lock text-xs text-amber-400 pro-lock-icon"></i>
-                        </button>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-800">
-                <div id="subscription-status-card" class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
-                        <div class="text-xs">
-                            <p class="font-bold text-white">Plan Gratuito</p>
-                            <p class="text-slate-400 text-[10px]">Pasa a PRO por 12 USD/mes</p>
-                        </div>
-                    </div>
-                    <button onclick="openPaywallModal()" class="text-[10px] bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-2 py-1 rounded transition">PRO</button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- ÁREA DE CONTENIDO DINÁMICO -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-950 flex flex-col">
-
-            <!-- TAB 1: DASHBOARD PRINCIPAL -->
-            <div id="tab-dashboard" class="tab-content space-y-6">
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-                    <button onclick="showTab('pizarra')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500 p-4 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-chalkboard text-2xl text-blue-400 group-hover:scale-110 transition mb-2 block"></i>
-                        <span class="text-xs font-bold text-slate-200">Pizarra Online</span>
-                    </button>
-                    <button onclick="showTab('analisis')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-purple-500 p-4 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-video text-2xl text-purple-400 group-hover:scale-110 transition mb-2 block"></i>
-                        <span class="text-xs font-bold text-slate-200">Videoanálisis</span>
-                    </button>
-                    <button onclick="showTab('stats')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 p-4 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-chart-line text-2xl text-emerald-400 group-hover:scale-110 transition mb-2 block"></i>
-                        <span class="text-xs font-bold text-slate-200">Stats Futsal</span>
-                    </button>
-                    <button onclick="showTab('arqueros')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 p-4 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-hand-paper text-2xl text-amber-400 group-hover:scale-110 transition mb-2 block"></i>
-                        <span class="text-xs font-bold text-slate-200">Arqueros</span>
-                    </button>
-                    <button onclick="showTab('planillas')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-rose-500 p-4 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-file-pdf text-2xl text-rose-400 group-hover:scale-110 transition mb-2 block"></i>
-                        <span class="text-xs font-bold text-slate-200">Planillas Papel</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
-                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Plantel Disponible</span>
-                            <i class="fa-solid fa-user-check text-emerald-400"></i>
-                        </div>
-                        <p class="text-2xl md:text-3xl font-extrabold text-white">12 / 14</p>
-                        <p class="text-xs text-rose-400 mt-2"><i class="fa-solid fa-kit-medical"></i> 2 Jugadores en Sanidad</p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
-                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Promedio Carga RPE</span>
-                            <i class="fa-solid fa-gauge-high text-amber-400"></i>
-                        </div>
-                        <p class="text-2xl md:text-3xl font-extrabold text-amber-400">7.2 <span class="text-xs text-slate-400">/ 10</span></p>
-                        <p class="text-xs text-slate-400 mt-2">Microciclo Competitivo</p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
-                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Tareas Mi Staff</span>
-                            <i class="fa-solid fa-tasks text-blue-400"></i>
-                        </div>
-                        <p class="text-2xl md:text-3xl font-extrabold text-white" id="dashboard-task-count">0</p>
-                        <p class="text-xs text-slate-400 mt-2" id="dashboard-task-status">Cargando tareas...</p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 md:p-5 rounded-xl">
-                        <div class="flex justify-between items-center text-slate-400 text-sm mb-2">
-                            <span>Módulo de Gestión</span>
-                            <i class="fa-solid fa-crown text-amber-400"></i>
-                        </div>
-                        <p class="text-xl md:text-2xl font-extrabold text-amber-400" id="dash-sub-label">Plan Gratuito</p>
-                        <p class="text-xs text-slate-400 mt-2" id="dash-sub-desc">12 USD/mes (Hasta 3 integrantes)</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
-                        <h3 class="font-bold text-white mb-4 flex items-center justify-between">
-                            <span><i class="fa-solid fa-shield text-emerald-400 mr-2"></i> Quinteto Inicial Proyectado</span>
-                            <span class="text-xs text-slate-400">Sistema 3-1</span>
-                        </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
-                                <span class="font-bold bg-amber-950 text-amber-400 px-2 py-1 rounded">ARQ</span>
-                                <span class="font-semibold text-white">1. Arquero Principal</span>
-                                <span class="text-emerald-400">100% Apto</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
-                                <span class="font-bold bg-blue-950 text-blue-400 px-2 py-1 rounded">CIE</span>
-                                <span class="font-semibold text-white">3. Cierre Central</span>
-                                <span class="text-emerald-400">100% Apto</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
-                                <span class="font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-white">8. Ala Izquierdo</span>
-                                <span class="text-emerald-400">100% Apto</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
-                                <span class="font-bold bg-emerald-950 text-emerald-400 px-2 py-1 rounded">ALA</span>
-                                <span class="font-semibold text-white">10. Ala Derecho</span>
-                                <span class="text-emerald-400">100% Apto</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg text-xs md:text-sm">
-                                <span class="font-bold bg-rose-950 text-rose-400 px-2 py-1 rounded">PIV</span>
-                                <span class="font-semibold text-white">9. Pívot</span>
-                                <span class="text-emerald-400">100% Apto</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-white mb-4 flex items-center justify-between">
-                                <span><i class="fa-solid fa-list-check text-cyan-400 mr-2"></i> Tareas Prioritarias Staff</span>
-                                <button onclick="showTab('kanban')" class="text-xs text-cyan-400 hover:underline">Ver Tablero</button>
-                            </h3>
-                            <div class="space-y-3" id="dashboard-recent-tasks"></div>
-                        </div>
-                        <button onclick="openTaskModal()" class="mt-4 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-bold rounded-lg border border-slate-700 transition">
-                            + Crear Nueva Tarea de Staff
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: TABLERO KANBAN (PRO) -->
-            <div id="tab-kanban" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-5 rounded-xl border border-slate-800">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-cyan-400"></i>
-                            <span>Tablero Kanban - Mi Cuerpo Técnico</span>
-                        </h2>
-                        <p class="text-xs text-slate-400 mt-1">Gestión privada de tareas y jugadas tácticas de tu equipo.</p>
-                    </div>
-
-                    <div class="flex items-center space-x-3">
-                        <select id="kanban-filter" onchange="renderKanban()" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-lg px-3 py-2 outline-none focus:border-cyan-500">
-                            <option value="todos">Ver Todas las Áreas</option>
-                            <option value="DT">Director Técnico (DT)</option>
-                            <option value="PF">Preparador Físico (PF)</option>
-                            <option value="Kine">Kinesiología / Médico</option>
-                            <option value="Video">Analista de Video</option>
-                        </select>
-
-                        <button onclick="openTaskModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg transition flex items-center space-x-2">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nueva Tarea</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-slate-300 text-sm">📋 Pendientes</h3>
-                            <span id="badge-pendiente" class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-pendiente" class="space-y-3 min-h-[150px]"></div>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-blue-400 text-sm">⚙️ En Proceso</h3>
-                            <span id="badge-proceso" class="bg-blue-950 text-blue-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-proceso" class="space-y-3 min-h-[150px]"></div>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-amber-400 text-sm">🔍 En Revisión DT</h3>
-                            <span id="badge-revision" class="bg-amber-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-revision" class="space-y-3 min-h-[150px]"></div>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col">
-                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
-                            <h3 class="font-bold text-emerald-400 text-sm">✅ Completado</h3>
-                            <span id="badge-completado" class="bg-emerald-950 text-emerald-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-completado" class="space-y-3 min-h-[150px]"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VISOR EMBEBIDO: PIZARRA ONLINE -->
-            <div id="tab-pizarra" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
-                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-chalkboard text-blue-400"></i>
-                        <h2 class="font-bold text-white text-sm">Pizarra Táctica Online</h2>
-                    </div>
-                    <a href="pizarra.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                        <span>Abrir en Pestaña Completa</span>
-                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
-                    </a>
-                </div>
-                <iframe src="pizarra.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Pizarra Táctica Futsal"></iframe>
-            </div>
-
-            <!-- VISOR EMBEBIDO: VIDEOANÁLISIS -->
-            <div id="tab-analisis" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
-                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-video text-purple-400"></i>
-                        <h2 class="font-bold text-white text-sm">Módulo de Videoanálisis</h2>
-                    </div>
-                    <a href="analisis.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                        <span>Abrir en Pestaña Completa</span>
-                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
-                    </a>
-                </div>
-                <iframe src="analisis.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Videoanálisis Futsal"></iframe>
-            </div>
-
-            <!-- VISOR EMBEBIDO: STATS -->
-            <div id="tab-stats" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
-                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-chart-line text-emerald-400"></i>
-                        <h2 class="font-bold text-white text-sm">Tracking & Estadísticas</h2>
-                    </div>
-                    <a href="stats.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                        <span>Abrir en Pestaña Completa</span>
-                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
-                    </a>
-                </div>
-                <iframe src="stats.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Tracking Futsal"></iframe>
-            </div>
-
-            <!-- VISOR EMBEBIDO: ARQUEROS -->
-            <div id="tab-arqueros" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
-                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-hand-paper text-amber-400"></i>
-                        <h2 class="font-bold text-white text-sm">Entrenamiento de Arqueros</h2>
-                    </div>
-                    <a href="arqueros.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                        <span>Abrir en Pestaña Completa</span>
-                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
-                    </a>
-                </div>
-                <iframe src="arqueros.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Específico Arqueros"></iframe>
-            </div>
-
-            <!-- VISOR EMBEBIDO: PLANILLAS -->
-            <div id="tab-planillas" class="tab-content hidden flex-1 flex-col h-full min-h-[82vh]">
-                <div class="flex items-center justify-between mb-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-file-pdf text-rose-400"></i>
-                        <h2 class="font-bold text-white text-sm">Planillas Imprimibles</h2>
-                    </div>
-                    <a href="planillas.html" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                        <span>Abrir en Pestaña Completa</span>
-                        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
-                    </a>
-                </div>
-                <iframe src="planillas.html" class="w-full flex-1 rounded-xl border border-slate-800 bg-slate-900 min-h-[75vh]" title="Planillas Futsal"></iframe>
-            </div>
-
-            <!-- TABS MÓDULOS SECUNDARIOS PRO -->
-            <div id="tab-plantel" class="tab-content hidden p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-300">
-                <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-users-gear text-green-400 mr-2"></i>Control de Plantel y RPE</h2>
-                <p class="text-xs text-slate-400">Seguimiento físico y fisiológico de los 14 jugadores (Escala Borg 1-10).</p>
-            </div>
-
-            <div id="tab-calendario" class="tab-content hidden p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-300">
-                <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-calendar-days text-amber-400 mr-2"></i>Planificación y Torneos</h2>
-                <p class="text-xs text-slate-400">Calendarios de competencia, convocatorias y microciclos de MD-5 a MD-Day.</p>
-            </div>
-
-            <div id="tab-academia" class="tab-content hidden space-y-6">
-                <div class="bg-gradient-to-r from-indigo-900 to-slate-900 border border-indigo-700 p-6 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                        <span class="bg-indigo-500 text-white font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider">Capacitación Staff</span>
-                        <h2 class="text-2xl font-black text-white mt-1">Academia & Charlas Tácticas</h2>
-                        <p class="text-sm text-slate-300">Masterclasses exclusivas sobre ataque posicional 4-0, defensa 5v4 y táctica fija.</p>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+  <!-- ÁREA CENTRAL DASHBOARD -->
+  <main class="flex-1 p-6 lg:p-10 space-y-8 overflow-y-auto">
+    
+    <!-- HEADER BIENVENIDA -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-6 rounded-2xl">
+      <div>
+        <h2 class="font-heading font-extrabold text-2xl text-white">Panel de Control General</h2>
+        <p class="text-sm text-gray-400 mt-1">Selecciona la herramienta de trabajo para la sesión de hoy</p>
+      </div>
+      <a href="pizarra.html" class="bg-orange-main hover:bg-orange-600 text-black font-extrabold px-5 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
+        <i class="fa-solid fa-play"></i> Abrir Pizarra Digital
+      </a>
     </div>
 
-    <!-- MODAL AUTENTICACIÓN (LOGIN / REGISTRO) -->
-    <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5">
-            <div class="flex border-b border-slate-800 pb-3 justify-between items-center">
-                <div class="flex space-x-4">
-                    <button id="tab-btn-login" onclick="switchAuthTab('login')" class="font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1">Iniciar Sesión</button>
-                    <button id="tab-btn-register" onclick="switchAuthTab('register')" class="font-bold text-sm text-slate-400 hover:text-white pb-1">Registrarse</button>
-                </div>
-                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Correo Electrónico</label>
-                    <input type="email" id="login-email" required placeholder="tuemail@club.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Contraseña</label>
-                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-lg transition">
-                    Ingresar a Mi Plataforma
-                </button>
-            </form>
-
-            <form id="form-register" onsubmit="handleRegisterSubmit(event)" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Nombre Completo</label>
-                    <input type="text" id="reg-name" required placeholder="Ej: Prof. Marcelo Silva" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Rol / Cargo</label>
-                        <select id="reg-role" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                            <option value="Director Técnico">Director Técnico (DT)</option>
-                            <option value="Preparador Físico">Preparador Físico (PF)</option>
-                            <option value="Kinesiólogo / Med">Kinesiólogo / Médico</option>
-                            <option value="Analista de Video">Analista de Video</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Club / Equipo</label>
-                        <input type="text" id="reg-club" required placeholder="Ej: Futsal Club" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Correo Electrónico</label>
-                    <input type="email" id="reg-email" required placeholder="tuemail@club.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Contraseña</label>
-                    <input type="password" id="reg-password" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-lg transition">
-                    Crear Mi Cuenta
-                </button>
-            </form>
+    <!-- TARJETAS DE ACCESO RÁPIDO A HERRAMIENTAS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      
+      <!-- Card: Equipo & Carga RPE -->
+      <a href="equipo.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-main flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-users-gear"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Equipo & Carga RPE</h3>
+          <p class="text-xs text-gray-400 mt-2">Scouting individual estilo Driblab, radar de habilidades y monitoreo de sobrecarga física de Foster.</p>
         </div>
-    </div>
-
-    <!-- MODAL PAYWALL CON PRECIO 12 USD / MES Y ALIAS MERCADO PAGO -->
-    <div id="modal-paywall" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl relative">
-            <button onclick="closePaywallModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-
-            <div class="text-center space-y-2">
-                <div class="w-14 h-14 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto text-2xl">
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <h3 class="text-xl font-extrabold text-white">Suscripción Cuerpo Técnico PRO</h3>
-                <div class="flex items-center justify-center space-x-2">
-                    <span class="text-3xl font-black text-amber-400">12 USD</span>
-                    <span class="text-xs text-slate-400 font-normal">/ mes (o equivalente en ARS)</span>
-                </div>
-                <p class="text-xs text-emerald-400 font-semibold bg-emerald-950/60 py-1 px-3 rounded-full border border-emerald-800/60 inline-block">
-                    👥 Incluye acceso completo para hasta 3 personas de tu Staff
-                </p>
-            </div>
-
-            <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-2 text-xs">
-                <div class="flex items-center space-x-2 text-slate-200">
-                    <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Control de Staff (Kanban):</strong> Asignación e integración de jugadas y recortes.</span>
-                </div>
-                <div class="flex items-center space-x-2 text-slate-200">
-                    <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Equipo & Carga RPE:</strong> Monitoreo de fatiga y escala Borg (1-10) por jugador.</span>
-                </div>
-                <div class="flex items-center space-x-2 text-slate-200">
-                    <i class="fa-solid fa-check text-emerald-400"></i>
-                    <span><strong>Planificación & Torneos:</strong> Calendario de microciclos (MD-5 a MD-Day).</span>
-                </div>
-            </div>
-
-            <!-- SECCIÓN DE PAGO CON MERCADO PAGO ALIAS "entrenafutsal" -->
-            <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-wallet text-sky-400 text-lg"></i>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Mercado Pago / CVU / Bancos</p>
-                            <p class="text-[10px] text-slate-400">Transferir monto equivalente a 12 USD al alias:</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] bg-sky-950 text-sky-400 font-mono px-2 py-1 rounded border border-sky-800 font-bold">Alias MP</span>
-                </div>
-
-                <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
-                    <span class="font-mono text-sm font-black text-emerald-400 tracking-wider">entrenafutsal</span>
-                    <button onclick="copiarAlias()" id="btn-copy-alias" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1">
-                        <i class="fa-solid fa-copy"></i>
-                        <span>Copiar Alias</span>
-                    </button>
-                </div>
-
-                <div class="pt-2 border-t border-slate-800">
-                    <p class="text-[11px] text-slate-400 mb-1.5">Una vez realizada la transferencia, ingresa tu clave de activación:</p>
-                    <div class="flex space-x-2">
-                        <input type="text" id="license-key-input" placeholder="Ej: EF-PRO-2026" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-amber-500 uppercase">
-                        <button onclick="activateLicense()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs transition">Activar PRO</button>
-                    </div>
-                </div>
-            </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-orange-main mt-4">
+          <span>Ingresar al panel</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </div>
-    </div>
+      </a>
 
-    <!-- MODAL PARA NUEVA TAREA DE STAFF -->
-    <div id="modal-task" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-white text-base">Asignar Tarea al Staff</h3>
-                <button onclick="closeTaskModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="form-task" onsubmit="saveTask(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Título de la Tarea / Jugada</label>
-                    <input type="text" id="task-title" required placeholder="Ej: Salida de presión 3-1 contra rival" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Área / Rol</label>
-                        <select id="task-area" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                            <option value="DT">Director Técnico (DT)</option>
-                            <option value="PF">Preparador Físico (PF)</option>
-                            <option value="Kine">Kinesiología / Médico</option>
-                            <option value="Video">Analista de Video</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Prioridad</label>
-                        <select id="task-priority" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                            <option value="MD-2">MD-2 (Urgente)</option>
-                            <option value="MD-1">MD-1 (Media)</option>
-                            <option value="MD-Day">Match Day</option>
-                            <option value="Rutina">Rutina Semanal</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Captura de Pizarra (Imagen)</label>
-                    <input type="file" id="task-image-file" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700">
-                    <div id="image-preview-container" class="mt-2 hidden">
-                        <img id="image-preview" src="" alt="Vista previa de la Pizarra" class="w-full h-32 object-cover rounded-lg border border-slate-700">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Enlace de Videoanálisis (YouTube / Drive / Vimeo)</label>
-                    <input type="url" id="task-video-url" placeholder="https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Estado Inicial</label>
-                    <select id="task-status" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-cyan-500">
-                        <option value="pendiente">📋 Pendiente</option>
-                        <option value="proceso">⚙️ En Proceso</option>
-                        <option value="revision">🔍 En Revisión DT</option>
-                        <option value="completado">✅ Completado</option>
-                    </select>
-                </div>
-
-                <div class="pt-3 flex space-x-2">
-                    <button type="button" onclick="closeTaskModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-lg transition">Cancelar</button>
-                    <button type="submit" class="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold rounded-lg transition">Guardar Tarea</button>
-                </div>
-            </form>
+      <!-- Card: Pizarra Táctica -->
+      <a href="pizarra.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-chalkboard"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Pizarra Táctica Digital</h3>
+          <p class="text-xs text-gray-400 mt-2">Diseña rotaciones, salidas de presión, sistemas 4-0 / 3-1 y exporta jugadas en gráficos alta resolución.</p>
         </div>
-    </div>
-
-    <!-- MODAL DE VISUALIZACIÓN DE IMÁGENES -->
-    <div id="modal-viewer" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4" onclick="closeViewerModal()">
-        <div class="max-w-3xl w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl relative" onclick="event.stopPropagation()">
-            <button onclick="closeViewerModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="viewer-title" class="font-bold text-white text-base mb-3"></h3>
-            <img id="viewer-image" src="" alt="Captura Pizarra Táctica" class="w-full max-h-[70vh] object-contain rounded-lg border border-slate-800">
+        <div class="flex items-center gap-2 text-xs font-bold text-blue-400 mt-4">
+          <span>Diseñar jugadas</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </div>
+      </a>
+
+      <!-- Card: Control Staff (Kanban) -->
+      <a href="stats.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Control Staff (Kanban)</h3>
+          <p class="text-xs text-gray-400 mt-2">Organización de tareas del cuerpo técnico, preparación de partidos y seguimiento de microciclos.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 mt-4">
+          <span>Ver tareas</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
+      <!-- Card: Análisis de Video -->
+      <a href="analisis.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-video"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Análisis de Video</h3>
+          <p class="text-xs text-gray-400 mt-2">Corte y edición de clips tácticos para charlas técnicas con el plantel.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-purple-400 mt-4">
+          <span>Ver videos</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
+      <!-- Card: Entrenamiento de Arqueros -->
+      <a href="arqueros.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-hands-mitten"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Entrenamiento Arqueros</h3>
+          <p class="text-xs text-gray-400 mt-2">Ejercicios específicos de saque, cobertura de cruz, bloques y técnica bajo tres palos.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-yellow-400 mt-4">
+          <span>Ver ejercicios</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
+      <!-- Card: Planillas PDF -->
+      <a href="planillas.html" class="bg-card hover:border-orange-main transition-all p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between h-56">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-white group-hover:text-orange-main transition-colors">Planillas & Documentos PDF</h3>
+          <p class="text-xs text-gray-400 mt-2">Descarga de planillas de partido, control de asistencia, lesiones y microciclos para imprimir.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-red-400 mt-4">
+          <span>Descargar PDF</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
     </div>
 
-    <!-- SCRIPT PRINCIPAL CONTROLADOR CON MANEJO DE ERRORES ULTRA-SEGURO -->
-    <script>
-        const VALID_KEY = "EF-PRO-2026";
-
-        let currentUser = null;
-        try {
-            const rawUser = localStorage.getItem('ef_current_user');
-            if (rawUser) currentUser = JSON.parse(rawUser);
-        } catch(e) { currentUser = null; }
-
-        let usersDb = [];
-        try {
-            const rawDb = localStorage.getItem('ef_users_db');
-            if (rawDb) usersDb = JSON.parse(rawDb);
-        } catch(e) { usersDb = []; }
-
-        let currentUploadedImage = "";
-        let tasks = [];
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('hidden');
-        }
-
-        function copiarAlias() {
-            navigator.clipboard.writeText("entrenafutsal").then(() => {
-                const btn = document.getElementById('btn-copy-alias');
-                if (btn) {
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>¡Copiado!</span>`;
-                    btn.className = "bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1";
-                    setTimeout(() => {
-                        btn.innerHTML = `<i class="fa-solid fa-copy"></i> <span>Copiar Alias</span>`;
-                        btn.className = "bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1";
-                    }, 2000);
-                }
-            }).catch(() => {
-                alert("Alias: entrenafutsal");
-            });
-        }
-
-        function loadUserTasks() {
-            if (!currentUser || !currentUser.email) {
-                tasks = [];
-                return;
-            }
-            const storageKey = `ef_kanban_tasks_${currentUser.email}`;
-            try {
-                const rawTasks = localStorage.getItem(storageKey);
-                tasks = rawTasks ? JSON.parse(rawTasks) : [
-                    { id: 1, title: 'Análisis de Salidas 4-0 Rival', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' },
-                    { id: 2, title: 'Cortes de pelota parada 5v4', area: 'Video', priority: 'MD-2', status: 'pendiente', image: '', videoUrl: '' }
-                ];
-            } catch(e) { tasks = []; }
-        }
-
-        function saveTasksToStorage() {
-            if (!currentUser || !currentUser.email) return;
-            const storageKey = `ef_kanban_tasks_${currentUser.email}`;
-            try {
-                localStorage.setItem(storageKey, JSON.stringify(tasks));
-            } catch(e) {}
-            renderKanban();
-            updateDashboardTaskWidget();
-        }
-
-        function updateAuthUI() {
-            try {
-                const badge = document.getElementById('user-profile-badge');
-                const btnLogin = document.getElementById('btn-login-trigger');
-                const subLabel = document.getElementById('dash-sub-label');
-                const subDesc = document.getElementById('dash-sub-desc');
-
-                if (currentUser && currentUser.name) {
-                    if (badge) {
-                        badge.classList.remove('hidden');
-                        badge.classList.add('flex');
-                    }
-                    if (btnLogin) btnLogin.classList.add('hidden');
-
-                    const nameEl = document.getElementById('user-display-name');
-                    if (nameEl) nameEl.innerText = currentUser.name;
-                    
-                    const roleEl = document.getElementById('user-display-role');
-                    if (roleEl) roleEl.innerText = currentUser.role || 'Director Técnico';
-                    
-                    const initialsEl = document.getElementById('user-avatar-initials');
-                    if (initialsEl) initialsEl.innerText = (currentUser.name || 'DT').substring(0, 2).toUpperCase();
-
-                    if (currentUser.isPro) {
-                        document.querySelectorAll('.pro-lock-icon').forEach(icon => {
-                            icon.classList.remove('fa-lock', 'text-amber-400');
-                            icon.classList.add('fa-check', 'text-emerald-400');
-                        });
-                        if (subLabel) subLabel.innerText = "Licencia PRO ✅";
-                        if (subDesc) subDesc.innerText = "Acceso Ilimitado (Staff 3 personas)";
-                    } else {
-                        document.querySelectorAll('.pro-lock-icon').forEach(icon => {
-                            icon.classList.remove('fa-check', 'text-emerald-400');
-                            icon.classList.add('fa-lock', 'text-amber-400');
-                        });
-                        if (subLabel) subLabel.innerText = "Plan Gratuito 🔒";
-                        if (subDesc) subDesc.innerText = "12 USD/mes (Hasta 3 integrantes)";
-                    }
-                } else {
-                    if (badge) {
-                        badge.classList.add('hidden');
-                        badge.classList.remove('flex');
-                    }
-                    if (btnLogin) btnLogin.classList.remove('hidden');
-                    if (subLabel) subLabel.innerText = "Sin Sesión 🔒";
-                    if (subDesc) subDesc.innerText = "Inicia Sesión para ver tareas";
-                }
-            } catch(err) {
-                console.error("Error en updateAuthUI:", err);
-            }
-        }
-
-        function openAuthModal(mode = 'login') {
-            const modal = document.getElementById('modal-auth');
-            if (modal) modal.classList.remove('hidden');
-            switchAuthTab(mode);
-        }
-
-        function closeAuthModal() {
-            const modal = document.getElementById('modal-auth');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function switchAuthTab(mode) {
-            const formLogin = document.getElementById('form-login');
-            const formReg = document.getElementById('form-register');
-            const btnLogin = document.getElementById('tab-btn-login');
-            const btnReg = document.getElementById('tab-btn-register');
-
-            if (!formLogin || !formReg) return;
-
-            if (mode === 'login') {
-                formLogin.classList.remove('hidden');
-                formReg.classList.add('hidden');
-                if (btnLogin) btnLogin.className = "font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1";
-                if (btnReg) btnReg.className = "font-bold text-sm text-slate-400 hover:text-white pb-1";
-            } else {
-                formLogin.classList.add('hidden');
-                formReg.classList.remove('hidden');
-                if (btnReg) btnReg.className = "font-bold text-sm text-emerald-400 border-b-2 border-emerald-500 pb-1";
-                if (btnLogin) btnLogin.className = "font-bold text-sm text-slate-400 hover:text-white pb-1";
-            }
-        }
-
-        function handleRegisterSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const role = document.getElementById('reg-role').value;
-            const club = document.getElementById('reg-club').value.trim();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
-            const password = document.getElementById('reg-password').value;
-
-            if (usersDb.find(u => u.email === email)) {
-                alert("❌ Este correo ya está registrado. Por favor inicia sesión.");
-                return;
-            }
-
-            const newUser = { name, role, club, email, password, isPro: false };
-            usersDb.push(newUser);
-            try { localStorage.setItem('ef_users_db', JSON.stringify(usersDb)); } catch(err){}
-
-            currentUser = newUser;
-            try { localStorage.setItem('ef_current_user', JSON.stringify(currentUser)); } catch(err){}
-
-            closeAuthModal();
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            alert(`🎉 ¡Bienvenido/a, ${name}! Tu cuenta ha sido creada.`);
-        }
-
-        function handleLoginSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
-
-            const user = usersDb.find(u => u.email === email && u.password === password);
-            if (!user) {
-                alert("❌ Correo o contraseña incorrectos.");
-                return;
-            }
-
-            currentUser = user;
-            try { localStorage.setItem('ef_current_user', JSON.stringify(currentUser)); } catch(err){}
-
-            closeAuthModal();
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            alert(`✅ ¡Hola de nuevo, ${currentUser.name}!`);
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            try { localStorage.removeItem('ef_current_user'); } catch(err){}
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-            showTab('dashboard');
-        }
-
-        function activateLicense() {
-            if (!currentUser) {
-                alert("Debes iniciar sesión primero para activar tu Licencia PRO.");
-                openAuthModal('login');
-                return;
-            }
-
-            const inputKey = document.getElementById('license-key-input').value.trim().toUpperCase();
-            if (inputKey === VALID_KEY) {
-                currentUser.isPro = true;
-                try {
-                    localStorage.setItem('ef_current_user', JSON.stringify(currentUser));
-                    const idx = usersDb.findIndex(u => u.email === currentUser.email);
-                    if (idx !== -1) {
-                        usersDb[idx].isPro = true;
-                        localStorage.setItem('ef_users_db', JSON.stringify(usersDb));
-                    }
-                } catch(err){}
-
-                updateAuthUI();
-                closePaywallModal();
-                alert('🎉 ¡Licencia PRO activada con éxito! Módulos de gestión desbloqueados.');
-            } else {
-                alert('❌ Código de licencia inválido. Usa "EF-PRO-2026" para probar.');
-            }
-        }
-
-        function showTab(tabId, btnElement) {
-            const proTabs = ['kanban', 'plantel', 'calendario', 'academia'];
-
-            if (proTabs.includes(tabId)) {
-                if (!currentUser) {
-                    alert("Por favor inicia sesión o regístrate para ingresar a los módulos de Gestión.");
-                    openAuthModal('login');
-                    return;
-                }
-                if (!currentUser.isPro) {
-                    openPaywallModal();
-                    return;
-                }
-            }
-
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-                tab.classList.remove('flex');
-            });
-
-            const activeTab = document.getElementById('tab-' + tabId);
-            if (activeTab) {
-                activeTab.classList.remove('hidden');
-                if (['pizarra', 'analisis', 'stats', 'arqueros', 'planillas'].includes(tabId)) {
-                    activeTab.classList.add('flex');
-                }
-            }
-
-            if (btnElement) {
-                document.querySelectorAll('.nav-link').forEach(btn => {
-                    btn.classList.remove('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
-                    btn.classList.add('text-slate-300');
-                });
-                btnElement.classList.remove('text-slate-300');
-                btnElement.classList.add('text-emerald-400', 'bg-slate-800', 'border-l-4', 'border-emerald-500');
-            }
-        }
-
-        function openPaywallModal() {
-            const modal = document.getElementById('modal-paywall');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closePaywallModal() {
-            const modal = document.getElementById('modal-paywall');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function openTaskModal(presetTitle = "", presetImage = "") {
-            if (!currentUser) {
-                alert("Inicia sesión para crear o recibir tareas.");
-                openAuthModal('login');
-                return;
-            }
-            const modal = document.getElementById('modal-task');
-            if (modal) modal.classList.remove('hidden');
-            if (presetTitle) document.getElementById('task-title').value = presetTitle;
-            if (presetImage) {
-                currentUploadedImage = presetImage;
-                const imgEl = document.getElementById('image-preview');
-                const container = document.getElementById('image-preview-container');
-                if (imgEl) imgEl.src = presetImage;
-                if (container) container.classList.remove('hidden');
-            }
-        }
-
-        function closeTaskModal() {
-            const modal = document.getElementById('modal-task');
-            if (modal) modal.classList.add('hidden');
-            const form = document.getElementById('form-task');
-            if (form) form.reset();
-            const container = document.getElementById('image-preview-container');
-            if (container) container.classList.add('hidden');
-            currentUploadedImage = "";
-        }
-
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    currentUploadedImage = event.target.result;
-                    const imgEl = document.getElementById('image-preview');
-                    const container = document.getElementById('image-preview-container');
-                    if (imgEl) imgEl.src = currentUploadedImage;
-                    if (container) container.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveTask(e) {
-            e.preventDefault();
-            const title = document.getElementById('task-title').value.trim();
-            const area = document.getElementById('task-area').value;
-            const priority = document.getElementById('task-priority').value;
-            const status = document.getElementById('task-status').value;
-            const videoUrl = document.getElementById('task-video-url').value.trim();
-
-            if (!title) return;
-
-            const newTask = {
-                id: Date.now(),
-                title: title,
-                area: area,
-                priority: priority,
-                status: status,
-                image: currentUploadedImage,
-                videoUrl: videoUrl
-            };
-
-            tasks.push(newTask);
-            saveTasksToStorage();
-            closeTaskModal();
-        }
-
-        function moveTask(id, newStatus) {
-            tasks = tasks.map(t => t.id === id ? { ...t, status: newStatus } : t);
-            saveTasksToStorage();
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasksToStorage();
-        }
-
-        function openViewer(title, imageSrc) {
-            const titleEl = document.getElementById('viewer-title');
-            const imgEl = document.getElementById('viewer-image');
-            const modal = document.getElementById('modal-viewer');
-            if (titleEl) titleEl.innerText = title;
-            if (imgEl) imgEl.src = imageSrc;
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closeViewerModal() {
-            const modal = document.getElementById('modal-viewer');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function getAreaBadge(area) {
-            switch(area) {
-                case 'DT': return 'bg-amber-950 text-amber-400 border-amber-800';
-                case 'PF': return 'bg-emerald-950 text-emerald-400 border-emerald-800';
-                case 'Kine': return 'bg-rose-950 text-rose-400 border-rose-800';
-                case 'Video': return 'bg-purple-950 text-purple-400 border-purple-800';
-                default: return 'bg-slate-800 text-slate-300 border-slate-700';
-            }
-        }
-
-        function renderKanban() {
-            try {
-                const filterEl = document.getElementById('kanban-filter');
-                if (!filterEl) return;
-                const filter = filterEl.value;
-
-                const cols = {
-                    pendiente: document.getElementById('col-pendiente'),
-                    proceso: document.getElementById('col-proceso'),
-                    revision: document.getElementById('col-revision'),
-                    completado: document.getElementById('col-completado')
-                };
-
-                if (!cols.pendiente) return;
-
-                Object.values(cols).forEach(col => { if(col) col.innerHTML = ''; });
-                const counts = { pendiente: 0, proceso: 0, revision: 0, completado: 0 };
-
-                tasks.forEach(task => {
-                    if (filter !== 'todos' && task.area !== filter) return;
-
-                    if (counts[task.status] !== undefined) counts[task.status]++;
-                    const badgeClass = getAreaBadge(task.area);
-
-                    let moveButtons = '';
-                    if (task.status === 'pendiente') {
-                        moveButtons = `<button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-blue-400 hover:underline">Iniciar ➔</button>`;
-                    } else if (task.status === 'proceso') {
-                        moveButtons = `
-                            <button onclick="moveTask(${task.id}, 'pendiente')" class="text-xs text-slate-400 hover:underline">⬅ Volver</button>
-                            <button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-amber-400 hover:underline">Revisión ➔</button>
-                        `;
-                    } else if (task.status === 'revision') {
-                        moveButtons = `
-                            <button onclick="moveTask(${task.id}, 'proceso')" class="text-xs text-slate-400 hover:underline">⬅ Corregir</button>
-                            <button onclick="moveTask(${task.id}, 'completado')" class="text-xs text-emerald-400 hover:underline">Aprobar ➔</button>
-                        `;
-                    } else if (task.status === 'completado') {
-                        moveButtons = `<button onclick="moveTask(${task.id}, 'revision')" class="text-xs text-slate-400 hover:underline">⬅ Reabrir</button>`;
-                    }
-
-                    let imageHtml = '';
-                    if (task.image) {
-                        imageHtml = `
-                            <div class="mt-2 cursor-pointer relative group" onclick="openViewer('${task.title}', '${task.image}')">
-                                <img src="${task.image}" class="w-full h-28 object-cover rounded-lg border border-slate-700/80">
-                                <span class="absolute bottom-1 right-1 bg-slate-950/80 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
-                                    <i class="fa-solid fa-expand"></i> Ampliar
-                                </span>
-                            </div>
-                        `;
-                    }
-
-                    let videoHtml = '';
-                    if (task.videoUrl) {
-                        if (task.videoUrl.startsWith('data:video') || task.videoUrl.startsWith('blob:') || task.videoUrl.endsWith('.mp4') || task.videoUrl.endsWith('.webm')) {
-                            videoHtml = `
-                                <div class="mt-2 space-y-1">
-                                    <span class="text-[10px] text-purple-400 font-bold flex items-center gap-1">
-                                        <i class="fa-solid fa-film"></i> Video Animado de la Jugada:
-                                    </span>
-                                    <video controls src="${task.videoUrl}" class="w-full rounded-lg border border-purple-800/80 bg-black max-h-48 object-contain shadow-md"></video>
-                                </div>
-                            `;
-                        } else {
-                            videoHtml = `
-                                <a href="${task.videoUrl}" target="_blank" class="mt-2 flex items-center justify-center space-x-2 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/80 rounded-lg p-2 text-xs transition">
-                                    <i class="fa-solid fa-circle-play text-purple-400"></i>
-                                    <span class="font-bold">Abrir Videoanálisis Externo</span>
-                                </a>
-                            `;
-                        }
-                    }
-
-                    const cardHtml = `
-                        <div class="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 hover:border-slate-600 transition flex flex-col justify-between space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">${task.area}</span>
-                                <span class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-clock text-[9px] mr-1"></i>${task.priority}</span>
-                            </div>
-                            <p class="text-xs font-semibold text-white leading-snug">${task.title}</p>
-                            ${imageHtml}
-                            ${videoHtml}
-                            <div class="flex items-center justify-between pt-2 border-t border-slate-700/50 mt-1">
-                                <div class="flex space-x-2">${moveButtons}</div>
-                                <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-
-                    if (cols[task.status]) cols[task.status].innerHTML += cardHtml;
-                });
-
-                if (document.getElementById('badge-pendiente')) {
-                    document.getElementById('badge-pendiente').innerText = counts.pendiente;
-                    document.getElementById('badge-proceso').innerText = counts.proceso;
-                    document.getElementById('badge-revision').innerText = counts.revision;
-                    document.getElementById('badge-completado').innerText = counts.completado;
-                }
-            } catch(err) {
-                console.error("Error en renderKanban:", err);
-            }
-        }
-
-        function updateDashboardTaskWidget() {
-            try {
-                const countEl = document.getElementById('dashboard-task-count');
-                const statusEl = document.getElementById('dashboard-task-status');
-                const listEl = document.getElementById('dashboard-recent-tasks');
-
-                if (!countEl) return;
-
-                const total = tasks.length;
-                const completed = tasks.filter(t => t.status === 'completado').length;
-                const pending = total - completed;
-
-                countEl.innerText = total;
-                if (statusEl) statusEl.innerText = `${completed} Completadas (${pending} Pendientes)`;
-
-                const priorityTasks = tasks.filter(t => t.status !== 'completado').slice(0, 2);
-                if (listEl) {
-                    listEl.innerHTML = '';
-                    if (priorityTasks.length === 0) {
-                        listEl.innerHTML = `<p class="text-xs text-slate-500 italic p-2">No hay tareas pendientes en el tablero.</p>`;
-                    } else {
-                        priorityTasks.forEach(task => {
-                            listEl.innerHTML += `
-                                <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-cyan-500 flex justify-between items-center">
-                                    <div>
-                                        <p class="text-xs font-semibold text-white">${task.title}</p>
-                                        <span class="text-[10px] text-slate-400">Área: ${task.area}</span>
-                                    </div>
-                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold border border-slate-700">${task.priority}</span>
-                                </div>
-                            `;
-                        });
-                    }
-                }
-            } catch(err) {
-                console.error("Error en updateDashboardTaskWidget:", err);
-            }
-        }
-
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'ADD_KANBAN_TASK') {
-                if (!currentUser) {
-                    alert("Inicia sesión en la plataforma para recibir y guardar jugadas.");
-                    openAuthModal('login');
-                    return;
-                }
-                const newTask = {
-                    id: Date.now(),
-                    title: event.data.title || 'Nueva Jugada Táctica',
-                    area: event.data.area || 'DT',
-                    priority: event.data.priority || 'MD-2',
-                    status: 'pendiente',
-                    image: event.data.image || '',
-                    videoUrl: event.data.videoUrl || ''
-                };
-                tasks.push(newTask);
-                saveTasksToStorage();
-                showTab('kanban');
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadUserTasks();
-            updateAuthUI();
-            renderKanban();
-            updateDashboardTaskWidget();
-        });
-    </script>
+  </main>
+
+  <!-- SCRIPT PARA GARANTIZAR DESBLOQUEO AUTOMÁTICO EN MODO DESARROLLADOR -->
+  <script>
+    // Forzar en memoria que el usuario es PRO para evitar bloqueos durante el desarrollo
+    localStorage.setItem('userRole', 'PRO');
+    localStorage.setItem('isPro', 'true');
+  </script>
 </body>
 </html>
