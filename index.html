@@ -425,3 +425,234 @@
 
   <!-- JAVASCRIPT DE LÓGICA Y SINCRONIZACIÓN -->
   <script>
+    let playersStore = {};
+    let kanbanTasks = [];
+    let currentPlayerKey = null;
+    let rpeChartInstance = null;
+
+    // --- CONTROL DE SESIÓN ---
+    function verificarSesion() {
+      const sesionActiva = localStorage.getItem('EF_SESSION_ACTIVE');
+      const loginModal = document.getElementById('loginModal');
+      
+      if (sesionActiva === 'false') {
+        loginModal.classList.remove('hidden');
+      } else {
+        loginModal.classList.add('hidden');
+      }
+    }
+
+    function cerrarSesion() {
+      if (confirm("¿Deseas salir de tu usuario y cerrar la sesión activa?")) {
+        localStorage.setItem('EF_SESSION_ACTIVE', 'false');
+        verificarSesion();
+      }
+    }
+
+    function iniciarSesion(e) {
+      e.preventDefault();
+      localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+      verificarSesion();
+    }
+
+    // Recargar memoria Kanban en tiempo real
+    function recargarDatosKanban() {
+      const savedKanban = localStorage.getItem('EF_KANBAN_TASKS');
+      kanbanTasks = savedKanban ? JSON.parse(savedKanban) : [];
+      renderKanban();
+    }
+
+    // Eventos de inicio y sincronización
+    window.addEventListener('DOMContentLoaded', () => {
+      verificarSesion();
+
+      const savedPlayers = localStorage.getItem('EF_PLAYERS_DATA');
+      playersStore = savedPlayers ? JSON.parse(savedPlayers) : {};
+
+      delete playersStore.kiki;
+      delete playersStore.matias;
+      delete playersStore.luciano;
+      delete playersStore.cierre;
+
+      savePlayersToStorage();
+      initRpeChart();
+      renderUI();
+      recargarDatosKanban();
+    });
+
+    // Escuchar vuelta de páginas externas
+    window.addEventListener('pageshow', recargarDatosKanban);
+    window.addEventListener('focus', recargarDatosKanban);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'EF_KANBAN_TASKS') {
+        recargarDatosKanban();
+      }
+      if (e.key === 'EF_SESSION_ACTIVE') {
+        verificarSesion();
+      }
+    });
+
+    function savePlayersToStorage() { localStorage.setItem('EF_PLAYERS_DATA', JSON.stringify(playersStore)); }
+    function saveKanbanToStorage() { localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(kanbanTasks)); renderKanban(); }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function showTab(tabId, buttonElement) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      if (buttonElement) buttonElement.classList.add('active');
+    }
+
+    // --- TABLERO KANBAN ---
+    function renderKanban() {
+      const colPending = document.getElementById('colPending');
+      const colProgress = document.getElementById('colProgress');
+      const colDone = document.getElementById('colDone');
+
+      if (!colPending || !colProgress || !colDone) return;
+
+      colPending.innerHTML = ''; colProgress.innerHTML = ''; colDone.innerHTML = '';
+      let cPending = 0, cProgress = 0, cDone = 0;
+
+      kanbanTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 p-3.5 rounded-xl space-y-2 shadow-lg relative group";
+        
+        let moduleBadgeColor = "bg-sky-500/20 text-sky-400 border-sky-500/30";
+        if(task.module === 'Pizarra') moduleBadgeColor = "bg-orange-500/20 text-orange-400 border-orange-500/30";
+        if(task.module === 'Videoanálisis') moduleBadgeColor = "bg-purple-500/20 text-purple-400 border-purple-500/30";
+        if(task.module === 'Estadísticas') moduleBadgeColor = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${moduleBadgeColor}">${task.module}</span>
+            <button onclick="deleteKanbanTask('${task.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+          <h4 class="font-bold text-xs text-white">${task.title}</h4>
+          <p class="text-[11px] text-slate-400">${task.desc || 'Sin detalles'}</p>
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px]">
+            <span class="text-slate-500">${task.date}</span>
+            <div class="flex items-center gap-1">
+              ${task.status !== 'pending' ? `<button onclick="moveTask('${task.id}', 'pending')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded">Pendiente</button>` : ''}
+              ${task.status !== 'progress' ? `<button onclick="moveTask('${task.id}', 'progress')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded">Proceso</button>` : ''}
+              ${task.status !== 'done' ? `<button onclick="moveTask('${task.id}', 'done')" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded">Fin</button>` : ''}
+            </div>
+          </div>
+        `;
+
+        if (task.status === 'pending') { colPending.appendChild(card); cPending++; }
+        else if (task.status === 'progress') { colProgress.appendChild(card); cProgress++; }
+        else if (task.status === 'done') { colDone.appendChild(card); cDone++; }
+      });
+
+      document.getElementById('countPending').innerText = cPending;
+      document.getElementById('countProgress').innerText = cProgress;
+      document.getElementById('countDone').innerText = cDone;
+    }
+
+    function moveTask(id, newStatus) {
+      const task = kanbanTasks.find(t => t.id === id);
+      if (task) { task.status = newStatus; saveKanbanToStorage(); }
+    }
+
+    function deleteKanbanTask(id) {
+      kanbanTasks = kanbanTasks.filter(t => t.id !== id);
+      saveKanbanToStorage();
+    }
+
+    function saveManualKanbanTask(e) {
+      e.preventDefault();
+      const title = document.getElementById('kanbanTitle').value;
+      const module = document.getElementById('kanbanModule').value;
+      const desc = document.getElementById('kanbanDesc').value;
+
+      kanbanTasks.unshift({
+        id: "k_" + Date.now(),
+        title, module, desc,
+        status: 'pending',
+        date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+      });
+
+      saveKanbanToStorage();
+      closeModal('addKanbanTaskModal');
+    }
+
+    // --- PLANTEL Y RPE ---
+    function renderUI() {
+      const keys = Object.keys(playersStore);
+      const emptyState = document.getElementById('emptyPlayersState');
+      const detailContainer = document.getElementById('playerDetailContainer');
+      const select = document.getElementById('playerSelector');
+      const btnLog = document.getElementById('btnLogRpe');
+
+      if (keys.length === 0) {
+        emptyState.classList.remove('hidden'); detailContainer.classList.add('hidden');
+        select.innerHTML = '<option value="">Sin jugadores cargados</option>';
+        select.disabled = true; btnLog.disabled = true;
+      } else {
+        emptyState.classList.add('hidden'); detailContainer.classList.remove('hidden');
+        select.disabled = false; btnLog.disabled = false;
+        if (!currentPlayerKey || !playersStore[currentPlayerKey]) currentPlayerKey = keys[0];
+        renderPlayerSelectorOptions(); updatePlayerView(currentPlayerKey);
+      }
+    }
+
+    function renderPlayerSelectorOptions() {
+      const select = document.getElementById('playerSelector'); select.innerHTML = '';
+      Object.keys(playersStore).forEach(key => {
+        const p = playersStore[key];
+        const option = document.createElement('option');
+        option.value = p.id; option.textContent = `${p.name} (${p.badge})`;
+        select.appendChild(option);
+      });
+      select.value = currentPlayerKey;
+    }
+
+    function initRpeChart() {
+      const ctx = document.getElementById('rpeChart').getContext('2d');
+      rpeChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Lun (MD-5)', 'Mar (MD-4)', 'Mié (MD-3)', 'Jue (MD-2)', 'Vie (MD-1)', 'Sáb (Partido)', 'Dom (Descanso)'],
+          datasets: [{ label: 'Carga RPE (U.A.)', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 2, borderRadius: 6 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }, x: { grid: { display: false }, ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false } } }
+      });
+    }
+
+    function updatePlayerView(key) {
+      if (!playersStore[key]) return;
+      currentPlayerKey = key; const p = playersStore[key];
+      document.getElementById('pName').innerText = p.name; document.getElementById('pTeam').innerText = p.team;
+      document.getElementById('pBadge').innerText = p.badge; document.getElementById('pFoot').innerText = p.foot;
+      document.getElementById('pStatus').innerText = p.status; document.getElementById('pRpeScore').innerText = p.rpe;
+      const totalUa = p.data.reduce((a, b) => a + b, 0); document.getElementById('pUa').innerText = totalUa;
+      if (rpeChartInstance) { rpeChartInstance.data.datasets[0].data = p.data; rpeChartInstance.update(); }
+    }
+
+    function saveNewPlayer(e) {
+      e.preventDefault();
+      const key = "p_" + Date.now();
+      playersStore[key] = {
+        id: key, name: document.getElementById('newPName').value,
+        team: `#${document.getElementById('newPNum').value} • Plantel Activo • ${document.getElementById('newPAge').value} años`,
+        badge: document.getElementById('newPPos').value, foot: document.getElementById('newPFoot').value,
+        status: document.getElementById('newPStatus').value, rpe: "85.0", data: [0, 0, 0, 0, 0, 0, 0]
+      };
+      savePlayersToStorage(); closeModal('addPlayerModal');
+      document.getElementById('addPlayerForm').reset(); currentPlayerKey = key; renderUI();
+    }
+
+    function saveDailyRpe(e) {
+      e.preventDefault(); if (!currentPlayerKey || !playersStore[currentPlayerKey]) return;
+      const dayIdx = parseInt(document.getElementById('rpeDayIndex').value);
+      const calculatedUa = parseInt(document.getElementById('rpeDuration').value) * parseInt(document.getElementById('rpeBorgValue').value);
+      playersStore[currentPlayerKey].data[dayIdx] = calculatedUa;
+      savePlayersToStorage(); closeModal('logRpeModal'); updatePlayerView(currentPlayerKey);
+    }
+  </script>
+</body>
+</html>
