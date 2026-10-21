@@ -770,7 +770,22 @@
       });
     }
 
-    render();
+  render();
+
+    // FUNCIÓN PARA ENVIAR TAREAS AL KANBAN
+    function enviarAlKanban(titulo, descripcion, modulo) {
+      const tareasPrevias = JSON.parse(localStorage.getItem('EF_KANBAN_TASKS') || '[]');
+      tareasPrevias.unshift({
+        id: "k_" + Date.now(),
+        title: titulo,
+        desc: descripcion,
+        module: modulo,
+        status: 'pending',
+        date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+      });
+      localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(tareasPrevias));
+      alert('¡Tarea enviada con éxito al Control Staff (Kanban)!');
+    }
   </script>
 </body>
 </html>
