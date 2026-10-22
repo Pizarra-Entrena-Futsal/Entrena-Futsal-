@@ -33,8 +33,10 @@
   <!-- TOP HEADER -->
   <header class="bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
     <div class="flex items-center gap-4">
-      <!-- LOGO REAL BASE64 ENCABEZADO -->
-      <img id="headerLogo" src="" class="w-10 h-10 object-contain drop-shadow-md" alt="Entrena Futsal Logo">
+      <!-- BADGE TEXTUAL (SIN IMÁGENES) -->
+      <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-400 text-sm tracking-wider shadow-md">
+        EF
+      </div>
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">ENTRENA FUTSAL</h1>
@@ -126,10 +128,10 @@
     <!-- ÁREA DE CONTENIDO -->
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
-      <!-- TAB 1: PANEL PRINCIPAL CON LOGO REAL Y AUTORÍA -->
+      <!-- TAB 1: PANEL PRINCIPAL -->
       <div id="principal" class="tab-content space-y-6">
         
-        <!-- TARJETA DE BIENVENIDA -->
+        <!-- TARJETA DE BIENVENIDA SIN LOGO -->
         <div class="bg-card p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -155,10 +157,18 @@
             </div>
           </div>
 
-          <!-- LOGO REAL DE LA MARCA -->
+          <!-- TARJETA TÁCTICA MINIMALISTA (SUSTITUTO DE IMAGEN) -->
           <div class="relative shrink-0 flex items-center justify-center p-4">
-            <div class="absolute w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <img id="mainLogo" src="" alt="Entrena Futsal Logo Real" class="w-52 h-52 object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] relative z-10">
+            <div class="absolute w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="w-48 h-48 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center gap-3 p-4 text-center z-10 shadow-2xl">
+              <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl">
+                <i class="fa-solid fa-volleyball"></i>
+              </div>
+              <div>
+                <span class="font-heading font-extrabold text-white text-sm block">ENTRENA FUTSAL</span>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest block mt-0.5">ESTADÍSTICAS & TÁCTICA</span>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -235,7 +245,9 @@
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="text-center space-y-1">
-        <img id="loginLogo" src="" class="w-16 h-16 object-contain mx-auto mb-1">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto mb-2">
+          EF
+        </div>
         <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL</h3>
         <p class="text-xs text-slate-400">Acceso a Plataforma de Staff</p>
       </div>
@@ -353,20 +365,7 @@
 
   <!-- JAVASCRIPT PRINCIPAL Y CONTROL DE ACCESO -->
   <script>
-    // IMAGEN REAL DE LOGO EN BASE64 TRANSPARENTE
-    const EXACT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAACqCAYAAA2b5bU1Nj+29OfsAr0ETbUwAAAABJRU5ErkJggg==";
-
     let playersStore = {};
-
-    function cargarLogos() {
-      const headerImg = document.getElementById('headerLogo');
-      const mainImg = document.getElementById('mainLogo');
-      const loginImg = document.getElementById('loginLogo');
-
-      if (headerImg) headerImg.src = EXACT_LOGO_BASE64;
-      if (mainImg) mainImg.src = EXACT_LOGO_BASE64;
-      if (loginImg) loginImg.src = EXACT_LOGO_BASE64;
-    }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
@@ -385,7 +384,7 @@
       return data ? JSON.parse(data) : null;
     }
 
-    // VERIFICA SI EL USUARIO TIENEN ACCESO DESARROLLADOR / PRO
+    // VERIFICA SI EL USUARIO TIENE ACCESO DESARROLLADOR / PRO
     function esUsuarioDevOPro(user) {
       if (!user) return false;
       const roleUpper = (user.role || '').toUpperCase();
@@ -596,7 +595,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      cargarLogos();
       verificarSesion();
     });
   </script>
