@@ -44,7 +44,7 @@
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">VIDEOANÁLISIS TÁCTICO</h1>
           <span class="bg-purple-500/20 text-purple-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-purple-500/30 uppercase">PRO MODULE</span>
         </div>
-        <p class="text-[11px] text-slate-400 mt-0.5">Recorte de Clips (-5s), Conectores, Anillos y Sincronización Kanban</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Recorte (-5s), Descarga de Clips y Sincronización Staff Kanban</p>
       </div>
     </div>
 
@@ -125,9 +125,8 @@
           </div>
         </div>
 
-        <!-- BOTONERA DE CONTROL Y RECORDER (-5s) -->
+        <!-- RECORDEUR (-5s) Y CONTROLES DE REPRODUCCIÓN -->
         <div class="flex items-center gap-2">
-          <!-- BOTÓN RECORDER INTELIGENTE DE CLIP (-5 SEGUNDOS) -->
           <button id="btnRecClip" onclick="toggleRecordClip()" class="px-3.5 py-2 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/40 text-xs font-bold hover:bg-rose-600/30 transition-all flex items-center gap-2 shadow-lg">
             <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
             <span id="recBtnText">🔴 REC Clip (-5s)</span>
@@ -147,7 +146,7 @@
       </div>
     </div>
 
-    <!-- PANEL DE ETIQUETADO Y CLIPS GUARDADOS (COL 4) -->
+    <!-- PANEL DE SECUENCIAS REGISTRADAS -->
     <div class="lg:col-span-4 space-y-6">
 
       <!-- ETIQUETADO RÁPIDO DE EVENTOS -->
@@ -176,7 +175,7 @@
         </div>
       </div>
 
-      <!-- LISTA DE CLIPS REGISTRADOS -->
+      <!-- LISTA DE SECUENCIAS REGISTRADAS -->
       <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="font-bold text-sm text-white flex items-center gap-2">
@@ -196,7 +195,7 @@
 
   </div>
 
-  <!-- JAVASCRIPT DE RECORTE, DIBUJO Y ENVÍO A KANBAN -->
+  <!-- JAVASCRIPT DE DIBUJO, RECORTE, DESCARGA Y SINCRONIZACIÓN KANBAN -->
   <script>
     const video = document.getElementById('videoPlayer');
     const canvas = document.getElementById('drawCanvas');
@@ -210,11 +209,9 @@
     let historyStack = [];
     let currentChainPoints = [];
 
-    // --- VARIABLES DE RECORTE DE CLIP ---
     let isRecordingClip = false;
     let clipStartSec = 0;
 
-    // Sincronizar dimensiones del lienzo
     function resizeCanvas() {
       canvas.width = video.clientWidth;
       canvas.height = video.clientHeight;
@@ -230,13 +227,25 @@
       return `${m}:${s}`;
     }
 
-    // --- SISTEMA DE RECORTE DE CLIP (-5 SEGUNDOS) ---
+    // OBTENER ID ÚNICO DEL USUARIO ACTIVO
+    function getUserId() {
+      const currentUserData = localStorage.getItem('EF_CURRENT_USER');
+      if (!currentUserData) return 'default_user';
+      try {
+        const user = JSON.parse(currentUserData);
+        const id = user.email || user.id || user.name || 'default_user';
+        return id.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+      } catch (e) {
+        return 'default_user';
+      }
+    }
+
+    // --- RECORTE DE CLIP (-5s) ---
     function toggleRecordClip() {
       const btn = document.getElementById('btnRecClip');
       const btnText = document.getElementById('recBtnText');
 
       if (!isRecordingClip) {
-        // INICIAR RECORTE: Captura 5 segundos hacia atrás de la posición actual
         isRecordingClip = true;
         clipStartSec = Math.max(0, video.currentTime - 5);
         
@@ -244,7 +253,6 @@
         btn.classList.remove('bg-rose-600/20', 'text-rose-400');
         btnText.innerText = `⏹ Detener Clip (Inicio: ${formatTime(clipStartSec)})`;
       } else {
-        // FINALIZAR RECORTE
         isRecordingClip = false;
         const clipEndSec = video.currentTime;
         
@@ -274,6 +282,22 @@
 
       clips.unshift(newClip);
       renderClips();
+    }
+
+    // --- DESCARGA LOCAL EN IMAGEN PNG EN ALTA QUALIDAD ---
+    function descargarClip(clipId) {
+      const clip = clips.find(c => c.id === clipId);
+      if (!clip || !clip.snapshot) {
+        alert("No se encontró la captura del recorte para descargar.");
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.href = clip.snapshot;
+      link.download = `${clip.title.replace(/[^a-z0-9]/gi, '_')}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     // --- HISTORIAL Y DESHACER ---
@@ -427,7 +451,6 @@
       ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 1; ctx.stroke();
     }
 
-    // --- REPRODUCTOR ---
     function togglePlay() {
       if (video.paused) video.play();
       else video.pause();
@@ -442,7 +465,6 @@
       }
     }
 
-    // --- CAPTURA DE MINIANATURA LIMPIA ---
     function generarSnapshot() {
       const offscreen = document.createElement('canvas');
       offscreen.width = canvas.width || 640;
@@ -464,10 +486,10 @@
       video.pause();
       const currentFormatted = formatTime(video.currentTime);
       const startFormatted = formatTime(Math.max(0, video.currentTime - 5));
-      const rangeText = `${startFormatted} a ${currentFormatted}`;
       guardarClipRecortado(tipo, Math.max(0, video.currentTime - 5), video.currentTime);
     }
 
+    // RENDERIZADO DE LAS TARJETAS CON BOTÓN DESCARGAR Y ENVIAR A KANBAN
     function renderClips() {
       const container = document.getElementById('clipList');
       document.getElementById('clipCount').innerText = clips.length;
@@ -487,11 +509,16 @@
             <button onclick="borrarClip('${clip.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
           </div>
           <img src="${clip.snapshot}" class="w-full h-28 object-cover rounded-lg border border-slate-800">
-          <div class="pt-2 flex items-center justify-between border-t border-slate-800/80">
+          <div class="pt-2 flex items-center justify-between border-t border-slate-800/80 gap-1">
             <span class="text-[10px] text-slate-500">${clip.time}</span>
-            <button onclick="enviarClipAlKanban('${clip.id}')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 shadow-md shadow-purple-600/20">
-              <i class="fa-solid fa-paper-plane"></i> Enviar a Kanban
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="descargarClip('${clip.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 border border-slate-700" title="Descargar foto del recorte">
+                <i class="fa-solid fa-download text-sky-400"></i> Descargar
+              </button>
+              <button onclick="enviarClipAlKanban('${clip.id}')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 shadow-md shadow-purple-600/20">
+                <i class="fa-solid fa-paper-plane"></i> Kanban
+              </button>
+            </div>
           </div>
         `;
         container.appendChild(card);
@@ -509,19 +536,11 @@
       enviarAlKanban(clip.title, clip.notes, 'Videoanálisis', clip.snapshot, '');
     }
 
-    // --- FUNCIÓN GARANTIZADA DE ENVÍO MULTI-TENANT A KANBAN ---
+    // GUARDA EN EL ESPACIO DEL USUARIO Y EN EL ESPACIO COMPARTIDO DEL STAFF/ENTRENADOR
     function enviarAlKanban(titulo, descripcion, modulo, imagen = '', videoUrl = '') {
-      const currentUserData = localStorage.getItem('EF_CURRENT_USER');
-      const user = currentUserData ? JSON.parse(currentUserData) : null;
+      const userId = getUserId();
       
-      const userId = (user && (user.id || user.name || user.email)) 
-        ? (user.id || user.name || user.email).toLowerCase().trim().replace(/[^a-z0-9]/g, '_') 
-        : 'default_user';
-      
-      const storageKey = 'EF_KANBAN_TASKS_' + userId;
-      const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-      tareasPrevias.unshift({
+      const nuevaTarea = {
         id: "k_" + Date.now(),
         title: titulo || "Clip de Videoanálisis",
         desc: descripcion || "Sin descripción",
@@ -530,10 +549,23 @@
         videoUrl: videoUrl || '',
         status: 'pending',
         date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
-      });
+      };
 
+      // 1. Guardar en clave de usuario
+      const storageKey = 'EF_KANBAN_TASKS_' + userId;
+      const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      tareasPrevias.unshift(nuevaTarea);
       localStorage.setItem(storageKey, JSON.stringify(tareasPrevias));
-      alert('🎬 ¡Clip enviado con éxito al Tablero Kanban de tu espacio!');
+
+      // 2. Guardar también en espacio fallback para que el Entrenador lo vea
+      const globalKey = 'EF_KANBAN_TASKS_default_user';
+      if (storageKey !== globalKey) {
+        const tareasGlobales = JSON.parse(localStorage.getItem(globalKey) || '[]');
+        tareasGlobales.unshift(nuevaTarea);
+        localStorage.setItem(globalKey, JSON.stringify(tareasGlobales));
+      }
+
+      alert('🎬 ¡Clip enviado con éxito al Tablero Kanban del Staff!');
     }
   </script>
 </body>
