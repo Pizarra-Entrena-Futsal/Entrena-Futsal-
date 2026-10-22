@@ -29,6 +29,17 @@
     .animate-rec {
       animation: pulse-red 1.2s infinite ease-in-out;
     }
+
+    /* ESTILO PERSONALIZADO DE LA LÍNEA DE TIEMPO */
+    input[type=range]::-webkit-slider-thumb {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #a855f7;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      margin-top: -4px;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
@@ -66,13 +77,20 @@
       <div class="relative bg-black rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex items-center justify-center min-h-[380px]" id="videoContainer">
         
         <!-- ELEMENTO VIDEO -->
-        <video id="videoPlayer" class="w-full h-auto max-h-[500px] object-contain" controls crossorigin="anonymous">
+        <video id="videoPlayer" class="w-full h-auto max-h-[500px] object-contain" crossorigin="anonymous">
           <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
           Tu navegador no soporta el reproductor de video.
         </video>
 
         <!-- LIENZO DE DIBUJO ENCIMA DEL VIDEO -->
         <canvas id="drawCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-auto cursor-crosshair"></canvas>
+      </div>
+
+      <!-- BARRA DE LÍNEA DE TIEMPO (SCRUBBER / TIMELINE) -->
+      <div class="bg-card p-3 rounded-2xl border border-slate-800 flex items-center gap-3 shadow-lg">
+        <span id="currentTimeDisplay" class="text-xs font-mono font-bold text-emerald-400 w-12 text-center">00:00</span>
+        <input type="range" id="videoTimeline" min="0" max="100" value="0" step="0.1" class="w-full accent-purple-500 bg-slate-900 h-2 rounded-lg cursor-pointer" oninput="onSeekTimeline(this.value)">
+        <span id="durationTimeDisplay" class="text-xs font-mono font-bold text-slate-400 w-12 text-center">00:00</span>
       </div>
 
       <!-- BARRA DE HERRAMIENTAS Y BOTONERA DE RECORTE -->
@@ -125,7 +143,7 @@
           </div>
         </div>
 
-        <!-- RECORDEUR (-5s) Y CONTROLES -->
+        <!-- RECORDER (-5s) Y CONTROLES REPRODUCTOR -->
         <div class="flex items-center gap-2">
           <button id="btnRecClip" onclick="toggleRecordClip()" class="px-3.5 py-2 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/40 text-xs font-bold hover:bg-rose-600/30 transition-all flex items-center gap-2 shadow-lg">
             <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
@@ -136,7 +154,7 @@
             -5s
           </button>
           <button onclick="togglePlay()" id="btnPlayPause" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30">
-            <i class="fa-solid fa-play"></i> Play
+            <i id="playIcon" class="fa-solid fa-play"></i> <span id="playText">Play</span>
           </button>
           <button onclick="skipTime(5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs">
             +5s
@@ -195,11 +213,14 @@
 
   </div>
 
-  <!-- JAVASCRIPT DE DIBUJO, DESCARGA EN JPG / VIDEO Y ENVÍO AL STAFF -->
+  <!-- JAVASCRIPT DE DIBUJO, LÍNEA DE TIEMPO, DESCARGA Y ENVÍO AL STAFF -->
   <script>
     const video = document.getElementById('videoPlayer');
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
+    const timeline = document.getElementById('videoTimeline');
+    const currentTimeDisplay = document.getElementById('currentTimeDisplay');
+    const durationTimeDisplay = document.getElementById('durationTimeDisplay');
     
     let isDrawing = false;
     let startX = 0, startY = 0;
@@ -218,13 +239,59 @@
       redrawHistory();
     }
     window.addEventListener('resize', resizeCanvas);
-    video.addEventListener('loadedmetadata', resizeCanvas);
+    video.addEventListener('loadedmetadata', () => {
+      resizeCanvas();
+      updateTimelineDuration();
+    });
 
     function formatTime(seconds) {
-      const sec = Math.max(0, Math.floor(seconds));
+      if (isNaN(seconds) || seconds < 0) return "00:00";
+      const sec = Math.floor(seconds);
       const m = Math.floor(sec / 60).toString().padStart(2, '0');
       const s = (sec % 60).toString().padStart(2, '0');
       return `${m}:${s}`;
+    }
+
+    // --- CONTROL DE LÍNEA DE TIEMPO (SCRUBBER) ---
+    video.addEventListener('timeupdate', () => {
+      if (video.duration) {
+        const percentage = (video.currentTime / video.duration) * 100;
+        timeline.value = percentage;
+        currentTimeDisplay.innerText = formatTime(video.currentTime);
+      }
+    });
+
+    function updateTimelineDuration() {
+      if (video.duration) {
+        durationTimeDisplay.innerText = formatTime(video.duration);
+      }
+    }
+
+    function onSeekTimeline(value) {
+      if (video.duration) {
+        const targetTime = (value / 100) * video.duration;
+        video.currentTime = targetTime;
+        currentTimeDisplay.innerText = formatTime(targetTime);
+      }
+    }
+
+    function togglePlay() {
+      const playIcon = document.getElementById('playIcon');
+      const playText = document.getElementById('playText');
+
+      if (video.paused) {
+        video.play();
+        playIcon.className = "fa-solid fa-pause";
+        playText.innerText = "Pausa";
+      } else {
+        video.pause();
+        playIcon.className = "fa-solid fa-play";
+        playText.innerText = "Play";
+      }
+    }
+
+    function skipTime(s) {
+      video.currentTime = Math.min(Math.max(0, video.currentTime + s), video.duration || 0);
     }
 
     // --- RECORTE DE CLIP (-5s) ---
@@ -293,7 +360,6 @@
 
       alert(`⏳ Generando archivo de video del fragmento (${clip.time})... El video se reproducirá para renderizar el corte.`);
 
-      // Crear lienzo fuera de pantalla para grabar la mezcla de video + dibujos
       const recordCanvas = document.createElement('canvas');
       recordCanvas.width = video.videoWidth || 640;
       recordCanvas.height = video.videoHeight || 360;
@@ -322,7 +388,6 @@
         URL.revokeObjectURL(url);
       };
 
-      // Iniciar posicionamiento y grabación
       video.currentTime = clip.startSec;
       video.play();
       mediaRecorder.start();
@@ -413,11 +478,15 @@
       ctx.beginPath(); ctx.ellipse(x, y, 21, 11, 0, 0, 2 * Math.PI); ctx.strokeStyle = "rgba(255,255,255,0.6)"; ctx.lineWidth = 1; ctx.stroke();
     }
 
-    function togglePlay() { if (video.paused) video.play(); else video.pause(); }
-    function skipTime(s) { video.currentTime += s; }
     function cargarVideoLocal(e) {
       const file = e.target.files[0];
-      if (file) { video.src = URL.createObjectURL(file); video.play(); clearCanvas(); }
+      if (file) {
+        video.src = URL.createObjectURL(file);
+        video.play();
+        clearCanvas();
+        document.getElementById('playIcon').className = "fa-solid fa-pause";
+        document.getElementById('playText').innerText = "Pausa";
+      }
     }
 
     function generarSnapshotJpg() {
@@ -488,7 +557,6 @@
         date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
       };
 
-      // Guardar en la base de datos compartida única del Staff
       const keyCompartida = 'EF_STAFF_SHARED_TASKS';
       const tareasActuales = JSON.parse(localStorage.getItem(keyCompartida) || '[]');
       tareasActuales.unshift(nuevaTarea);
@@ -496,6 +564,10 @@
 
       alert('🎬 ¡Secuencia enviada con éxito al panel del Entrenador / Staff!');
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimelineDuration();
+    });
   </script>
 </body>
 </html>
