@@ -3,380 +3,386 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Videoanálisis Táctico Futsal - @entrenafutsal</title>
-  <!-- Tailwind CSS & FontAwesome CDN -->
+  <title>Entrena Futsal PRO - Videoanálisis Táctico</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 12px; }
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
     
-    /* ENCABEZADO */
-    header { width: 100%; max-width: 950px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #1e1e1e; border-radius: 10px; border-bottom: 3px solid #8b5cf6; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #8b5cf6; }
-    .header-text strong { font-size: 18px; color: #fff; display: block; }
-    .header-text .handle { color: #a78bfa; font-weight: bold; font-size: 14px; }
-    .stats-link { background: #ff9800; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; transition: background 0.2s; }
-    .stats-link:hover { background: #e68a00; }
-
-    /* CONTROLES Y HERRAMIENTAS */
-    .controls-panel { width: 100%; max-width: 950px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; justify-content: center; align-items: center; background: #1e1e1e; padding: 10px 14px; border-radius: 10px; border: 1px solid #333; }
-    .panel-label { font-size: 13px; font-weight: bold; color: #a78bfa; margin-right: 4px; }
-    
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; color: #fff; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; }
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    
-    .btn-tool { background: #333; }
-    .btn-tool.active { background: #8b5cf6; color: #fff; }
-    .btn-purple { background: #8b5cf6; color: #fff; }
-    .btn-purple:hover { background: #7c3aed; }
-    .btn-amber { background: #d97706; color: #fff; }
-    .btn-amber:hover { background: #b45309; }
-    .btn-clear { background: #ef4444; color: #fff; }
-    .btn-clear:hover { background: #dc2626; }
-    .btn-kanban { background: #8b5cf6; color: #ffffff; font-weight: bold; }
-
-    .clip-badge { background: #2e1065; color: #c084fc; border: 1px solid #7e22ce; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; font-family: monospace; }
-
-    /* CONTENEDOR DE VIDEO Y TELESTRADOR */
-    .video-wrapper { position: relative; width: 100%; max-width: 950px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.7); aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
-    video { width: 100%; height: 100%; object-fit: contain; }
-    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-    canvas.drawing-active { pointer-events: auto; cursor: crosshair; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #070a12;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .bg-sidebar { background-color: #0b101d; }
+    .bg-card { background-color: #111827; border: 1px solid #1f293d; }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col antialiased">
 
-  <header>
-    <div class="header-info">
-      <img src="logo.png.jpg" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=EF'; this.onerror=null;">
-      <div class="header-text">
-        <strong>Videoanálisis Táctico Futsal</strong>
-        <span class="handle">@entrenafutsal</span>
+  <!-- TOP HEADER -->
+  <header class="bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
+    <div class="flex items-center gap-4">
+      <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 transition-colors" title="Volver al Staff Hub">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">VIDEOANÁLISIS TÁCTICO</h1>
+          <span class="bg-purple-500/20 text-purple-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-purple-500/30 uppercase">PRO MODULE</span>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-0.5">Etiquetado de Secuencias, Dibujo Táctico y Clips para Kanban</p>
       </div>
     </div>
-    <a href="stats.html" class="stats-link">📊 Estadísticas</a>
+
+    <div class="flex items-center gap-3">
+      <label class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer transition-all flex items-center gap-2 shadow-lg shadow-purple-600/20">
+        <i class="fa-solid fa-file-video"></i> Cargar Video
+        <input type="file" id="videoInput" accept="video/*" class="hidden" onchange="cargarVideoLocal(event)">
+      </label>
+    </div>
   </header>
 
-  <!-- PANEL 1: CARGA DE ARCHIVO O URL -->
-  <div class="controls-panel">
-    <span class="panel-label">Cargar Video:</span>
-    <input type="file" id="videoFileInput" accept="video/*" onchange="loadLocalVideo(event)" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-purple-200 hover:file:bg-purple-800 cursor-pointer">
-    
-    <span class="text-slate-500 text-xs font-bold my-1">o Enlace:</span>
-    <input type="url" id="videoUrlInput" placeholder="https://ejemplo.com/video.mp4" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-purple-500 w-64">
-    <button class="btn btn-purple" onclick="loadUrlVideo()"><i class="fa-solid fa-link"></i> Cargar URL</button>
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 overflow-y-auto">
+
+    <!-- REPRODUCTOR DE VIDEO + LIENZO DE DIBUJO (COL 8) -->
+    <div class="lg:col-span-8 space-y-4">
+      
+      <!-- CONTENEDOR REPRODUCTOR + CANVAS OVERLAY -->
+      <div class="relative bg-black rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex items-center justify-center min-h-[380px]" id="videoContainer">
+        
+        <!-- ELEMENTO VIDEO -->
+        <video id="videoPlayer" class="w-full h-auto max-h-[500px] object-contain" controls crossorigin="anonymous">
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+          Tu navegador no soporta el reproductor de video.
+        </video>
+
+        <!-- LIENZO DE DIBUJO ENCIMA DEL VIDEO -->
+        <canvas id="drawCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-auto cursor-crosshair"></canvas>
+      </div>
+
+      <!-- BARRA DE HERRAMIENTAS DE DIBUJO Y CONTROL -->
+      <div class="bg-card p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+        
+        <!-- PALETA DE DIBUJO -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400 uppercase mr-1">Dibujo:</span>
+          <button onclick="setTool('pen')" id="toolPen" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-pen text-purple-400"></i> Lápiz
+          </button>
+          <button onclick="setTool('arrow')" id="toolArrow" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-right text-sky-400"></i> Flecha
+          </button>
+          <button onclick="setTool('circle')" id="toolCircle" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-regular fa-circle text-amber-400"></i> Zona
+          </button>
+          
+          <!-- COLORES -->
+          <div class="flex items-center gap-1.5 ml-2 border-l border-slate-800 pl-3">
+            <button onclick="setColor('#ef4444')" class="w-6 h-6 rounded-full bg-rose-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#eab308')" class="w-6 h-6 rounded-full bg-amber-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#10b981')" class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#38bdf8')" class="w-6 h-6 rounded-full bg-sky-400 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+          </div>
+
+          <button onclick="clearCanvas()" class="ml-2 text-slate-400 hover:text-rose-400 text-xs p-1.5 rounded-lg hover:bg-slate-800 transition-colors" title="Limpiar Dibujos">
+            <i class="fa-solid fa-eraser"></i>
+          </button>
+        </div>
+
+        <!-- CONTROLES DE REPRODUCCIÓN TÁCTICA -->
+        <div class="flex items-center gap-2">
+          <button onclick="skipTime(-5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-xs" title="-5 segundos">
+            <i class="fa-solid fa-backward-step"></i> -5s
+          </button>
+          <button onclick="togglePlay()" id="btnPlayPause" class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30 transition-all">
+            <i class="fa-solid fa-play"></i> Pausa / Play
+          </button>
+          <button onclick="skipTime(5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-xs" title="+5 segundos">
+            +5s <i class="fa-solid fa-forward-step"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PANEL DE ETIQUETADO Y CLIPS GUARDADOS (COL 4) -->
+    <div class="lg:col-span-4 space-y-6">
+
+      <!-- ETIQUETADO RÁPIDO DE EVENTOS -->
+      <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-4">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-tags text-purple-400"></i> Registrar Evento Táctico
+        </h3>
+        <p class="text-xs text-slate-400">Haz clic en una categoría para marcar el fotograma actual con tus notas.</p>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="marcarEvento('Salida de Presión 3-1')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span> Salida 3-1
+          </button>
+          <button onclick="marcarEvento('Presión Alta / Robo')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+            <span class="w-2 h-2 rounded-full bg-rose-400"></span> Presión Alta
+          </button>
+          <button onclick="marcarEvento('ABP - Córner / Banda')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span> ABP Estrategia
+          </button>
+          <button onclick="marcarEvento('Transición Off / Def')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-sky-950/40 border border-slate-800 hover:border-sky-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span> Transición
+          </button>
+          <button onclick="marcarEvento('Ataque 5v4 / Portero Jugador')" class="col-span-2 p-2.5 rounded-xl bg-slate-900 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Ataque 5v4 / Portero Jugador
+          </button>
+        </div>
+      </div>
+
+      <!-- LISTA DE CLIPS REGISTRADOS -->
+      <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-sm text-white flex items-center gap-2">
+            <i class="fa-solid fa-list-ul text-sky-400"></i> Secuencias Registradas
+          </h3>
+          <span id="clipCount" class="bg-slate-800 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded">0</span>
+        </div>
+
+        <div id="clipList" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+          <div class="text-center py-8 text-slate-500 text-xs">
+            No hay cortes marcados aún.<br>Pausa el video y selecciona un evento.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- PANEL 2: REPRODUCCIÓN Y VELOCIDAD -->
-  <div class="controls-panel">
-    <button class="btn btn-tool" onclick="togglePlay()"><i class="fa-solid fa-play-pause" id="playIcon"></i> Reproducir / Pausa</button>
-    <button class="btn btn-tool" onclick="skipTime(-2)"><i class="fa-solid fa-backward-step"></i> -2s</button>
-    <button class="btn btn-tool" onclick="skipTime(2)"><i class="fa-solid fa-forward-step"></i> +2s</button>
-    
-    <span class="panel-label ml-2">Velocidad:</span>
-    <button class="btn btn-tool" onclick="setSpeed(0.25)">0.25x</button>
-    <button class="btn btn-tool" onclick="setSpeed(0.5)">0.5x</button>
-    <button class="btn btn-tool active" id="btnSpeed1" onclick="setSpeed(1)">1x</button>
-
-    <span class="panel-label ml-2">Anotaciones:</span>
-    <button class="btn btn-tool" id="btnDrawMode" onclick="toggleDrawingMode()"><i class="fa-solid fa-pen"></i> Dibujar en Video</button>
-    <button class="btn btn-clear" onclick="clearDrawings()"><i class="fa-solid fa-eraser"></i> Borrar Dibujos</button>
-  </div>
-
-  <!-- PANEL 3: NUEVA HERRAMIENTA DE RECORTE DE VIDEO (TRIMMING) -->
-  <div class="controls-panel">
-    <span class="panel-label">✂️ Recortar Jugada:</span>
-    <button class="btn btn-amber" onclick="setCutStart()"><i class="fa-solid fa-flag"></i> 🚩 Marcar Inicio</button>
-    <button class="btn btn-amber" onclick="setCutEnd()"><i class="fa-solid fa-flag-checkered"></i> 🏁 Marcar Fin</button>
-    <div class="clip-badge" id="clipRangeText">Corte: 00:00 ➔ 00:00 (0s)</div>
-
-    <!-- BOTÓN DE ENVÍO RECORTADO AL KANBAN -->
-    <button class="btn btn-kanban" id="btnSendClip" onclick="enviarClipAKanban()"><i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT</button>
-  </div>
-
-  <!-- REPRODUCTOR CON OVERLAY CANVAS -->
-  <div class="video-wrapper">
-    <video id="futsalVideo" controls crossorigin="anonymous" playsinline>
-      <source src="" type="video/mp4">
-      Tu navegador no soporta la reproducción de video HTML5.
-    </video>
-    <canvas id="drawCanvas"></canvas>
-  </div>
-
+  <!-- JAVASCRIPT DE VIDEO, DIBUJO Y ENVÍO AL KANBAN CON MULTI-TENANT -->
   <script>
-    const video = document.getElementById('futsalVideo');
+    const video = document.getElementById('videoPlayer');
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
-
-    let isDrawingMode = false;
+    
     let isDrawing = false;
-    let drawings = [];
-    let currentPath = [];
+    let startX = 0, startY = 0;
+    let currentTool = 'pen';
+    let currentColor = '#ef4444';
+    let clips = [];
 
-    let cutStart = 0;
-    let cutEnd = 0;
-
+    // --- SINCRO TAMAÑO CANVAS CON EL VIDEO ---
     function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      renderDrawings();
+      canvas.width = video.clientWidth;
+      canvas.height = video.clientHeight;
     }
-
     window.addEventListener('resize', resizeCanvas);
     video.addEventListener('loadedmetadata', resizeCanvas);
 
-    function loadLocalVideo(e) {
+    // --- CONTROLES DE DIBUJO ---
+    function setTool(tool) {
+      currentTool = tool;
+      document.querySelectorAll('[id^="tool"]').forEach(b => b.classList.replace('bg-purple-600', 'bg-slate-800'));
+      const activeBtn = document.getElementById('tool' + tool.charAt(0).toUpperCase() + tool.slice(1));
+      if(activeBtn) activeBtn.classList.replace('bg-slate-800', 'bg-purple-600');
+    }
+
+    function setColor(color) {
+      currentColor = color;
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+      if (currentTool === 'pen') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (currentTool === 'pen') {
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 3;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+    });
+
+    canvas.addEventListener('mouseup', (e) => {
+      if (!isDrawing) return;
+      isDrawing = false;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ctx.strokeStyle = currentColor;
+      ctx.fillStyle = currentColor;
+      ctx.lineWidth = 3;
+
+      if (currentTool === 'arrow') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        // Cabeza de flecha
+        const angle = Math.atan2(y - startY, x - startX);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 12 * Math.cos(angle - Math.PI / 6), y - 12 * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x - 12 * Math.cos(angle + Math.PI / 6), y - 12 * Math.sin(angle + Math.PI / 6));
+        ctx.fill();
+      } else if (currentTool === 'circle') {
+        const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+        ctx.beginPath();
+        ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    });
+
+    // --- REPRODUCTOR ---
+    function togglePlay() {
+      if (video.paused) video.play();
+      else video.pause();
+    }
+
+    function skipTime(seconds) {
+      video.currentTime += seconds;
+    }
+
+    function cargarVideoLocal(e) {
       const file = e.target.files[0];
       if (file) {
         const url = URL.createObjectURL(file);
         video.src = url;
         video.play();
-        resizeCanvas();
+        clearCanvas();
       }
     }
 
-    function loadUrlVideo() {
-      const url = document.getElementById('videoUrlInput').value.trim();
-      if (url) {
-        video.src = url;
-        video.play();
-        resizeCanvas();
-      } else {
-        alert("Por favor ingresa una URL válida de video.");
+    // --- GENERAR CAPTURA MEZCLANDO VIDEO + DIBUJOS ---
+    function generarSnapshot() {
+      const offscreen = document.createElement('canvas');
+      offscreen.width = video.videoWidth || 640;
+      offscreen.height = video.videoHeight || 360;
+      const offCtx = offscreen.getContext('2d');
+
+      // 1. Dibujar fotograma de video
+      try {
+        offCtx.drawImage(video, 0, 0, offscreen.width, offscreen.height);
+      } catch (err) {
+        console.log("No se pudo extraer frame por restricciones CORS, guardando overlay táctico.");
       }
+
+      // 2. Dibujar overlay del lienzo
+      offCtx.drawImage(canvas, 0, 0, offscreen.width, offscreen.height);
+      return offscreen.toDataURL('image/png');
     }
 
-    function togglePlay() {
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
-    }
+    // --- MARCAR EVENTO ---
+    function marcarEvento(tipo) {
+      video.pause();
+      const timeFormatted = new Date(video.currentTime * 1000).toISOString().substr(14, 5);
+      const snapshot = generarSnapshot();
 
-    function skipTime(seconds) {
-      video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + seconds));
-    }
-
-    function setSpeed(speed) {
-      video.playbackRate = speed;
-      document.querySelectorAll('.controls-panel .btn-tool').forEach(btn => {
-        if (btn.innerText.includes('x')) btn.classList.remove('active');
-      });
-      event.target.classList.add('active');
-    }
-
-    // LÓGICA DE MARCADORES DE RECORTE (TRIM)
-    function formatTime(t) {
-      const m = Math.floor(t / 60);
-      const s = Math.floor(t % 60).toString().padStart(2, '0');
-      return `${m}:${s}`;
-    }
-
-    function setCutStart() {
-      cutStart = video.currentTime;
-      updateCutUI();
-    }
-
-    function setCutEnd() {
-      cutEnd = video.currentTime;
-      updateCutUI();
-    }
-
-    function updateCutUI() {
-      const dur = Math.max(0, Math.round(cutEnd - cutStart));
-      document.getElementById('clipRangeText').innerText = `Corte: ${formatTime(cutStart)} ➔ ${formatTime(cutEnd)} (${dur}s)`;
-    }
-
-    // TELESTRADOR Y DIBUJO SOBRE VIDEO
-    function toggleDrawingMode() {
-      isDrawingMode = !isDrawingMode;
-      const btn = document.getElementById('btnDrawMode');
-      
-      if (isDrawingMode) {
-        video.pause();
-        canvas.classList.add('drawing-active');
-        btn.classList.add('active');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Listo (Continuar Video)';
-      } else {
-        canvas.classList.remove('drawing-active');
-        btn.classList.remove('active');
-        btn.innerHTML = '<i class="fa-solid fa-pen"></i> Dibujar en Video';
-      }
-    }
-
-    function getCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return {
-        x: (clientX - rect.left) * (canvas.width / rect.width),
-        y: (clientY - rect.top) * (canvas.height / rect.height)
+      const newClip = {
+        id: "clip_" + Date.now(),
+        title: `${tipo} (${timeFormatted})`,
+        time: timeFormatted,
+        notes: `Fotograma analizado a los ${timeFormatted} min.`,
+        snapshot: snapshot,
+        videoUrl: video.src
       };
+
+      clips.unshift(newClip);
+      renderClips();
     }
 
-    function startDrawing(e) {
-      if (!isDrawingMode) return;
-      isDrawing = true;
-      currentPath = [getCoords(e)];
-      drawings.push(currentPath);
-      renderDrawings();
-    }
+    function renderClips() {
+      const container = document.getElementById('clipList');
+      document.getElementById('clipCount').innerText = clips.length;
 
-    function draw(e) {
-      if (!isDrawingMode || !isDrawing) return;
-      currentPath.push(getCoords(e));
-      renderDrawings();
-    }
-
-    function stopDrawing() {
-      isDrawing = false;
-    }
-
-    function renderDrawings() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#a855f7';
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      for (const path of drawings) {
-        if (path.length < 2) continue;
-        ctx.beginPath();
-        ctx.moveTo(path[0].x, path[0].y);
-        for (let i = 1; i < path.length; i++) {
-          ctx.lineTo(path[i].x, path[i].y);
-        }
-        ctx.stroke();
-      }
-    }
-
-    function clearDrawings() {
-      drawings = [];
-      renderDrawings();
-    }
-
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', stopDrawing);
-
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
-    canvas.addEventListener('touchend', stopDrawing);
-
-    // FUNCIÓN PARA PROCESAR Y ENVIAR ÚNICAMENTE EL CLIP RECORTADO AL KANBAN
-    function enviarClipAKanban() {
-      if (!video || (!video.src && !video.currentSrc) || video.readyState < 2) {
-        alert("⚠️ Primero debes cargar un video en el analizador.");
+      if (clips.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">No hay cortes marcados aún.<br>Pausa el video y selecciona un evento.</div>`;
         return;
       }
 
-      let start = cutStart;
-      let end = cutEnd;
+      container.innerHTML = '';
+      clips.forEach(clip => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white">${clip.title}</span>
+            <button onclick="borrarClip('${clip.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+          <img src="${clip.snapshot}" class="w-full h-24 object-cover rounded-lg border border-slate-800">
+          <div class="pt-2 flex items-center justify-between border-t border-slate-800/80">
+            <span class="text-[10px] text-slate-500">Min. ${clip.time}</span>
+            <button onclick="enviarClipAlKanban('${clip.id}')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 shadow-md shadow-purple-600/20">
+              <i class="fa-solid fa-paper-plane"></i> Enviar a Kanban
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-      // Si no marcó inicio o fin, usar por defecto un tramo de 10 segundos alrededor del segundo actual
-      if (end <= start) {
-        start = Math.max(0, video.currentTime - 5);
-        end = Math.min(video.duration || video.currentTime + 5, video.currentTime + 5);
-      }
+    function borrarClip(id) {
+      clips = clips.filter(c => c.id !== id);
+      renderClips();
+    }
 
-      const duracionSegundos = Math.max(1, Math.round(end - start));
-      const tituloCorte = prompt(`Nombre de la jugada recortada (${duracionSegundos}s) para el DT:`, `Análisis Táctico - Corte (${formatTime(start)})`);
-      if (!tituloCorte || tituloCorte.trim() === "") return;
+    // --- FUNCIÓN UNIVERSAL DE ENVÍO AL KANBAN CON MULTI-TENANT ---
+    function enviarClipAlKanban(clipId) {
+      const clip = clips.find(c => c.id === clipId);
+      if (!clip) return;
 
-      const btnSend = document.getElementById('btnSendClip');
-      btnSend.disabled = true;
-      btnSend.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Recortando (${duracionSegundos}s)...`;
+      enviarAlKanban(clip.title, clip.notes, 'Videoanálisis', clip.snapshot, '');
+    }
 
-      // 1. Crear canvas oculto de renderizado que combina el Video + Dibujos
-      const recCanvas = document.createElement('canvas');
-      recCanvas.width = video.videoWidth || 1280;
-      recCanvas.height = video.videoHeight || 720;
-      const recCtx = recCanvas.getContext('2d');
+    function enviarAlKanban(titulo, descripcion, modulo, imagen = '', videoUrl = '') {
+      // 1. Obtener ID del usuario activo para guardar en su espacio exclusivo
+      const currentUserData = localStorage.getItem('EF_CURRENT_USER');
+      const user = currentUserData ? JSON.parse(currentUserData) : null;
+      const userId = (user && (user.id || user.name || user.email)) 
+        ? (user.id || user.name || user.email).toLowerCase().trim().replace(/[^a-z0-9]/g, '_') 
+        : 'default_user';
+      
+      const storageKey = 'EF_KANBAN_TASKS_' + userId;
 
-      video.pause();
-      video.currentTime = start;
+      // 2. Cargar tareas previas del usuario
+      const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-      // Generar miniatura estática
-      recCtx.drawImage(video, 0, 0, recCanvas.width, recCanvas.height);
-      if (canvas) recCtx.drawImage(canvas, 0, 0, recCanvas.width, recCanvas.height);
-      const miniatura = recCanvas.toDataURL('image/png');
+      // 3. Crear y agregar la nueva tarjeta con foto/video
+      tareasPrevias.unshift({
+        id: "k_" + Date.now(),
+        title: titulo || "Clip de Videoanálisis",
+        desc: descripcion || "Sin descripción",
+        module: modulo || "Videoanálisis",
+        image: imagen || '',
+        videoUrl: videoUrl || '',
+        status: 'pending',
+        date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+      });
 
-      // 2. Grabar el fragmento de video con MediaRecorder
-      const stream = recCanvas.captureStream(30);
-      let mimeType = 'video/webm;codecs=vp9';
-      if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
-
-      let mediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(stream, { mimeType });
-      } catch (e) {
-        mediaRecorder = new MediaRecorder(stream);
-      }
-
-      const chunks = [];
-      mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
-
-      let isRecording = true;
-
-      function renderFrame() {
-        if (!isRecording) return;
-        
-        // Renderizar frame del video + telestrador arriba
-        recCtx.drawImage(video, 0, 0, recCanvas.width, recCanvas.height);
-        if (canvas) recCtx.drawImage(canvas, 0, 0, recCanvas.width, recCanvas.height);
-
-        if (video.currentTime >= end || video.ended) {
-          isRecording = false;
-          video.pause();
-          if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-          return;
-        }
-        requestAnimationFrame(renderFrame);
-      }
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/webm' });
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const videoBase64 = reader.result;
-
-          // 3. Enviar el clip recortado al Kanban
-        enviarAlKanban(tituloCorte.trim(), 'Clip de videoanálisis recortado', 'Videoanálisis');
-
-        btnSend.disabled = false;
-        btnSend.innerHTML = `<i class="fa-solid fa-scissors"></i> 🎬 Enviar Corte Recortado a Kanban DT`;
-        alert('🎬 ¡Clip de video recortado y enviado con éxito al Tablero Kanban del DT!');
-      };
-    };
-
-    video.onseeked = function onSeekedOnce() {
-      video.onseeked = null;
-      mediaRecorder.start(100);
-      video.play();
-      requestAnimationFrame(renderFrame);
-    };
-  }
-
-  // FUNCIÓN PARA ENVIAR TAREAS AL KANBAN
-  function enviarAlKanban(titulo, descripcion, modulo) {
-    const tareasPrevias = JSON.parse(localStorage.getItem('EF_KANBAN_TASKS') || '[]');
-    tareasPrevias.unshift({
-      id: "k_" + Date.now(),
-      title: titulo,
-      desc: descripcion,
-      module: modulo,
-      status: 'pending',
-      date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
-    });
-    localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(tareasPrevias));
-  }
-
-  resizeCanvas();
-</script>
+      // 4. Guardar en memoria
+      localStorage.setItem(storageKey, JSON.stringify(tareasPrevias));
+      alert('🎬 ¡Clip e informe enviado con éxito al Tablero Kanban de tu espacio!');
+    }
+  </script>
 </body>
 </html>
