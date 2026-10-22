@@ -21,6 +21,14 @@
     }
     .bg-sidebar { background-color: #0b101d; }
     .bg-card { background-color: #111827; border: 1px solid #1f293d; }
+    
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-rec {
+      animation: pulse-red 1.2s infinite ease-in-out;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
@@ -36,7 +44,7 @@
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">VIDEOANÁLISIS TÁCTICO</h1>
           <span class="bg-purple-500/20 text-purple-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-purple-500/30 uppercase">PRO MODULE</span>
         </div>
-        <p class="text-[11px] text-slate-400 mt-0.5">Etiquetado de Secuencias, Dibujo Táctico y Clips para Kanban</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Recorte de Clips (-5s), Conectores, Anillos y Sincronización Kanban</p>
       </div>
     </div>
 
@@ -67,45 +75,72 @@
         <canvas id="drawCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-auto cursor-crosshair"></canvas>
       </div>
 
-      <!-- BARRA DE HERRAMIENTAS DE DIBUJO Y CONTROL -->
+      <!-- BARRA DE HERRAMIENTAS DE DIBUJO Y BOTONERA DE RECORTE -->
       <div class="bg-card p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
         
-        <!-- PALETA DE DIBUJO -->
-        <div class="flex items-center gap-2">
+        <!-- PALETA DE HERRAMIENTAS TÁCTICAS -->
+        <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-bold text-slate-400 uppercase mr-1">Dibujo:</span>
-          <button onclick="setTool('pen')" id="toolPen" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-pen text-purple-400"></i> Lápiz
-          </button>
-          <button onclick="setTool('arrow')" id="toolArrow" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-right text-sky-400"></i> Flecha
-          </button>
-          <button onclick="setTool('circle')" id="toolCircle" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
-            <i class="fa-regular fa-circle text-amber-400"></i> Zona
+          
+          <button onclick="setTool('pen')" id="toolPen" class="px-2.5 py-1.5 rounded-lg bg-purple-600 text-xs font-bold text-white border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-pen text-purple-300"></i> Lápiz
           </button>
           
-          <!-- COLORES -->
-          <div class="flex items-center gap-1.5 ml-2 border-l border-slate-800 pl-3">
-            <button onclick="setColor('#ef4444')" class="w-6 h-6 rounded-full bg-rose-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
-            <button onclick="setColor('#eab308')" class="w-6 h-6 rounded-full bg-amber-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
-            <button onclick="setColor('#10b981')" class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-white/20 hover:scale-110 transition-transform"></button>
-            <button onclick="setColor('#38bdf8')" class="w-6 h-6 rounded-full bg-sky-400 border-2 border-white/20 hover:scale-110 transition-transform"></button>
+          <button onclick="setTool('chain')" id="toolChain" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-route text-amber-400"></i> Cadena
+          </button>
+
+          <button onclick="setTool('ring')" id="toolRing" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-dot text-yellow-400"></i> Anillo
+          </button>
+
+          <button onclick="setTool('spotlight')" id="toolSpotlight" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-bullseye text-amber-300"></i> Foco
+          </button>
+
+          <button onclick="setTool('arrow')" id="toolArrow" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-right text-sky-400"></i> Flecha
+          </button>
+
+          <button onclick="setTool('text')" id="toolText" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-font text-emerald-400"></i> Texto
+          </button>
+          
+          <!-- SELECCIÓN DE COLOR -->
+          <div class="flex items-center gap-1.5 ml-1 border-l border-slate-800 pl-2.5">
+            <button onclick="setColor('#facc15')" class="w-5 h-5 rounded-full bg-yellow-400 border border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#ffffff')" class="w-5 h-5 rounded-full bg-white border border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#ef4444')" class="w-5 h-5 rounded-full bg-rose-500 border border-white/20 hover:scale-110 transition-transform"></button>
+            <button onclick="setColor('#38bdf8')" class="w-5 h-5 rounded-full bg-sky-400 border border-white/20 hover:scale-110 transition-transform"></button>
           </div>
 
-          <button onclick="clearCanvas()" class="ml-2 text-slate-400 hover:text-rose-400 text-xs p-1.5 rounded-lg hover:bg-slate-800 transition-colors" title="Limpiar Dibujos">
-            <i class="fa-solid fa-eraser"></i>
-          </button>
+          <!-- DESHACER Y LIMPIAR -->
+          <div class="flex items-center gap-1 ml-1 border-l border-slate-800 pl-2">
+            <button onclick="undoLastStroke()" class="text-slate-400 hover:text-white text-xs p-1.5 rounded-lg hover:bg-slate-800" title="Deshacer">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button onclick="clearCanvas()" class="text-slate-400 hover:text-rose-400 text-xs p-1.5 rounded-lg hover:bg-slate-800" title="Limpiar Todo">
+              <i class="fa-solid fa-eraser"></i>
+            </button>
+          </div>
         </div>
 
-        <!-- CONTROLES DE REPRODUCCIÓN TÁCTICA -->
+        <!-- BOTONERA DE CONTROL Y RECORDER (-5s) -->
         <div class="flex items-center gap-2">
-          <button onclick="skipTime(-5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-xs" title="-5 segundos">
-            <i class="fa-solid fa-backward-step"></i> -5s
+          <!-- BOTÓN RECORDER INTELIGENTE DE CLIP (-5 SEGUNDOS) -->
+          <button id="btnRecClip" onclick="toggleRecordClip()" class="px-3.5 py-2 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/40 text-xs font-bold hover:bg-rose-600/30 transition-all flex items-center gap-2 shadow-lg">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            <span id="recBtnText">🔴 REC Clip (-5s)</span>
           </button>
-          <button onclick="togglePlay()" id="btnPlayPause" class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30 transition-all">
-            <i class="fa-solid fa-play"></i> Pausa / Play
+
+          <button onclick="skipTime(-5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs">
+            -5s
           </button>
-          <button onclick="skipTime(5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-xs" title="+5 segundos">
-            +5s <i class="fa-solid fa-forward-step"></i>
+          <button onclick="togglePlay()" id="btnPlayPause" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30">
+            <i class="fa-solid fa-play"></i> Play
+          </button>
+          <button onclick="skipTime(5)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs">
+            +5s
           </button>
         </div>
 
@@ -120,22 +155,22 @@
         <h3 class="font-bold text-sm text-white flex items-center gap-2">
           <i class="fa-solid fa-tags text-purple-400"></i> Registrar Evento Táctico
         </h3>
-        <p class="text-xs text-slate-400">Haz clic en una categoría para marcar el fotograma actual con tus notas.</p>
+        <p class="text-xs text-slate-400">Pausa el video o presiona <b>REC Clip (-5s)</b> para cortar y categorizar la jugada.</p>
         
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="marcarEvento('Salida de Presión 3-1')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+          <button onclick="marcarEvento('Salida de Presión 3-1')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-purple-400"></span> Salida 3-1
           </button>
-          <button onclick="marcarEvento('Presión Alta / Robo')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+          <button onclick="marcarEvento('Presión Alta / Robo')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-rose-400"></span> Presión Alta
           </button>
-          <button onclick="marcarEvento('ABP - Córner / Banda')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+          <button onclick="marcarEvento('ABP - Córner / Banda')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-amber-400"></span> ABP Estrategia
           </button>
-          <button onclick="marcarEvento('Transición Off / Def')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-sky-950/40 border border-slate-800 hover:border-sky-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+          <button onclick="marcarEvento('Transición Off / Def')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-sky-950/40 border border-slate-800 hover:border-sky-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-sky-400"></span> Transición
           </button>
-          <button onclick="marcarEvento('Ataque 5v4 / Portero Jugador')" class="col-span-2 p-2.5 rounded-xl bg-slate-900 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2 transition-all">
+          <button onclick="marcarEvento('Ataque 5v4 / Portero Jugador')" class="col-span-2 p-2.5 rounded-xl bg-slate-900 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/40 text-xs font-semibold text-slate-200 text-left flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Ataque 5v4 / Portero Jugador
           </button>
         </div>
@@ -152,7 +187,7 @@
 
         <div id="clipList" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
           <div class="text-center py-8 text-slate-500 text-xs">
-            No hay cortes marcados aún.<br>Pausa el video y selecciona un evento.
+            No hay cortes marcados aún.<br>Usa <b>REC Clip (-5s)</b> para cortar secuencias.
           </div>
         </div>
       </div>
@@ -161,7 +196,7 @@
 
   </div>
 
-  <!-- JAVASCRIPT DE VIDEO, DIBUJO Y ENVÍO AL KANBAN CON MULTI-TENANT -->
+  <!-- JAVASCRIPT DE RECORTE, DIBUJO Y ENVÍO A KANBAN -->
   <script>
     const video = document.getElementById('videoPlayer');
     const canvas = document.getElementById('drawCanvas');
@@ -170,39 +205,163 @@
     let isDrawing = false;
     let startX = 0, startY = 0;
     let currentTool = 'pen';
-    let currentColor = '#ef4444';
+    let currentColor = '#facc15';
     let clips = [];
+    let historyStack = [];
+    let currentChainPoints = [];
 
-    // --- SINCRO TAMAÑO CANVAS CON EL VIDEO ---
+    // --- VARIABLES DE RECORTE DE CLIP ---
+    let isRecordingClip = false;
+    let clipStartSec = 0;
+
+    // Sincronizar dimensiones del lienzo
     function resizeCanvas() {
       canvas.width = video.clientWidth;
       canvas.height = video.clientHeight;
+      redrawHistory();
     }
     window.addEventListener('resize', resizeCanvas);
     video.addEventListener('loadedmetadata', resizeCanvas);
 
-    // --- CONTROLES DE DIBUJO ---
+    function formatTime(seconds) {
+      const sec = Math.max(0, Math.floor(seconds));
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    // --- SISTEMA DE RECORTE DE CLIP (-5 SEGUNDOS) ---
+    function toggleRecordClip() {
+      const btn = document.getElementById('btnRecClip');
+      const btnText = document.getElementById('recBtnText');
+
+      if (!isRecordingClip) {
+        // INICIAR RECORTE: Captura 5 segundos hacia atrás de la posición actual
+        isRecordingClip = true;
+        clipStartSec = Math.max(0, video.currentTime - 5);
+        
+        btn.classList.add('bg-rose-600', 'text-white', 'animate-rec');
+        btn.classList.remove('bg-rose-600/20', 'text-rose-400');
+        btnText.innerText = `⏹ Detener Clip (Inicio: ${formatTime(clipStartSec)})`;
+      } else {
+        // FINALIZAR RECORTE
+        isRecordingClip = false;
+        const clipEndSec = video.currentTime;
+        
+        btn.classList.remove('bg-rose-600', 'text-white', 'animate-rec');
+        btn.classList.add('bg-rose-600/20', 'text-rose-400');
+        btnText.innerText = "🔴 REC Clip (-5s)";
+
+        video.pause();
+        const categoria = prompt("Nombre o categoría para este clip:", "Secuencia Táctica");
+        if (categoria) {
+          guardarClipRecortado(categoria, clipStartSec, clipEndSec);
+        }
+      }
+    }
+
+    function guardarClipRecortado(tipo, inicioSec, finSec) {
+      const rangeText = `${formatTime(inicioSec)} a ${formatTime(finSec)}`;
+      const snapshot = generarSnapshot();
+
+      const newClip = {
+        id: "clip_" + Date.now(),
+        title: `${tipo} (${rangeText})`,
+        time: rangeText,
+        notes: `Corte de videoanálisis del min ${rangeText}`,
+        snapshot: snapshot
+      };
+
+      clips.unshift(newClip);
+      renderClips();
+    }
+
+    // --- HISTORIAL Y DESHACER ---
+    function saveState() {
+      historyStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    }
+
+    function undoLastStroke() {
+      if (historyStack.length > 0) {
+        historyStack.pop();
+        if (historyStack.length > 0) {
+          ctx.putImageData(historyStack[historyStack.length - 1], 0, 0);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function redrawHistory() {
+      if (historyStack.length > 0) {
+        ctx.putImageData(historyStack[historyStack.length - 1], 0, 0);
+      }
+    }
+
+    // --- HERRAMIENTAS DIBUJO ---
     function setTool(tool) {
       currentTool = tool;
-      document.querySelectorAll('[id^="tool"]').forEach(b => b.classList.replace('bg-purple-600', 'bg-slate-800'));
+      document.querySelectorAll('[id^="tool"]').forEach(b => {
+        b.classList.remove('bg-purple-600');
+        b.classList.add('bg-slate-800');
+      });
       const activeBtn = document.getElementById('tool' + tool.charAt(0).toUpperCase() + tool.slice(1));
-      if(activeBtn) activeBtn.classList.replace('bg-slate-800', 'bg-purple-600');
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-800');
+        activeBtn.classList.add('bg-purple-600');
+      }
     }
 
-    function setColor(color) {
-      currentColor = color;
-    }
-
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    function setColor(color) { currentColor = color; }
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); historyStack = []; currentChainPoints = []; }
 
     canvas.addEventListener('mousedown', (e) => {
-      isDrawing = true;
       const rect = canvas.getBoundingClientRect();
-      startX = e.clientX - rect.left;
-      startY = e.clientY - rect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (currentTool === 'text') {
+        const textValue = prompt("Ingresa el texto o dorsal:");
+        if (textValue) {
+          saveState();
+          ctx.font = "bold 13px Montserrat, sans-serif";
+          ctx.fillStyle = currentColor;
+          ctx.shadowColor = "rgba(0, 0, 0, 0.9)";
+          ctx.shadowBlur = 4;
+          ctx.fillText(textValue.toUpperCase(), x, y);
+          saveState();
+        }
+        return;
+      }
+
+      if (currentTool === 'chain') {
+        saveState();
+        currentChainPoints.push({ x, y });
+        dibujarAnilloJugador(x, y, currentColor);
+
+        if (currentChainPoints.length > 1) {
+          const prev = currentChainPoints[currentChainPoints.length - 2];
+          ctx.beginPath();
+          ctx.moveTo(prev.x, prev.y);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = currentColor;
+          ctx.lineWidth = 3.5;
+          ctx.shadowColor = "rgba(0,0,0,0.8)";
+          ctx.shadowBlur = 5;
+          ctx.stroke();
+        }
+        saveState();
+        return;
+      }
+
+      isDrawing = true;
+      startX = x;
+      startY = y;
+
       if (currentTool === 'pen') {
+        saveState();
         ctx.beginPath();
         ctx.moveTo(startX, startY);
       }
@@ -217,6 +376,8 @@
       if (currentTool === 'pen') {
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = 3;
+        ctx.shadowColor = "rgba(0,0,0,0.7)";
+        ctx.shadowBlur = 3;
         ctx.lineTo(x, y);
         ctx.stroke();
       }
@@ -229,86 +390,82 @@
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
+      saveState();
       ctx.strokeStyle = currentColor;
       ctx.fillStyle = currentColor;
       ctx.lineWidth = 3;
 
-      if (currentTool === 'arrow') {
+      if (currentTool === 'ring') {
+        dibujarAnilloJugador(x, y, currentColor);
+      } else if (currentTool === 'spotlight') {
+        const gradient = ctx.createLinearGradient(x, y - 100, x, y);
+        gradient.addColorStop(0, 'rgba(250, 204, 21, 0.45)');
+        gradient.addColorStop(1, 'rgba(250, 204, 21, 0.05)');
+
         ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        // Cabeza de flecha
+        ctx.moveTo(x - 15, y - 100); ctx.lineTo(x + 15, y - 100);
+        ctx.lineTo(x + 40, y); ctx.lineTo(x - 40, y);
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        dibujarAnilloJugador(x, y, currentColor);
+      } else if (currentTool === 'arrow') {
+        ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(x, y); ctx.stroke();
         const angle = Math.atan2(y - startY, x - startX);
-        ctx.beginPath();
-        ctx.moveTo(x, y);
+        ctx.beginPath(); ctx.moveTo(x, y);
         ctx.lineTo(x - 12 * Math.cos(angle - Math.PI / 6), y - 12 * Math.sin(angle - Math.PI / 6));
         ctx.lineTo(x - 12 * Math.cos(angle + Math.PI / 6), y - 12 * Math.sin(angle + Math.PI / 6));
         ctx.fill();
-      } else if (currentTool === 'circle') {
-        const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
-        ctx.beginPath();
-        ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
-        ctx.stroke();
       }
+      saveState();
     });
+
+    function dibujarAnilloJugador(x, y, color) {
+      ctx.beginPath(); ctx.ellipse(x, y, 18, 9, 0, 0, 2 * Math.PI);
+      ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x, y, 21, 11, 0, 0, 2 * Math.PI);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 1; ctx.stroke();
+    }
 
     // --- REPRODUCTOR ---
     function togglePlay() {
       if (video.paused) video.play();
       else video.pause();
     }
-
-    function skipTime(seconds) {
-      video.currentTime += seconds;
-    }
-
+    function skipTime(s) { video.currentTime += s; }
     function cargarVideoLocal(e) {
       const file = e.target.files[0];
       if (file) {
-        const url = URL.createObjectURL(file);
-        video.src = url;
+        video.src = URL.createObjectURL(file);
         video.play();
         clearCanvas();
       }
     }
 
-    // --- GENERAR CAPTURA MEZCLANDO VIDEO + DIBUJOS ---
+    // --- CAPTURA DE MINIANATURA LIMPIA ---
     function generarSnapshot() {
       const offscreen = document.createElement('canvas');
-      offscreen.width = video.videoWidth || 640;
-      offscreen.height = video.videoHeight || 360;
+      offscreen.width = canvas.width || 640;
+      offscreen.height = canvas.height || 360;
       const offCtx = offscreen.getContext('2d');
 
-      // 1. Dibujar fotograma de video
       try {
         offCtx.drawImage(video, 0, 0, offscreen.width, offscreen.height);
       } catch (err) {
-        console.log("No se pudo extraer frame por restricciones CORS, guardando overlay táctico.");
+        offCtx.fillStyle = "#111827";
+        offCtx.fillRect(0, 0, offscreen.width, offscreen.height);
       }
 
-      // 2. Dibujar overlay del lienzo
       offCtx.drawImage(canvas, 0, 0, offscreen.width, offscreen.height);
       return offscreen.toDataURL('image/png');
     }
 
-    // --- MARCAR EVENTO ---
     function marcarEvento(tipo) {
       video.pause();
-      const timeFormatted = new Date(video.currentTime * 1000).toISOString().substr(14, 5);
-      const snapshot = generarSnapshot();
-
-      const newClip = {
-        id: "clip_" + Date.now(),
-        title: `${tipo} (${timeFormatted})`,
-        time: timeFormatted,
-        notes: `Fotograma analizado a los ${timeFormatted} min.`,
-        snapshot: snapshot,
-        videoUrl: video.src
-      };
-
-      clips.unshift(newClip);
-      renderClips();
+      const currentFormatted = formatTime(video.currentTime);
+      const startFormatted = formatTime(Math.max(0, video.currentTime - 5));
+      const rangeText = `${startFormatted} a ${currentFormatted}`;
+      guardarClipRecortado(tipo, Math.max(0, video.currentTime - 5), video.currentTime);
     }
 
     function renderClips() {
@@ -316,22 +473,22 @@
       document.getElementById('clipCount').innerText = clips.length;
 
       if (clips.length === 0) {
-        container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">No hay cortes marcados aún.<br>Pausa el video y selecciona un evento.</div>`;
+        container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">No hay cortes marcados aún.<br>Usa <b>REC Clip (-5s)</b> para cortar secuencias.</div>`;
         return;
       }
 
       container.innerHTML = '';
       clips.forEach(clip => {
         const card = document.createElement('div');
-        card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs";
+        card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs shadow-md";
         card.innerHTML = `
           <div class="flex items-center justify-between">
             <span class="font-bold text-white">${clip.title}</span>
             <button onclick="borrarClip('${clip.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
           </div>
-          <img src="${clip.snapshot}" class="w-full h-24 object-cover rounded-lg border border-slate-800">
+          <img src="${clip.snapshot}" class="w-full h-28 object-cover rounded-lg border border-slate-800">
           <div class="pt-2 flex items-center justify-between border-t border-slate-800/80">
-            <span class="text-[10px] text-slate-500">Min. ${clip.time}</span>
+            <span class="text-[10px] text-slate-500">${clip.time}</span>
             <button onclick="enviarClipAlKanban('${clip.id}')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 shadow-md shadow-purple-600/20">
               <i class="fa-solid fa-paper-plane"></i> Enviar a Kanban
             </button>
@@ -346,28 +503,24 @@
       renderClips();
     }
 
-    // --- FUNCIÓN UNIVERSAL DE ENVÍO AL KANBAN CON MULTI-TENANT ---
     function enviarClipAlKanban(clipId) {
       const clip = clips.find(c => c.id === clipId);
       if (!clip) return;
-
       enviarAlKanban(clip.title, clip.notes, 'Videoanálisis', clip.snapshot, '');
     }
 
+    // --- FUNCIÓN GARANTIZADA DE ENVÍO MULTI-TENANT A KANBAN ---
     function enviarAlKanban(titulo, descripcion, modulo, imagen = '', videoUrl = '') {
-      // 1. Obtener ID del usuario activo para guardar en su espacio exclusivo
       const currentUserData = localStorage.getItem('EF_CURRENT_USER');
       const user = currentUserData ? JSON.parse(currentUserData) : null;
+      
       const userId = (user && (user.id || user.name || user.email)) 
         ? (user.id || user.name || user.email).toLowerCase().trim().replace(/[^a-z0-9]/g, '_') 
         : 'default_user';
       
       const storageKey = 'EF_KANBAN_TASKS_' + userId;
-
-      // 2. Cargar tareas previas del usuario
       const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-      // 3. Crear y agregar la nueva tarjeta con foto/video
       tareasPrevias.unshift({
         id: "k_" + Date.now(),
         title: titulo || "Clip de Videoanálisis",
@@ -379,9 +532,8 @@
         date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
       });
 
-      // 4. Guardar en memoria
       localStorage.setItem(storageKey, JSON.stringify(tareasPrevias));
-      alert('🎬 ¡Clip e informe enviado con éxito al Tablero Kanban de tu espacio!');
+      alert('🎬 ¡Clip enviado con éxito al Tablero Kanban de tu espacio!');
     }
   </script>
 </body>
