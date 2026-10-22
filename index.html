@@ -118,6 +118,13 @@
               </div>
               <i id="lockBadgeCal" class="fa-solid fa-lock text-amber-400 text-xs" title="Requiere Acceso Exclusivo"></i>
             </button>
+            <button onclick="showTab('planificacion', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-clipboard-check w-5 text-teal-400"></i>
+                <span>Sesión / Planificación</span>
+              </div>
+              <i id="lockBadgePlan" class="fa-solid fa-lock text-amber-400 text-xs" title="Requiere Acceso Exclusivo"></i>
+            </button>
           </nav>
         </div>
 
@@ -151,7 +158,7 @@
             </h2>
             
             <p class="text-slate-600 text-sm leading-relaxed">
-              Selecciona cualquier herramienta del menú lateral para comenzar a trabajar en la pizarra táctica, análisis de video, estadísticas en vivo o el control de tu plantilla y calendario.
+              Selecciona cualquier herramienta del menú lateral para comenzar a trabajar en la pizarra táctica, análisis de video, estadísticas en vivo o el control de tu plantilla y sesiones de entrenamiento.
             </p>
 
             <div class="pt-4 border-t border-slate-200 flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-500">
@@ -363,7 +370,7 @@
           </div>
         </div>
 
-        <!-- FILTROS DE EVENTOS DE ACUERDO A LA TABLA REQUERIDA -->
+        <!-- FILTROS -->
         <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-2 items-center justify-between text-xs">
           <span class="font-bold text-slate-700 uppercase tracking-wider text-[11px]"><i class="fa-solid fa-filter text-sky-600"></i> Filtrar Eventos:</span>
           <div class="flex flex-wrap gap-1.5">
@@ -376,8 +383,74 @@
           </div>
         </div>
 
-        <!-- LISTA DE EVENTOS / AGENDA CON TODOS LOS CAMPOS -->
+        <!-- LISTA DE EVENTOS -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="calendarEventsContainer">
+          <!-- Carga dinámicamente -->
+        </div>
+      </div>
+
+      <!-- PESTAÑA 4: SESIÓN / PLANIFICACIÓN (PRO) -->
+      <div id="planificacion" class="tab-content hidden space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-3">
+              <i class="fa-solid fa-clipboard-check text-teal-600"></i> Espacio de Sesión de Entrenamiento
+            </h2>
+            <p class="text-slate-500 text-sm mt-0.5">Planificación general detallada, objetivos, materiales e intensidad del trabajo diario.</p>
+          </div>
+          <button onclick="openAddSessionModal()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-md">
+            <i class="fa-solid fa-file-circle-plus"></i> + Crear Planificación de Sesión
+          </button>
+        </div>
+
+        <!-- METRICAS DE PLANIFICACIÓN -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl font-bold">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase block">Total Sesiones Planificadas</span>
+              <strong id="cardTotalSessions" class="text-xl text-slate-900 font-extrabold">0</strong>
+            </div>
+          </div>
+
+          <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase block">Foco Predominante</span>
+              <strong id="cardMainFocus" class="text-sm text-slate-900 font-extrabold block truncate">Táctico / Técnico</strong>
+            </div>
+          </div>
+
+          <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase block">Promedio Carga Intensidad</span>
+              <strong id="cardAvgSessionIntensity" class="text-xl text-slate-900 font-extrabold">Media</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTROS POR TIPO DE SESIÓN -->
+        <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-2 items-center justify-between text-xs">
+          <span class="font-bold text-slate-700 uppercase tracking-wider text-[11px]"><i class="fa-solid fa-filter text-teal-600"></i> Filtrar Tipo de Sesión:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button onclick="filterSessions('ALL')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-800 text-white border-slate-800">Todas</button>
+            <button onclick="filterSessions('Táctico')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-100 text-slate-700 border-slate-200 hover:bg-teal-50 hover:text-teal-700">Táctico</button>
+            <button onclick="filterSessions('Técnico')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-100 text-slate-700 border-slate-200 hover:bg-sky-50 hover:text-sky-700">Técnico</button>
+            <button onclick="filterSessions('Físico')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-100 text-slate-700 border-slate-200 hover:bg-amber-50 hover:text-amber-700">Físico</button>
+            <button onclick="filterSessions('Mixto')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-100 text-slate-700 border-slate-200 hover:bg-purple-50 hover:text-purple-700">Mixto</button>
+            <button onclick="filterSessions('Específico arqueros')" class="session-filter-btn px-3 py-1.5 rounded-lg border font-bold bg-slate-100 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:text-emerald-700">Arqueros</button>
+          </div>
+        </div>
+
+        <!-- GRILLA DE SESIONES PLANIFICADAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="sessionsContainer">
           <!-- Carga dinámicamente -->
         </div>
       </div>
@@ -578,7 +651,7 @@
     </div>
   </div>
 
-  <!-- MODAL 4: AGENDAR EVENTO DE CALENDARIO COMPLETO -->
+  <!-- MODAL 4: AGENDAR EVENTO DE CALENDARIO -->
   <div id="addEventModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -587,8 +660,6 @@
       </div>
 
       <form onsubmit="saveNewEvent(event)" class="space-y-3 text-xs">
-        
-        <!-- TIPO DE EVENTO & COMPETICIÓN -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-600 mb-1 font-semibold">Tipo de Evento</label>
@@ -611,13 +682,11 @@
           </div>
         </div>
 
-        <!-- RIVAL (SOLO PARTIDOS) -->
         <div id="divRival" class="hidden bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
           <label class="block text-emerald-900 mb-1 font-extrabold"><i class="fa-solid fa-shield-halved"></i> Rival (Solo Partidos)</label>
           <input type="text" id="evRival" placeholder="Ej: Boca Juniors / San Lorenzo" class="w-full bg-white border border-emerald-300 rounded-lg px-3 py-1.5 text-slate-900 font-bold">
         </div>
 
-        <!-- FECHA, HORA INICIO Y DURACIÓN ESTIMADA -->
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label class="block text-slate-600 mb-1 font-semibold">Fecha</label>
@@ -633,7 +702,6 @@
           </div>
         </div>
 
-        <!-- LUGAR E INTENSIDAD ESTIMADA -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-600 mb-1 font-semibold">Lugar</label>
@@ -649,19 +717,16 @@
           </div>
         </div>
 
-        <!-- OBJETIVO DE LA SESIÓN -->
         <div>
           <label class="block text-slate-600 mb-1 font-semibold">Objetivo de la Sesión</label>
           <input type="text" id="evObjective" placeholder="Ej: Salidas de presión 4-0 y córners a favor" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-medium">
         </div>
 
-        <!-- NOTAS / OBSERVACIONES DEL CUERPO TÉCNICO -->
         <div>
           <label class="block text-slate-600 mb-1 font-semibold">Notas / Observaciones del Cuerpo Técnico</label>
           <textarea id="evNotes" rows="2" placeholder="Ej: Llevar indumentaria titular azul. Charla técnica 30 minutos antes." class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900"></textarea>
         </div>
 
-        <!-- JUGADORES CONVOCADOS (LISTA INTERACTIVA) -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
           <div class="flex items-center justify-between border-b border-slate-200 pb-1">
             <span class="font-bold text-slate-800 text-xs">Jugadores Convocados (Quién debería ir)</span>
@@ -680,7 +745,95 @@
     </div>
   </div>
 
-  <!-- MODAL 5: AVISO DE MÓDULO RESTRINGIDO -->
+  <!-- MODAL 5: NUEVA PLANIFICACIÓN DE SESIÓN (LOS 9 DATOS GENERALES) -->
+  <div id="addSessionModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[130] flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-teal-600"></i> Planificación de Sesión de Entrenamiento</h3>
+        <button onclick="closeModal('addSessionModal')" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form onsubmit="saveNewSession(event)" class="space-y-3 text-xs">
+        
+        <!-- 1. TIPO DE SESIÓN & LUGAR -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Tipo de Sesión</label>
+            <select id="sesType" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-bold">
+              <option value="Táctico">Táctico</option>
+              <option value="Técnico">Técnico</option>
+              <option value="Físico">Físico</option>
+              <option value="Mixto">Mixto</option>
+              <option value="Recuperación">Recuperación</option>
+              <option value="Específico arqueros">Específico arqueros</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Lugar</label>
+            <input type="text" id="sesLocation" required placeholder="Cancha Principal / Gimnasio" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+          </div>
+        </div>
+
+        <!-- 2. FECHA & HORARIO PLANIFICADO -->
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Fecha</label>
+            <input type="date" id="sesDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-900">
+          </div>
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Hora Inicio</label>
+            <input type="time" id="sesTimeStart" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-900">
+          </div>
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Hora Fin Estimada</label>
+            <input type="time" id="sesTimeEnd" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-900">
+          </div>
+        </div>
+
+        <!-- 3. OBJETIVO PRINCIPAL -->
+        <div>
+          <label class="block text-slate-600 mb-1 font-semibold">Objetivo Principal <span class="text-rose-500">*</span></label>
+          <input type="text" id="sesMainObjective" required placeholder="Qué se busca trabajar ese día (Ej: Salidas de presión 4-0)" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-bold">
+        </div>
+
+        <!-- 4. OBJETIVOS SECUNDARIOS (OPCIONAL) -->
+        <div>
+          <label class="block text-slate-600 mb-1 font-semibold">Objetivos Secundarios <span class="text-slate-400 font-normal">(Opcional)</span></label>
+          <input type="text" id="sesSecObjective" placeholder="Ej: Automatizar apoyos cortos del ala débil" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+        </div>
+
+        <!-- 5. INTENSIDAD ESTIMADA & MATERIALES NECESARIOS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Intensidad Estimada</label>
+            <select id="sesIntensity" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-bold">
+              <option value="Baja">Baja (Recuperación / Balón Parado)</option>
+              <option value="Media" selected>Media (Táctico continuo / Mixto)</option>
+              <option value="Alta">Alta (Carga física / Competitivo)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-600 mb-1 font-semibold">Materiales Necesarios</label>
+            <input type="text" id="sesMaterials" placeholder="Ej: Conos, pelotas, pecheras, escalera" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+          </div>
+        </div>
+
+        <!-- 6. NOTAS PREVIAS -->
+        <div>
+          <label class="block text-slate-600 mb-1 font-semibold">Notas Previas (Observaciones del cuerpo técnico)</label>
+          <textarea id="sesPreNotes" rows="2" placeholder="Ej: Verificar estado físico del pívot titular antes del bloque 2." class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('addSessionModal')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg shadow-sm">Guardar Planificación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 6: AVISO DE MÓDULO RESTRINGIDO -->
   <div id="proModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
       <div class="w-14 h-14 bg-amber-100 border border-amber-300 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl">
@@ -699,7 +852,7 @@
     </div>
   </div>
 
-  <!-- MODAL 6: LOGIN / REGISTRO -->
+  <!-- MODAL 7: LOGIN / REGISTRO -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl text-white">
       <div class="text-center space-y-1">
@@ -763,7 +916,9 @@
   <script>
     let playersStore = {};
     let calendarStore = {};
+    let sessionsStore = {};
     let currentFilterType = 'ALL';
+    let currentSessionFilter = 'ALL';
 
     const DEFAULT_PLAYERS = {
       "p_1": { id: "p_1", name: "Ulises Cabrera", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "8", pos: "ALA", posSec: "NINGUNA", foot: "Diestro", age: "24", height: "172", weight: "68", club: "Mismo Club", status: "DISPONIBLE", rpe: 0, duration: 90, convocados: 0, goles: 0, asistencias: 0, amarillas: 0, rojas: 0, golesRecibidos: 0 }
@@ -772,6 +927,22 @@
     const DEFAULT_EVENTS = {
       "ev_1": { id: "ev_1", type: "PARTIDO", date: "2026-10-25", time: "20:30", duration: 90, location: "Microestadio Polideportivo", rival: "San Lorenzo", competicion: "Liga", objective: "Asegurar 3 puntos y consolidar salida 4-0", intensity: "Alta", notes: "Convocatoria 19:30hs. Indumentaria titular azul.", convocados: ["Ulises Cabrera"] },
       "ev_2": { id: "ev_2", type: "ENTRENAMIENTO", date: "2026-10-23", time: "18:00", duration: 90, location: "Cancha Principal", rival: "", competicion: "N/A", objective: "Revisión de salidas de presión y córners", intensity: "Media", notes: "Traer calzado de parqué y ropa de entreno.", convocados: ["Ulises Cabrera"] }
+    };
+
+    const DEFAULT_SESSIONS = {
+      "ses_1": {
+        id: "ses_1",
+        date: "2026-10-23",
+        type: "Táctico",
+        timeStart: "18:00",
+        timeEnd: "19:30",
+        location: "Cancha Principal",
+        mainObjective: "Salidas de presión 4-0 y transiciones rápidas",
+        secObjective: "Ajuste de apoyos en ala opuesta",
+        intensity: "Media",
+        materials: "Conos, pelotas, pecheras rojas y azules, escalera",
+        preNotes: "Revisar movilidad articular previa de los pívots."
+      }
     };
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -892,9 +1063,10 @@
 
         const lockRpe = document.getElementById('lockBadgeRPE');
         const lockCal = document.getElementById('lockBadgeCal');
+        const lockPlan = document.getElementById('lockBadgePlan');
         const esPro = esUsuarioDevOPro(user);
 
-        [lockRpe, lockCal].forEach(lock => {
+        [lockRpe, lockCal, lockPlan].forEach(lock => {
           if (lock) {
             if (esPro) {
               lock.className = "fa-solid fa-unlock text-emerald-400 text-xs";
@@ -908,13 +1080,14 @@
 
         cargarPlantel();
         cargarCalendario();
+        cargarPlanificaciones();
       }
     }
 
     function showTab(tabId, buttonElement) {
       const user = getCurrentUser();
 
-      if ((tabId === 'plantel' || tabId === 'calendario') && !esUsuarioDevOPro(user)) {
+      if ((tabId === 'plantel' || tabId === 'calendario' || tabId === 'planificacion') && !esUsuarioDevOPro(user)) {
         openModal('proModal');
         return;
       }
@@ -927,6 +1100,7 @@
 
       if (tabId === 'plantel') cargarPlantel();
       if (tabId === 'calendario') cargarCalendario();
+      if (tabId === 'planificacion') cargarPlanificaciones();
     }
 
     // --- LÓGICA DE MI PLANTEL ---
@@ -1395,7 +1569,7 @@
       }
     }
 
-    // --- LÓGICA DE CALENDARIO COMPLETO ---
+    // --- LÓGICA DE CALENDARIO ---
     function cargarCalendario() {
       const data = localStorage.getItem('EF_CALENDAR_DATA');
       if (!data) {
@@ -1616,6 +1790,188 @@
       document.getElementById('cardNextMatch').innerText = nextMatchStr;
       document.getElementById('cardTotalTrainings').innerText = totalTrainings;
       document.getElementById('cardTotalEvents').innerText = totalEvents;
+    }
+
+    // --- LÓGICA DE SESIÓN / PLANIFICACIÓN ---
+    function cargarPlanificaciones() {
+      const data = localStorage.getItem('EF_SESSIONS_DATA');
+      if (!data) {
+        sessionsStore = DEFAULT_SESSIONS;
+        localStorage.setItem('EF_SESSIONS_DATA', JSON.stringify(DEFAULT_SESSIONS));
+      } else {
+        sessionsStore = JSON.parse(data);
+      }
+      renderPlanificaciones();
+    }
+
+    function openAddSessionModal() {
+      document.getElementById('sesDate').value = new Date().toISOString().split('T')[0];
+      openModal('addSessionModal');
+    }
+
+    function saveNewSession(e) {
+      e.preventDefault();
+      const id = "ses_" + Date.now();
+
+      sessionsStore[id] = {
+        id: id,
+        date: document.getElementById('sesDate').value,
+        type: document.getElementById('sesType').value,
+        timeStart: document.getElementById('sesTimeStart').value,
+        timeEnd: document.getElementById('sesTimeEnd').value,
+        location: document.getElementById('sesLocation').value,
+        mainObjective: document.getElementById('sesMainObjective').value,
+        secObjective: document.getElementById('sesSecObjective').value || '',
+        intensity: document.getElementById('sesIntensity').value,
+        materials: document.getElementById('sesMaterials').value || 'Ninguno especificado',
+        preNotes: document.getElementById('sesPreNotes').value || ''
+      };
+
+      localStorage.setItem('EF_SESSIONS_DATA', JSON.stringify(sessionsStore));
+      closeModal('addSessionModal');
+      cargarPlanificaciones();
+    }
+
+    function borrarSesionPlan(id) {
+      if (confirm("¿Deseas eliminar esta sesión de entrenamiento de la planificación?")) {
+        delete sessionsStore[id];
+        localStorage.setItem('EF_SESSIONS_DATA', JSON.stringify(sessionsStore));
+        cargarPlanificaciones();
+      }
+    }
+
+    function filterSessions(type) {
+      currentSessionFilter = type;
+      renderPlanificaciones();
+    }
+
+    function getSessionTypeBadge(type) {
+      switch(type) {
+        case 'Táctico':
+          return "bg-teal-100 text-teal-800 border-teal-300";
+        case 'Técnico':
+          return "bg-sky-100 text-sky-800 border-sky-300";
+        case 'Físico':
+          return "bg-amber-100 text-amber-800 border-amber-300";
+        case 'Mixto':
+          return "bg-purple-100 text-purple-800 border-purple-300";
+        case 'Recuperación':
+          return "bg-emerald-100 text-emerald-800 border-emerald-300";
+        case 'Específico arqueros':
+          return "bg-indigo-100 text-indigo-800 border-indigo-300";
+        default:
+          return "bg-slate-100 text-slate-800 border-slate-300";
+      }
+    }
+
+    function renderPlanificaciones() {
+      const container = document.getElementById('sessionsContainer');
+      const keys = Object.keys(sessionsStore);
+
+      document.getElementById('cardTotalSessions').innerText = keys.length;
+
+      let intensityCounts = { "Baja": 0, "Media": 0, "Alta": 0 };
+      let typeCounts = {};
+
+      const sortedKeys = keys.sort((a, b) => new Date(sessionsStore[a].date) - new Date(sessionsStore[b].date));
+
+      container.innerHTML = '';
+
+      sortedKeys.forEach(k => {
+        const s = sessionsStore[k];
+
+        if (s.intensity) intensityCounts[s.intensity] = (intensityCounts[s.intensity] || 0) + 1;
+        if (s.type) typeCounts[s.type] = (typeCounts[s.type] || 0) + 1;
+
+        if (currentSessionFilter !== 'ALL' && s.type !== currentSessionFilter) return;
+
+        let intensityBadge = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (s.intensity === 'Media') intensityBadge = "bg-amber-50 text-amber-700 border-amber-200";
+        if (s.intensity === 'Alta') intensityBadge = "bg-rose-50 text-rose-700 border-rose-200";
+
+        const card = document.createElement('div');
+        card.className = "bg-card-light rounded-2xl p-5 shadow-md border border-slate-200 flex flex-col justify-between space-y-3 hover:shadow-lg transition-all";
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold border ${getSessionTypeBadge(s.type)}">
+                  <i class="fa-solid fa-stopwatch"></i> ${s.type}
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${intensityBadge}">
+                  Intensidad ${s.intensity}
+                </span>
+              </div>
+              <button onclick="borrarSesionPlan('${s.id}')" class="text-slate-400 hover:text-rose-600 transition-colors" title="Eliminar Sesión">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <div>
+                <span class="text-[10px] text-slate-400 block font-bold uppercase">Fecha y Lugar</span>
+                <strong class="text-slate-900 block truncate"><i class="fa-solid fa-calendar text-teal-600"></i> ${s.date}</strong>
+                <span class="text-[10px] text-slate-500">${s.location}</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 block font-bold uppercase">Horario Planificado</span>
+                <strong class="text-slate-900"><i class="fa-solid fa-clock text-amber-600"></i> ${s.timeStart} - ${s.timeEnd} hs</strong>
+              </div>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="bg-teal-50/70 p-2.5 rounded-xl border border-teal-200">
+                <span class="text-[10px] font-extrabold text-teal-900 block uppercase"><i class="fa-solid fa-bullseye text-teal-600"></i> Objetivo Principal</span>
+                <p class="text-slate-800 font-bold mt-0.5">${s.mainObjective}</p>
+              </div>
+
+              ${s.secObjective ? `
+                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-[11px]">
+                  <span class="font-bold text-slate-500 block">Objetivos Secundarios:</span>
+                  <p class="text-slate-700">${s.secObjective}</p>
+                </div>
+              ` : ''}
+
+              <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-[11px] space-y-1">
+                <div class="flex items-start gap-1.5">
+                  <i class="fa-solid fa-boxes-packing text-amber-600 mt-0.5"></i>
+                  <span><strong>Materiales:</strong> ${s.materials}</span>
+                </div>
+              </div>
+
+              ${s.preNotes ? `
+                <div class="bg-amber-50/80 p-2.5 rounded-xl border border-amber-200 text-[11px] text-amber-900 italic">
+                  <strong class="not-italic font-bold"><i class="fa-solid fa-clipboard text-amber-600"></i> Notas previas:</strong> "${s.preNotes}"
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      if (container.children.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-card-light p-8 rounded-2xl border border-slate-200 text-center text-slate-400 text-xs">
+            No hay planificaciones registradas en esta categoría.
+          </div>
+        `;
+      }
+
+      let maxType = "Táctico / Técnico";
+      let maxCount = 0;
+      Object.keys(typeCounts).forEach(t => {
+        if (typeCounts[t] > maxCount) {
+          maxCount = typeCounts[t];
+          maxType = t;
+        }
+      });
+      document.getElementById('cardMainFocus').innerText = maxType;
+
+      let dominantIntensity = "Media";
+      if (intensityCounts["Alta"] > intensityCounts["Media"] && intensityCounts["Alta"] > intensityCounts["Baja"]) dominantIntensity = "Alta";
+      if (intensityCounts["Baja"] > intensityCounts["Media"] && intensityCounts["Baja"] > intensityCounts["Alta"]) dominantIntensity = "Baja";
+      document.getElementById('cardAvgSessionIntensity').innerText = dominantIntensity;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
