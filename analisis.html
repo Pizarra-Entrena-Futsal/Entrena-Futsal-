@@ -227,7 +227,6 @@
       return `${m}:${s}`;
     }
 
-    // OBTENER ID ÚNICO DEL USUARIO ACTIVO
     function getUserId() {
       const currentUserData = localStorage.getItem('EF_CURRENT_USER');
       if (!currentUserData) return 'default_user';
@@ -270,30 +269,34 @@
 
     function guardarClipRecortado(tipo, inicioSec, finSec) {
       const rangeText = `${formatTime(inicioSec)} a ${formatTime(finSec)}`;
-      const snapshot = generarSnapshot();
+      const snapshotHD = generarSnapshotAltaCalidad();
+      const snapshotThumb = generarSnapshotCompresa();
 
       const newClip = {
         id: "clip_" + Date.now(),
         title: `${tipo} (${rangeText})`,
         time: rangeText,
         notes: `Corte de videoanálisis del min ${rangeText}`,
-        snapshot: snapshot
+        snapshotHD: snapshotHD,
+        snapshotThumb: snapshotThumb
       };
 
       clips.unshift(newClip);
       renderClips();
     }
 
-    // --- DESCARGA LOCAL EN IMAGEN PNG EN ALTA QUALIDAD ---
+    // --- DESCARGA LOCAL EN IMAGEN PNG EN ALTA CALIDAD ---
     function descargarClip(clipId) {
       const clip = clips.find(c => c.id === clipId);
-      if (!clip || !clip.snapshot) {
-        alert("No se encontró la captura del recorte para descargar.");
+      if (!clip) return;
+      const snapshot = clip.snapshotHD || clip.snapshotThumb;
+      if (!snapshot) {
+        alert("No se encontró la captura para descargar.");
         return;
       }
 
       const link = document.createElement('a');
-      link.href = clip.snapshot;
+      link.href = snapshot;
       link.download = `${clip.title.replace(/[^a-z0-9]/gi, '_')}.png`;
       document.body.appendChild(link);
       link.click();
@@ -465,7 +468,28 @@
       }
     }
 
-    function generarSnapshot() {
+    // CAPTURA LIVIANA COMPRIMIDA PARA KANBAN (~30KB)
+    function generarSnapshotCompresa() {
+      const offscreen = document.createElement('canvas');
+      const targetWidth = 480;
+      const aspect = (canvas.height || 360) / (canvas.width || 640);
+      offscreen.width = targetWidth;
+      offscreen.height = targetWidth * aspect;
+      const offCtx = offscreen.getContext('2d');
+
+      try {
+        offCtx.drawImage(video, 0, 0, offscreen.width, offscreen.height);
+      } catch (err) {
+        offCtx.fillStyle = "#111827";
+        offCtx.fillRect(0, 0, offscreen.width, offscreen.height);
+      }
+
+      offCtx.drawImage(canvas, 0, 0, offscreen.width, offscreen.height);
+      return offscreen.toDataURL('image/jpeg', 0.7);
+    }
+
+    // CAPTURA ALTA RESOLUCIÓN PARA DESCARGA
+    function generarSnapshotAltaCalidad() {
       const offscreen = document.createElement('canvas');
       offscreen.width = canvas.width || 640;
       offscreen.height = canvas.height || 360;
@@ -508,7 +532,7 @@
             <span class="font-bold text-white">${clip.title}</span>
             <button onclick="borrarClip('${clip.id}')" class="text-slate-600 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
           </div>
-          <img src="${clip.snapshot}" class="w-full h-28 object-cover rounded-lg border border-slate-800">
+          <img src="${clip.snapshotThumb || clip.snapshotHD}" class="w-full h-28 object-cover rounded-lg border border-slate-800">
           <div class="pt-2 flex items-center justify-between border-t border-slate-800/80 gap-1">
             <span class="text-[10px] text-slate-500">${clip.time}</span>
             <div class="flex items-center gap-1.5">
@@ -533,39 +557,44 @@
     function enviarClipAlKanban(clipId) {
       const clip = clips.find(c => c.id === clipId);
       if (!clip) return;
-      enviarAlKanban(clip.title, clip.notes, 'Videoanálisis', clip.snapshot, '');
+      enviarAlKanban(clip.title, clip.notes, 'Videoanálisis', clip.snapshotThumb || clip.snapshotHD, '');
     }
 
-    // GUARDA EN EL ESPACIO DEL USUARIO Y EN EL ESPACIO COMPARTIDO DEL STAFF/ENTRENADOR
+    // GUARDA EN EL ESPACIO DEL USUARIO Y EN EL ESPACIO COMPARTIDO DEL STAFF/ENTRENADOR CON CAPTURA LIVIANA
     function enviarAlKanban(titulo, descripcion, modulo, imagen = '', videoUrl = '') {
-      const userId = getUserId();
-      
-      const nuevaTarea = {
-        id: "k_" + Date.now(),
-        title: titulo || "Clip de Videoanálisis",
-        desc: descripcion || "Sin descripción",
-        module: modulo || "Videoanálisis",
-        image: imagen || '',
-        videoUrl: videoUrl || '',
-        status: 'pending',
-        date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
-      };
+      try {
+        const userId = getUserId();
+        
+        const nuevaTarea = {
+          id: "k_" + Date.now(),
+          title: titulo || "Clip de Videoanálisis",
+          desc: descripcion || "Sin descripción",
+          module: modulo || "Videoanálisis",
+          image: imagen || '',
+          videoUrl: videoUrl || '',
+          status: 'pending',
+          date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+        };
 
-      // 1. Guardar en clave de usuario
-      const storageKey = 'EF_KANBAN_TASKS_' + userId;
-      const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      tareasPrevias.unshift(nuevaTarea);
-      localStorage.setItem(storageKey, JSON.stringify(tareasPrevias));
+        // 1. Guardar en clave del usuario activo
+        const storageKey = 'EF_KANBAN_TASKS_' + userId;
+        const tareasPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        tareasPrevias.unshift(nuevaTarea);
+        localStorage.setItem(storageKey, JSON.stringify(tareasPrevias));
 
-      // 2. Guardar también en espacio fallback para que el Entrenador lo vea
-      const globalKey = 'EF_KANBAN_TASKS_default_user';
-      if (storageKey !== globalKey) {
-        const tareasGlobales = JSON.parse(localStorage.getItem(globalKey) || '[]');
-        tareasGlobales.unshift(nuevaTarea);
-        localStorage.setItem(globalKey, JSON.stringify(tareasGlobales));
+        // 2. Guardar también en espacio global por defecto para que el Entrenador lo reciba
+        const fallbackKey = 'EF_KANBAN_TASKS_default_user';
+        if (storageKey !== fallbackKey) {
+          const tareasFallback = JSON.parse(localStorage.getItem(fallbackKey) || '[]');
+          tareasFallback.unshift(nuevaTarea);
+          localStorage.setItem(fallbackKey, JSON.stringify(tareasFallback));
+        }
+
+        alert('🎬 ¡Clip enviado con éxito al Tablero Kanban del Staff!');
+      } catch (err) {
+        console.error("Error guardando en Kanban:", err);
+        alert("⚠ Error guardando tarea en el Kanban: " + err.message);
       }
-
-      alert('🎬 ¡Clip enviado con éxito al Tablero Kanban del Staff!');
     }
   </script>
 </body>
