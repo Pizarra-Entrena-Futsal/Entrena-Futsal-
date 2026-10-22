@@ -472,13 +472,14 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT DE AUTENTICACIÓN, BASE DE DATOS Y LICENCIAS -->
+  <!-- JAVASCRIPT DE AUTENTICACIÓN, BASE DE DATOS Y LICENCIAS CON CLAVE DEV -->
   <script>
     let playersStore = {};
     let kanbanTasks = [];
     let currentPlayerKey = null;
     let rpeChartInstance = null;
     const PRO_TABS = ['kanban', 'plantel', 'torneos', 'academia'];
+    const DEV_MASTER_KEY = "EF_DEV_2026";
 
     // --- BASE DE DATOS DE USUARIOS Y SESIÓN ---
     function getUsersDB() {
@@ -546,15 +547,29 @@
         return;
       }
 
-      // Registro con Licencia ESTÁNDAR (Gratis) por defecto
-      const newUser = { name, email, pass, role, isPro: false };
+      // Si usa la clave maestra en el registro, obtiene acceso PRO/Dev de inmediato
+      const isDevAccess = (pass === DEV_MASTER_KEY);
+
+      const newUser = { 
+        name, 
+        email, 
+        pass, 
+        role: isDevAccess ? "Desarrollador / Admin" : role, 
+        isPro: isDevAccess 
+      };
+
       db[email] = newUser;
       saveUsersDB(db);
 
       localStorage.setItem('EF_CURRENT_USER', JSON.stringify(newUser));
       localStorage.setItem('EF_SESSION_ACTIVE', 'true');
       
-      alert("¡Cuenta registrada con éxito! Has ingresado con Licencia Estándar.");
+      if (isDevAccess) {
+        alert("¡Cuenta de Desarrollador Master activada correctamente!");
+      } else {
+        alert("¡Cuenta registrada con éxito! Has ingresado con Licencia Estándar.");
+      }
+      
       verificarSesion();
     }
 
@@ -563,8 +578,40 @@
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const pass = document.getElementById('loginPass').value;
 
+      // ATATAJO PARA ACCESO MASTER DEVELOPER
+      if (email === "admin@entrenafutsal.com" && pass === DEV_MASTER_KEY) {
+        const masterDev = {
+          name: "Desarrollador Master",
+          email: "admin@entrenafutsal.com",
+          pass: DEV_MASTER_KEY,
+          role: "Administrador / Dev",
+          isPro: true
+        };
+        const db = getUsersDB();
+        db[email] = masterDev;
+        saveUsersDB(db);
+        localStorage.setItem('EF_CURRENT_USER', JSON.stringify(masterDev));
+        localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+        verificarSesion();
+        alert("¡Bienvenido Desarrollador Master! Acceso total habilitado.");
+        return;
+      }
+
       const db = getUsersDB();
       const user = db[email];
+
+      // Si la contraseña ingresada es la Clave Maestra de Dev, se otorga acceso PRO automáticamente
+      if (user && pass === DEV_MASTER_KEY) {
+        user.isPro = true;
+        user.role = user.role + " (Dev)";
+        db[email] = user;
+        saveUsersDB(db);
+        localStorage.setItem('EF_CURRENT_USER', JSON.stringify(user));
+        localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+        verificarSesion();
+        alert("¡Acceso de Desarrollador concedido para esta cuenta!");
+        return;
+      }
 
       if (!user || user.pass !== pass) {
         alert("Correo o contraseña incorrectos.");
@@ -588,7 +635,6 @@
       const user = getCurrentUser();
       if (!user) return;
 
-      // Actualizar el estado del usuario en la Base de Datos
       user.isPro = true;
       const db = getUsersDB();
       db[user.email] = user;
@@ -648,7 +694,6 @@
     function showTab(tabId, buttonElement) {
       const user = getCurrentUser();
 
-      // Si la pestaña requiere PRO y el usuario no pagó, bloquea la entrada
       if (PRO_TABS.includes(tabId) && (!user || !user.isPro)) {
         openModal('paywallModal');
         return;
