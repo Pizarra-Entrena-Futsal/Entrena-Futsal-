@@ -72,14 +72,14 @@
     <aside class="w-64 bg-sidebar border-r border-slate-800 flex flex-col justify-between p-4 shrink-0 overflow-y-auto">
       <div class="space-y-6">
         
-        <!-- HERRAMIENTAS TÁCTICAS -->
+        <!-- HERRAMIENTAS TÁCTICAS (GRATIS) -->
         <div>
           <div class="flex items-center justify-between px-3 mb-2">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">HERRAMIENTAS TÁCTICAS</span>
             <span class="text-[10px] bg-slate-800 text-emerald-400 font-bold px-1.5 py-0.5 rounded">GRATIS</span>
           </div>
           <nav class="space-y-1">
-            <button onclick="showTab('principal', this)" class="nav-link w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
+            <button onclick="showTab('principal', this)" class="nav-link active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
               <i class="fa-solid fa-chart-pie w-5 text-slate-400"></i>
               <span>Panel Principal</span>
             </button>
@@ -106,7 +106,7 @@
           </nav>
         </div>
 
-        <!-- GESTIÓN CUERPOS TÉCNICOS (PRO) -->
+        <!-- GESTIÓN CUERPOS TÉCNICOS (RESTRINGIDO PRO) -->
         <div>
           <div class="flex items-center justify-between px-3 mb-2">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">GESTIÓN CUERPOS TÉCNICOS</span>
@@ -118,15 +118,15 @@
                 <i class="fa-solid fa-list-check w-5 text-sky-400"></i>
                 <span>Control Staff (Kanban)</span>
               </div>
-              <i class="fa-solid fa-check text-xs text-emerald-400"></i>
+              <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </button>
 
-            <button onclick="showTab('plantel', this)" class="nav-link active w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
+            <button onclick="showTab('plantel', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
               <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-users-gear w-5 text-emerald-400"></i>
                 <span>Equipo & Carga RPE</span>
               </div>
-              <i class="fa-solid fa-check text-xs text-emerald-400"></i>
+              <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </button>
 
             <button onclick="showTab('torneos', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
@@ -134,7 +134,7 @@
                 <i class="fa-solid fa-calendar-days w-5 text-amber-400"></i>
                 <span>Planificación Torneos</span>
               </div>
-              <i class="fa-solid fa-check text-xs text-emerald-400"></i>
+              <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </button>
 
             <button onclick="showTab('academia', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
@@ -142,7 +142,7 @@
                 <i class="fa-solid fa-graduation-cap w-5 text-indigo-400"></i>
                 <span>Academia / Charlas</span>
               </div>
-              <i class="fa-solid fa-check text-xs text-emerald-400"></i>
+              <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </button>
           </nav>
         </div>
@@ -152,10 +152,10 @@
       <div class="mt-6 pt-4 border-t border-slate-800">
         <div class="bg-slate-900/90 border border-amber-500/30 p-3 rounded-xl flex items-center justify-between">
           <div>
-            <div id="sidebarPlanTitle" class="text-xs font-bold text-white">Plan Habilitado</div>
-            <div id="sidebarPlanSubtitle" class="text-[10px] text-emerald-400 font-semibold">Acceso Ilimitado PRO</div>
+            <div id="sidebarPlanTitle" class="text-xs font-bold text-white">Estado Cuenta</div>
+            <div id="sidebarPlanSubtitle" class="text-[10px] text-slate-400 font-semibold">Cargando...</div>
           </div>
-          <i id="sidebarPlanIcon" class="fa-solid fa-shield-halved text-amber-400 text-lg"></i>
+          <i id="sidebarPlanIcon" class="fa-solid fa-user text-slate-400 text-lg"></i>
         </div>
       </div>
     </aside>
@@ -164,7 +164,7 @@
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
       <!-- TAB 1: PANEL PRINCIPAL -->
-      <div id="principal" class="tab-content hidden space-y-6">
+      <div id="principal" class="tab-content space-y-6">
         <div class="bg-card p-6 rounded-2xl border border-slate-800">
           <h2 class="text-2xl font-bold text-white">Bienvenido al Staff Hub</h2>
           <p class="text-slate-400 text-sm mt-1">Selecciona una herramienta del menú lateral para comenzar a trabajar.</p>
@@ -172,7 +172,7 @@
       </div>
 
       <!-- TAB 2: EQUIPO & CARGA RPE -->
-      <div id="plantel" class="tab-content space-y-6">
+      <div id="plantel" class="tab-content hidden space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white flex items-center gap-3">
@@ -192,21 +192,19 @@
           </div>
         </div>
 
-        <!-- ESTADO VACÍO (LIENZO LIMPIO) -->
         <div id="emptyPlayersState" class="bg-card p-12 rounded-2xl border border-slate-800 text-center space-y-4 my-6">
           <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center justify-center text-3xl mx-auto shadow-inner">
             <i class="fa-solid fa-users-slash"></i>
           </div>
           <div>
             <h3 class="text-xl font-bold text-white">Lienzo Limpio: Tu Plantel está Vacío</h3>
-            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">No hay jugadores registrados aún. Comienza agregando los integrantes de tu equipo.</p>
+            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">No hay jugadores registrados en tu espacio aún.</p>
           </div>
           <button onclick="openModal('addPlayerModal')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-5 py-3 rounded-xl transition-all inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20">
             <i class="fa-solid fa-user-plus"></i> Cargar Mi Primer Jugador
           </button>
         </div>
 
-        <!-- CONTENEDOR CON DATOS DE JUGADOR -->
         <div id="playerDetailContainer" class="space-y-6 hidden">
           <div class="bg-card p-6 rounded-2xl border border-slate-800 shadow-2xl">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -248,11 +246,6 @@
                     <line x1="200" y1="10" x2="200" y2="190" />
                     <circle cx="200" cy="100" r="30" />
                   </svg>
-                  <div class="absolute inset-0 grid grid-cols-3 p-1 text-[10px] font-bold text-center items-center">
-                    <div class="bg-emerald-500/30 text-emerald-200 rounded p-1">42% Ala</div>
-                    <div class="bg-emerald-500/40 text-emerald-100 rounded p-1">38% Pívot</div>
-                    <div class="bg-emerald-500/20 text-emerald-300 rounded p-1">20% Cierre</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -276,7 +269,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: CONTROL STAFF (KANBAN INTERACTIVO SINCRONIZADO) -->
+      <!-- TAB 3: CONTROL STAFF (KANBAN) -->
       <div id="kanban" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -290,13 +283,10 @@
           </button>
         </div>
 
-        <!-- TABLERO KANBAN DE 3 COLUMNAS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span class="font-bold text-sm text-amber-400 flex items-center gap-2">
-                <i class="fa-solid fa-circle text-[8px]"></i> PENDIENTES
-              </span>
+              <span class="font-bold text-sm text-amber-400 flex items-center gap-2"><i class="fa-solid fa-circle text-[8px]"></i> PENDIENTES</span>
               <span id="countPending" class="bg-amber-500/20 text-amber-400 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/30">0</span>
             </div>
             <div id="colPending" class="space-y-3 min-h-[300px]"></div>
@@ -304,9 +294,7 @@
 
           <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span class="font-bold text-sm text-sky-400 flex items-center gap-2">
-                <i class="fa-solid fa-spinner animate-spin text-xs"></i> EN PROCESO
-              </span>
+              <span class="font-bold text-sm text-sky-400 flex items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xs"></i> EN PROCESO</span>
               <span id="countProgress" class="bg-sky-500/20 text-sky-400 text-xs font-bold px-2 py-0.5 rounded-full border border-sky-500/30">0</span>
             </div>
             <div id="colProgress" class="space-y-3 min-h-[300px]"></div>
@@ -314,9 +302,7 @@
 
           <div class="bg-card p-4 rounded-2xl border border-slate-800 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span class="font-bold text-sm text-emerald-400 flex items-center gap-2">
-                <i class="fa-solid fa-check-double text-xs"></i> COMPLETADAS
-              </span>
+              <span class="font-bold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-check-double text-xs"></i> COMPLETADAS</span>
               <span id="countDone" class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">0</span>
             </div>
             <div id="colDone" class="space-y-3 min-h-[300px]"></div>
@@ -341,7 +327,38 @@
     </main>
   </div>
 
-  <!-- MODAL: INICIAR SESIÓN (PANTALLA DINÁMICA DE AUTENTICACIÓN) -->
+  <!-- MODAL: VENTANA DE PAGO / BLOQUEO PRO (PAYWALL) -->
+  <div id="paywallModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[120] flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl text-center relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mx-auto shadow-lg">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      
+      <div>
+        <h3 class="font-extrabold text-xl text-white">Módulo Exclusivo PRO</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Esta función requiere una suscripción activa para la gestión avanzada de cuerpos técnicos y seguimiento de carga RPE.</p>
+      </div>
+
+      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-left space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Control Kanban de Tareas del Staff</div>
+        <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Carga Interna RPE (Escala Borg 1-10)</div>
+        <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Monitoreo de Plantel e Historial Físico</div>
+      </div>
+
+      <div class="pt-2 space-y-2">
+        <button onclick="activarLicenciaProDemo()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-xs transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bolt"></i> Habilitar Licencia PRO
+        </button>
+        <button onclick="closeModal('paywallModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-all">
+          Volver a Herramientas Gratuitas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: INICIAR SESIÓN -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl text-center">
       <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto">
@@ -354,8 +371,8 @@
 
       <form onsubmit="iniciarSesion(event)" class="space-y-4 text-left text-xs">
         <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Nombre y Apellido</label>
-          <input type="text" id="loginUser" required placeholder="Ej: Luciano Montiel" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+          <label class="block text-slate-400 mb-1 font-semibold">Correo / Usuario</label>
+          <input type="text" id="loginUser" required placeholder="Ej: usuario@futsal.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
         </div>
         <div>
           <label class="block text-slate-400 mb-1 font-semibold">Cargo / Rol en el Club</label>
@@ -368,10 +385,10 @@
           </select>
         </div>
         <div>
-          <label class="block text-slate-400 mb-1 font-semibold">Tipo de Licencia</label>
+          <label class="block text-slate-400 mb-1 font-semibold">Estado de Suscripción</label>
           <select id="loginPlan" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
-            <option value="PRO">Habilitación PRO (Acceso Completo)</option>
-            <option value="ESTANDAR">Licencia Estándar</option>
+            <option value="ESTANDAR">Licencia Estándar (Gratis)</option>
+            <option value="PRO">Suscripción PRO Habilitada</option>
           </select>
         </div>
         <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold transition-all shadow-lg shadow-emerald-500/20">
@@ -381,7 +398,7 @@
     </div>
   </div>
 
-  <!-- MODAL: AGREGAR JUGADOR -->
+  <!-- MODALES DE TRABAJO (JUGADOR, RPE, KANBAN MANUAL) -->
   <div id="addPlayerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -404,7 +421,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CARGAR RPE -->
   <div id="logRpeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -420,7 +436,6 @@
     </div>
   </div>
 
-  <!-- MODAL: KANBAN MANUAL -->
   <div id="addKanbanTaskModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -436,14 +451,24 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT DE LÓGICA Y SINCRONIZACIÓN DINÁMICA -->
+  <!-- JAVASCRIPT DE BLOQUEO Y NAVEGACIÓN RESTRINGIDA -->
   <script>
     let playersStore = {};
     let kanbanTasks = [];
     let currentPlayerKey = null;
     let rpeChartInstance = null;
+    const PRO_TABS = ['kanban', 'plantel', 'torneos', 'academia'];
 
-    // Generar Iniciales desde el Nombre
+    function getUserId() {
+      const currentUserData = localStorage.getItem('EF_CURRENT_USER');
+      if (!currentUserData) return 'default_user';
+      const user = JSON.parse(currentUserData);
+      return (user.id || user.name || 'default_user').toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+    }
+
+    function getPlayersStorageKey() { return 'EF_PLAYERS_DATA_' + getUserId(); }
+    function getKanbanStorageKey() { return 'EF_KANBAN_TASKS_' + getUserId(); }
+
     function getInitials(fullname) {
       if (!fullname) return "EF";
       const parts = fullname.trim().split(" ");
@@ -451,7 +476,28 @@
       return fullname.slice(0, 2).toUpperCase();
     }
 
-    // --- CONTROL DE SESIÓN DINÁMICO ---
+    function getCurrentUser() {
+      const data = localStorage.getItem('EF_CURRENT_USER');
+      return data ? JSON.parse(data) : { plan: 'ESTANDAR' };
+    }
+
+    // --- BLOQUEO RESTRINGIDO AL NAVEGAR ---
+    function showTab(tabId, buttonElement) {
+      const user = getCurrentUser();
+
+      // Si intenta ingresar a un módulo PRO sin la suscripción, se bloquea y abre el Paywall
+      if (PRO_TABS.includes(tabId) && user.plan !== 'PRO') {
+        openModal('paywallModal');
+        return;
+      }
+
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      if (buttonElement) buttonElement.classList.add('active');
+    }
+
     function verificarSesion() {
       const sesionActiva = localStorage.getItem('EF_SESSION_ACTIVE');
       const loginModal = document.getElementById('loginModal');
@@ -462,6 +508,7 @@
       } else {
         loginModal.classList.add('hidden');
         aplicarPerfilUsuario(JSON.parse(currentUserData));
+        cargarDatosUsuarioActivo();
       }
     }
 
@@ -474,6 +521,7 @@
       const planTitle = document.getElementById('sidebarPlanTitle');
       const planSubtitle = document.getElementById('sidebarPlanSubtitle');
       const planIcon = document.getElementById('sidebarPlanIcon');
+      const lockIcons = document.querySelectorAll('.pro-lock-icon');
 
       if (user.plan === 'PRO') {
         headerBadge.innerText = 'STAFF HUB (PRO)';
@@ -482,18 +530,41 @@
         planSubtitle.innerText = 'Acceso Ilimitado PRO';
         planSubtitle.className = 'text-[10px] text-emerald-400 font-semibold';
         planIcon.className = 'fa-solid fa-shield-halved text-amber-400 text-lg';
+        lockIcons.forEach(icon => { icon.className = 'pro-lock-icon fa-solid fa-check text-xs text-emerald-400'; });
       } else {
         headerBadge.innerText = 'STAFF HUB';
         headerBadge.className = 'bg-slate-800 text-slate-300 text-[10px] font-extrabold px-2 py-0.5 rounded border border-slate-700 uppercase';
         planTitle.innerText = 'Licencia Estándar';
-        planSubtitle.innerText = 'Funciones Básicas';
-        planSubtitle.className = 'text-[10px] text-slate-400 font-semibold';
-        planIcon.className = 'fa-solid fa-user text-slate-400 text-lg';
+        planSubtitle.innerText = 'Funciones PRO Bloqueadas';
+        planSubtitle.className = 'text-[10px] text-amber-400 font-semibold';
+        planIcon.className = 'fa-solid fa-lock text-amber-400 text-lg';
+        lockIcons.forEach(icon => { icon.className = 'pro-lock-icon fa-solid fa-lock text-xs text-amber-400'; });
       }
     }
 
+    function activarLicenciaProDemo() {
+      const user = getCurrentUser();
+      user.plan = 'PRO';
+      localStorage.setItem('EF_CURRENT_USER', JSON.stringify(user));
+      aplicarPerfilUsuario(user);
+      closeModal('paywallModal');
+      alert('¡Suscripción PRO activada con éxito!');
+    }
+
+    function cargarDatosUsuarioActivo() {
+      const savedPlayers = localStorage.getItem(getPlayersStorageKey());
+      playersStore = savedPlayers ? JSON.parse(savedPlayers) : {};
+
+      const savedKanban = localStorage.getItem(getKanbanStorageKey());
+      kanbanTasks = savedKanban ? JSON.parse(savedKanban) : [];
+
+      currentPlayerKey = null;
+      renderUI();
+      renderKanban();
+    }
+
     function cerrarSesion() {
-      if (confirm("¿Deseas salir de tu usuario y cerrar la sesión activa?")) {
+      if (confirm("¿Deseas salir de tu espacio y cerrar la sesión activa?")) {
         localStorage.setItem('EF_SESSION_ACTIVE', 'false');
         localStorage.removeItem('EF_CURRENT_USER');
         verificarSesion();
@@ -502,12 +573,13 @@
 
     function iniciarSesion(e) {
       e.preventDefault();
-      const userName = document.getElementById('loginUser').value.trim();
+      const userInputValue = document.getElementById('loginUser').value.trim();
       const userRole = document.getElementById('loginRole').value;
       const userPlan = document.getElementById('loginPlan').value;
 
       const userProfile = {
-        name: userName || "Usuario Staff",
+        id: userInputValue.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+        name: userInputValue || "Usuario Staff",
         role: userRole,
         plan: userPlan
       };
@@ -517,56 +589,29 @@
       verificarSesion();
     }
 
-    // Recargar memoria Kanban en tiempo real
     function recargarDatosKanban() {
-      const savedKanban = localStorage.getItem('EF_KANBAN_TASKS');
+      const savedKanban = localStorage.getItem(getKanbanStorageKey());
       kanbanTasks = savedKanban ? JSON.parse(savedKanban) : [];
       renderKanban();
     }
 
-    // Eventos de inicio y sincronización
     window.addEventListener('DOMContentLoaded', () => {
-      verificarSesion();
-
-      const savedPlayers = localStorage.getItem('EF_PLAYERS_DATA');
-      playersStore = savedPlayers ? JSON.parse(savedPlayers) : {};
-
-      delete playersStore.kiki;
-      delete playersStore.matias;
-      delete playersStore.luciano;
-      delete playersStore.cierre;
-
-      savePlayersToStorage();
       initRpeChart();
-      renderUI();
-      recargarDatosKanban();
+      verificarSesion();
     });
 
-    // Escuchar vuelta de páginas externas
     window.addEventListener('pageshow', recargarDatosKanban);
     window.addEventListener('focus', recargarDatosKanban);
     window.addEventListener('storage', (e) => {
-      if (e.key === 'EF_KANBAN_TASKS') {
-        recargarDatosKanban();
-      }
-      if (e.key === 'EF_SESSION_ACTIVE' || e.key === 'EF_CURRENT_USER') {
-        verificarSesion();
-      }
+      if (e.key === getKanbanStorageKey()) recargarDatosKanban();
+      if (e.key === 'EF_SESSION_ACTIVE' || e.key === 'EF_CURRENT_USER') verificarSesion();
     });
 
-    function savePlayersToStorage() { localStorage.setItem('EF_PLAYERS_DATA', JSON.stringify(playersStore)); }
-    function saveKanbanToStorage() { localStorage.setItem('EF_KANBAN_TASKS', JSON.stringify(kanbanTasks)); renderKanban(); }
+    function savePlayersToStorage() { localStorage.setItem(getPlayersStorageKey(), JSON.stringify(playersStore)); }
+    function saveKanbanToStorage() { localStorage.setItem(getKanbanStorageKey(), JSON.stringify(kanbanTasks)); renderKanban(); }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-    function showTab(tabId, buttonElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-      const activeTab = document.getElementById(tabId);
-      if (activeTab) activeTab.classList.remove('hidden');
-      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-      if (buttonElement) buttonElement.classList.add('active');
-    }
 
     // --- TABLERO KANBAN ---
     function renderKanban() {
