@@ -33,16 +33,8 @@
   <!-- TOP HEADER -->
   <header class="bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
     <div class="flex items-center gap-4">
-      <!-- LOGO TRANSPARENTE ENCABEZADO -->
-      <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center p-1 shadow-md shrink-0">
-        <svg viewBox="0 0 100 100" class="w-full h-full">
-          <path d="M50,10 L85,25 L85,60 C85,75 50,92 50,92 C50,92 15,75 15,60 L15,25 Z" fill="#0b101d" stroke="#f97316" stroke-width="4"/>
-          <path d="M50,12 L83,26 L83,59 C83,73 50,88 50,88 Z" fill="#f97316"/>
-          <circle cx="68" cy="35" r="2.5" fill="#ffffff"/><circle cx="76" cy="40" r="2.5" fill="#ffffff"/>
-          <circle cx="60" cy="42" r="2.5" fill="#ffffff"/><circle cx="70" cy="48" r="2.5" fill="#ffffff"/>
-          <text x="50" y="80" font-family="Montserrat" font-weight="900" font-size="11" fill="#ffffff" text-anchor="middle">FUTSAL</text>
-        </svg>
-      </div>
+      <!-- LOGO REAL BASE64 ENCABEZADO -->
+      <img id="headerLogo" src="" class="w-10 h-10 object-contain drop-shadow-md" alt="Entrena Futsal Logo">
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">ENTRENA FUTSAL</h1>
@@ -103,10 +95,11 @@
           </nav>
         </div>
 
-        <!-- GESTIÓN DE PLANTEL -->
+        <!-- GESTIÓN DE PLANTEL (PRO / RESTRINGIDO) -->
         <div>
           <div class="flex items-center justify-between px-3 mb-2">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">GESTIÓN DE EQUIPO</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-400 font-bold px-1.5 py-0.5 rounded border border-amber-500/20">PRO</span>
           </div>
           <nav class="space-y-1">
             <button onclick="showTab('plantel', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
@@ -114,6 +107,7 @@
                 <i class="fa-solid fa-users-gear w-5 text-emerald-400"></i>
                 <span>Equipo & Carga RPE</span>
               </div>
+              <i id="lockBadgeRPE" class="fa-solid fa-lock text-amber-400 text-xs" title="Requiere Cuenta PRO"></i>
             </button>
           </nav>
         </div>
@@ -132,10 +126,10 @@
     <!-- ÁREA DE CONTENIDO -->
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
-      <!-- TAB 1: PANEL PRINCIPAL CON LOGO VECTORIAL INCORPORADO NATIVO -->
+      <!-- TAB 1: PANEL PRINCIPAL CON LOGO REAL Y AUTORÍA -->
       <div id="principal" class="tab-content space-y-6">
         
-        <!-- TARJETA DE BIENVENIDA CON LOGO NATIVO Y AUTORÍA -->
+        <!-- TARJETA DE BIENVENIDA -->
         <div class="bg-card p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -161,47 +155,17 @@
             </div>
           </div>
 
-          <!-- ESCUDO Y LOGO vector ILUMINADO NATIVO (100% GARANTIZADO) -->
-          <div class="relative shrink-0 flex items-center justify-center p-2">
+          <!-- LOGO REAL DE LA MARCA -->
+          <div class="relative shrink-0 flex items-center justify-center p-4">
             <div class="absolute w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="w-48 h-56 relative z-10 flex flex-col items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)]">
-              <svg viewBox="0 0 200 240" class="w-full h-full">
-                <!-- Arco Superior ENTRENA -->
-                <path d="M 25 45 A 95 95 0 0 1 175 45" fill="none" stroke="#1e293b" stroke-width="26" stroke-linecap="round"/>
-                <text font-family="Montserrat" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">
-                  <textPath href="#textArc" startOffset="50%" text-anchor="middle">ENTRENA</textPath>
-                </text>
-                <path id="textArc" d="M 30 42 A 90 90 0 0 1 170 42" fill="none"/>
-
-                <!-- Anillo Exterior -->
-                <circle cx="100" cy="120" r="78" fill="none" stroke="#0f172a" stroke-width="12"/>
-                
-                <!-- Escudo de Tierra del Fuego (Noche y Fuego) -->
-                <g transform="translate(10, 0)">
-                  <path d="M 50 50 L 130 50 L 130 115 C 130 145 90 170 90 170 C 90 170 50 145 50 115 Z" fill="#0f172a" stroke="#ffffff" stroke-width="3"/>
-                  <!-- Diagonal Naranja / Blanco / Azul -->
-                  <path d="M 50 50 L 130 115 C 130 145 90 170 90 170 C 90 170 50 145 50 115 Z" fill="#ea580c"/>
-                  <path d="M 50 50 L 130 110 L 122 120 L 50 62 Z" fill="#ffffff"/>
-                  <!-- Estrellas Cruz del Sur -->
-                  <circle cx="105" cy="70" r="3" fill="#ffffff"/>
-                  <circle cx="118" cy="80" r="3" fill="#ffffff"/>
-                  <circle cx="95" cy="85" r="3" fill="#ffffff"/>
-                  <circle cx="108" cy="95" r="3" fill="#ffffff"/>
-                </g>
-
-                <!-- Banner Inferior FUTSAL -->
-                <rect x="20" y="172" width="160" height="38" rx="10" fill="#0b101d" stroke="#1e293b" stroke-width="3"/>
-                <text x="100" y="198" font-family="Montserrat" font-weight="900" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="2">FUTSAL</text>
-                <text x="100" y="222" font-family="Roboto" font-weight="700" font-size="8" fill="#94a3b8" text-anchor="middle">TIERRA DEL FUEGO, ARGENTINA</text>
-              </svg>
-            </div>
+            <img id="mainLogo" src="" alt="Entrena Futsal Logo Real" class="w-52 h-52 object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] relative z-10">
           </div>
 
         </div>
 
       </div>
 
-      <!-- TAB 2: EQUIPO & CARGA RPE -->
+      <!-- TAB 2: EQUIPO & CARGA RPE (PRO) -->
       <div id="plantel" class="tab-content hidden space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -248,13 +212,30 @@
     </main>
   </div>
 
+  <!-- MODAL: AVISO PRO / BLOQUEO DE EQUIPO & RPE -->
+  <div id="proModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[110] flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-14 h-14 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h3 class="text-xl font-bold text-white">Módulo PRO Restringido</h3>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        La función <strong>Equipo & Carga RPE</strong> es exclusiva para cuentas con suscripción activa o perfil de <strong>Desarrollador / Administrador</strong>.
+      </p>
+      <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+        Inicia sesión con tu cuenta de <strong class="text-emerald-400">Desarrollador Master</strong> para acceder sin limitaciones.
+      </div>
+      <button onclick="closeModal('proModal')" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all">
+        Entendido
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL: AUTENTICACIÓN (LOGIN Y REGISTRO) -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="text-center space-y-1">
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto mb-2">
-          EF
-        </div>
+        <img id="loginLogo" src="" class="w-16 h-16 object-contain mx-auto mb-1">
         <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL</h3>
         <p class="text-xs text-slate-400">Acceso a Plataforma de Staff</p>
       </div>
@@ -370,9 +351,22 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT PRINCIPAL -->
+  <!-- JAVASCRIPT PRINCIPAL Y CONTROL DE ACCESO -->
   <script>
+    // IMAGEN REAL DE LOGO EN BASE64 TRANSPARENTE
+    const EXACT_LOGO_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAACqCAYAAA2b5bU1Nj+29OfsAr0ETbUwAAAABJRU5ErkJggg==";
+
     let playersStore = {};
+
+    function cargarLogos() {
+      const headerImg = document.getElementById('headerLogo');
+      const mainImg = document.getElementById('mainLogo');
+      const loginImg = document.getElementById('loginLogo');
+
+      if (headerImg) headerImg.src = EXACT_LOGO_BASE64;
+      if (mainImg) mainImg.src = EXACT_LOGO_BASE64;
+      if (loginImg) loginImg.src = EXACT_LOGO_BASE64;
+    }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
@@ -389,6 +383,19 @@
     function getCurrentUser() {
       const data = localStorage.getItem('EF_CURRENT_USER');
       return data ? JSON.parse(data) : null;
+    }
+
+    // VERIFICA SI EL USUARIO TIENEN ACCESO DESARROLLADOR / PRO
+    function esUsuarioDevOPro(user) {
+      if (!user) return false;
+      const roleUpper = (user.role || '').toUpperCase();
+      const nameUpper = (user.name || '').toUpperCase();
+      
+      // Acceso total para Desarrollador Master o Administrador / Dev
+      if (roleUpper.includes('DEV') || roleUpper.includes('ADMINISTRADOR') || nameUpper.includes('DESARROLLADOR')) {
+        return true;
+      }
+      return user.isPro === true;
     }
 
     function getInitials(fullname) {
@@ -431,7 +438,7 @@
         return;
       }
 
-      const newUser = { name, email, pass, role };
+      const newUser = { name, email, pass, role, isPro: false };
       db[email] = newUser;
       saveUsersDB(db);
 
@@ -478,11 +485,32 @@
         document.getElementById('userName').innerText = user.name;
         document.getElementById('userRole').innerText = user.role;
         document.getElementById('userInitials').innerText = getInitials(user.name);
+
+        // Mostrar / Ocultar indicador de candado
+        const lockBadge = document.getElementById('lockBadgeRPE');
+        if (lockBadge) {
+          if (esUsuarioDevOPro(user)) {
+            lockBadge.className = "fa-solid fa-unlock text-emerald-400 text-xs";
+            lockBadge.title = "Acceso Habilitado (Dev/PRO)";
+          } else {
+            lockBadge.className = "fa-solid fa-lock text-amber-400 text-xs";
+            lockBadge.title = "Restringido (Requiere PRO)";
+          }
+        }
+
         cargarPlantel();
       }
     }
 
     function showTab(tabId, buttonElement) {
+      const user = getCurrentUser();
+
+      // CONTROL DE ACCESO PARA EQUIPO & CARGA RPE
+      if (tabId === 'plantel' && !esUsuarioDevOPro(user)) {
+        openModal('proModal');
+        return;
+      }
+
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
       const activeTab = document.getElementById(tabId);
       if (activeTab) activeTab.classList.remove('hidden');
@@ -568,6 +596,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      cargarLogos();
       verificarSesion();
     });
   </script>
