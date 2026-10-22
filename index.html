@@ -314,7 +314,7 @@
     </main>
   </div>
 
-  <!-- MODAL 1: REGISTRAR JUGADOR COMPLETO -->
+  <!-- MODAL 1: REGISTRAR JUGADOR INDIVIDUAL -->
   <div id="addPlayerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -323,8 +323,6 @@
       </div>
 
       <form onsubmit="saveNewPlayer(event)" class="space-y-4 text-xs">
-        
-        <!-- SECCIÓN A: DATOS BÁSICOS Y IDENTIFICACIÓN -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
           <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">1. Datos Básicos e Identificación</span>
           
@@ -405,7 +403,6 @@
           </div>
         </div>
 
-        <!-- SECCIÓN B: DATOS TÉCNICOS ACUMULADOS -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
           <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">2. Datos Técnicos & Estadísticas</span>
 
@@ -434,7 +431,6 @@
               <input type="number" id="newPRojas" value="0" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
             </div>
             
-            <!-- CAMPO CONDICIONAL PARA ARQUEROS -->
             <div id="divGolesRecibidos" class="hidden bg-amber-50 p-2 rounded-lg border border-amber-200">
               <label class="block text-amber-900 mb-1 font-extrabold"><i class="fa-solid fa-shield"></i> Goles Recibidos (Arquero)</label>
               <input type="number" id="newPGolesRecibidos" value="0" class="w-full bg-white border border-amber-300 rounded-lg px-3 py-1.5 text-amber-900 font-bold">
@@ -497,7 +493,7 @@
     </div>
   </div>
 
-  <!-- MODAL 3: FICHA DE DETALLE INDIVIDUAL DEL JUGADOR -->
+  <!-- MODAL 3: FICHA DE DETALLE INDIVIDUAL EDITABLE -->
   <div id="playerDetailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -505,8 +501,8 @@
         <button onclick="closeModal('playerDetailModal')" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <div id="playerDetailBody" class="space-y-4 text-xs">
-        <!-- Render dinámico -->
+      <div id="playerDetailBody">
+        <!-- Render dinámico e interactivo -->
       </div>
     </div>
   </div>
@@ -594,12 +590,8 @@
   <script>
     let playersStore = {};
 
-    // PLANTILLA CON DATOS COMPLETOS
     const DEFAULT_PLAYERS = {
-      "p_1": { id: "p_1", name: "Nicolás Sarmiento", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "1", pos: "ARQUERO", posSec: "NINGUNA", foot: "Diestro", age: "31", height: "182", weight: "78", club: "Palma Futsal", status: "DISPONIBLE", rpe: 4, duration: 90, convocados: 12, goles: 0, asistencias: 1, amarillas: 0, rojas: 0, golesRecibidos: 14 },
-      "p_2": { id: "p_2", name: "Pablo Taborda", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "14", pos: "CIERRE", posSec: "ALA", foot: "Diestro", age: "37", height: "178", weight: "75", club: "Jaén Paraíso", status: "DISPONIBLE", rpe: 7, duration: 90, convocados: 15, goles: 4, asistencias: 3, amarillas: 2, rojas: 0, golesRecibidos: 0 },
-      "p_3": { id: "p_3", name: "Santiago Basile", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "8", pos: "ALA", posSec: "CIERRE", foot: "Zurdo", age: "35", height: "174", weight: "70", club: "Boca Juniors", status: "DISPONIBLE", rpe: 6, duration: 90, convocados: 14, goles: 7, asistencias: 8, amarillas: 1, rojas: 0, golesRecibidos: 0 },
-      "p_4": { id: "p_4", name: "Alan Brandi", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "11", pos: "PÍVOT", posSec: "ALA", foot: "Diestro", age: "36", height: "180", weight: "79", club: "Jaén Paraíso", status: "LESIONADO", rpe: 2, duration: 30, convocados: 10, goles: 9, asistencias: 2, amarillas: 1, rojas: 0, golesRecibidos: 0 }
+      "p_1": { id: "p_1", name: "Ulises Cabrera", photo: "https://cdn-icons-png.flaticon.com/512/847/847969.png", num: "8", pos: "ALA", posSec: "NINGUNA", foot: "Diestro", age: "24", height: "172", weight: "68", club: "Mismo Club", status: "DISPONIBLE", rpe: 0, duration: 90, convocados: 0, goles: 0, asistencias: 0, amarillas: 0, rojas: 0, golesRecibidos: 0 }
     };
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -794,7 +786,6 @@
       return "bg-rose-100 text-rose-800 border-rose-300";
     }
 
-    // MOSTRAR/OCULTAR CAMPO "GOLES RECIBIDOS" SI ES ARQUERO
     function verificarCampoArquero() {
       const pos1 = document.getElementById('newPPos').value;
       const pos2 = document.getElementById('newPPosSec').value;
@@ -841,7 +832,7 @@
         const cargaAU = rpeVal * duration;
 
         const posDisplay = p.posSec && p.posSec !== 'NINGUNA' ? `${p.pos} / ${p.posSec}` : p.pos;
-        const fisicoDisplay = `${p.age || '-'} años | ${p.height || '-'}cm | ${p.weight || '-'}kg`;
+        const fisicoDisplay = `${p.age ? p.age + ' años' : '-'} | ${p.height ? p.height + 'cm' : '-'} | ${p.weight ? p.weight + 'kg' : '-'}`;
 
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50 transition-colors";
@@ -876,7 +867,7 @@
             </span>
           </td>
           <td class="p-3 text-right space-x-1">
-            <button onclick="verFichaJugador('${p.id}')" class="text-slate-400 hover:text-emerald-600 p-1" title="Ver Ficha"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="verFichaJugador('${p.id}')" class="text-slate-400 hover:text-emerald-600 p-1" title="Ver / Editar Ficha"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
             <button onclick="borrarJugador('${p.id}')" class="text-slate-400 hover:text-rose-600 p-1" title="Borrar Jugador"><i class="fa-solid fa-trash text-sm"></i></button>
           </td>
         `;
@@ -894,13 +885,13 @@
         pos: document.getElementById('newPPos').value,
         posSec: document.getElementById('newPPosSec').value,
         foot: document.getElementById('newPFoot').value,
-        age: document.getElementById('newPAge').value || "25",
-        height: document.getElementById('newPHeight').value || "175",
-        weight: document.getElementById('newPWeight').value || "70",
+        age: document.getElementById('newPAge').value || "",
+        height: document.getElementById('newPHeight').value || "",
+        weight: document.getElementById('newPWeight').value || "",
         club: document.getElementById('newPClub').value || "Mismo Club",
         status: document.getElementById('newPStatus').value,
         photo: document.getElementById('newPPhoto').value,
-        rpe: 5,
+        rpe: 0,
         duration: 90,
         convocados: parseInt(document.getElementById('newPConvocado').value) || 0,
         goles: parseInt(document.getElementById('newPGoles').value) || 0,
@@ -930,7 +921,7 @@
       container.innerHTML = '';
       keys.forEach(k => {
         const p = playersStore[k];
-        const rpeCurrent = p.rpe || 5;
+        const rpeCurrent = p.rpe || 0;
 
         const div = document.createElement('div');
         div.className = "p-3 flex flex-col sm:flex-row items-center justify-between gap-3 hover:bg-slate-50";
@@ -945,12 +936,12 @@
 
           <div class="flex items-center gap-3 w-full sm:w-2/3 justify-end">
             <label class="text-[11px] font-bold text-slate-500">RPE (1-10):</label>
-            <input type="range" min="1" max="10" value="${rpeCurrent}" id="rpeRange_${p.id}" oninput="updateRpeDisplay('${p.id}')" class="w-28 accent-amber-500">
-            <span id="rpeVal_${p.id}" class="w-8 text-center font-black text-xs px-2 py-0.5 rounded border ${getRPEBadgeColor(rpeCurrent)}">
-              ${rpeCurrent}
+            <input type="range" min="1" max="10" value="${rpeCurrent || 5}" id="rpeRange_${p.id}" oninput="updateRpeDisplay('${p.id}')" class="w-28 accent-amber-500">
+            <span id="rpeVal_${p.id}" class="w-8 text-center font-black text-xs px-2 py-0.5 rounded border ${getRPEBadgeColor(rpeCurrent || 5)}">
+              ${rpeCurrent || 5}
             </span>
             <span id="rpeAu_${p.id}" class="text-[10px] font-extrabold text-slate-600 w-16 text-right">
-              ${rpeCurrent * 90} AU
+              ${(rpeCurrent || 5) * 90} AU
             </span>
           </div>
         `;
@@ -996,7 +987,29 @@
       cargarPlantel();
     }
 
-    // VER FICHA COMPLETA INDIVIDUAL
+    // CREAR OPCIONES DE DESPLEGABLES PARA NÚMEROS
+    function makeSelectOptions(max, selectedVal) {
+      let html = '';
+      for (let i = 0; i <= max; i++) {
+        html += `<option value="${i}" ${parseInt(selectedVal) === i ? 'selected' : ''}>${i}</option>`;
+      }
+      return html;
+    }
+
+    function checkEditArquero() {
+      const p1 = document.getElementById('edit_pos').value;
+      const p2 = document.getElementById('edit_posSec').value;
+      const div = document.getElementById('divEditGolesRecibidos');
+      if (div) {
+        if (p1 === 'ARQUERO' || p2 === 'ARQUERO') {
+          div.classList.remove('hidden');
+        } else {
+          div.classList.add('hidden');
+        }
+      }
+    }
+
+    // ABRIR Y VER / EDITAR FICHA TÉCNICA E IDENTIFICACIÓN
     function verFichaJugador(id) {
       const p = playersStore[id];
       if (!p) return;
@@ -1005,87 +1018,193 @@
       const rpe = p.rpe || 0;
       const dur = p.duration || 90;
       const au = rpe * dur;
-      const esArquero = p.pos === 'ARQUERO' || p.posSec === 'ARQUERO';
+      const esArquero = (p.pos === 'ARQUERO' || p.posSec === 'ARQUERO');
+
+      const optConvocados = makeSelectOptions(50, p.convocados || 0);
+      const optGoles = makeSelectOptions(50, p.goles || 0);
+      const optAsistencias = makeSelectOptions(50, p.asistencias || 0);
+      const optAmarillas = makeSelectOptions(20, p.amarillas || 0);
+      const optRojas = makeSelectOptions(10, p.rojas || 0);
+      const optGolesRecibidos = makeSelectOptions(100, p.golesRecibidos || 0);
 
       body.innerHTML = `
-        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <img src="${p.photo || 'https://cdn-icons-png.flaticon.com/512/847/847969.png'}" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-500 shrink-0">
-          <div>
-            <h4 class="font-bold text-slate-900 text-sm">${p.name} <span class="text-emerald-600">#${p.num}</span></h4>
-            <span class="text-xs text-slate-600 font-semibold block">${p.pos} ${p.posSec && p.posSec !== 'NINGUNA' ? ' / ' + p.posSec : ''}</span>
-            <div class="mt-1 flex flex-wrap gap-1">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${getRPEBadgeColor(rpe)}">${p.status}</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-200 text-slate-700"><i class="fa-solid fa-shirt"></i> ${p.club || 'Mismo Club'}</span>
+        <form onsubmit="guardarFichaJugador(event, '${id}')" class="space-y-4">
+          <!-- CABECERA PRINCIPAL Y EDICIÓN RÁPIDA -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex items-center gap-3">
+              <img src="${p.photo || 'https://cdn-icons-png.flaticon.com/512/847/847969.png'}" class="w-14 h-14 rounded-full object-cover border-2 border-emerald-500 shrink-0">
+              <div class="flex-1 grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                  <label class="block text-[10px] text-slate-500 font-bold">Nombre y Apellido</label>
+                  <input type="text" id="edit_name" value="${p.name || ''}" required class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold focus:border-emerald-500">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-500 font-bold">Dorsal (#)</label>
+                  <input type="number" id="edit_num" value="${p.num || ''}" required class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-extrabold focus:border-emerald-500">
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-          <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">Identificación y Parámetros Físicos</span>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs pt-1">
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Edad</span>
-              <strong class="text-slate-800">${p.age || '-'} Años</strong>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block text-[10px] text-slate-500 font-bold">Pos. Principal</label>
+                <select id="edit_pos" onchange="checkEditArquero()" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-emerald-700">
+                  <option value="ALA" ${p.pos === 'ALA' ? 'selected' : ''}>ALA</option>
+                  <option value="CIERRE" ${p.pos === 'CIERRE' ? 'selected' : ''}>CIERRE</option>
+                  <option value="PÍVOT" ${p.pos === 'PÍVOT' ? 'selected' : ''}>PÍVOT</option>
+                  <option value="ARQUERO" ${p.pos === 'ARQUERO' ? 'selected' : ''}>ARQUERO</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 font-bold">Pos. Secundaria</label>
+                <select id="edit_posSec" onchange="checkEditArquero()" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-800">
+                  <option value="NINGUNA" ${(!p.posSec || p.posSec === 'NINGUNA') ? 'selected' : ''}>Ninguna</option>
+                  <option value="ALA" ${p.posSec === 'ALA' ? 'selected' : ''}>ALA</option>
+                  <option value="CIERRE" ${p.posSec === 'CIERRE' ? 'selected' : ''}>CIERRE</option>
+                  <option value="PÍVOT" ${p.posSec === 'PÍVOT' ? 'selected' : ''}>PÍVOT</option>
+                  <option value="ARQUERO" ${p.posSec === 'ARQUERO' ? 'selected' : ''}>ARQUERO</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 font-bold">Estado</label>
+                <select id="edit_status" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-800">
+                  <option value="DISPONIBLE" ${p.status === 'DISPONIBLE' ? 'selected' : ''}>DISPONIBLE</option>
+                  <option value="SUSPENDIDO" ${p.status === 'SUSPENDIDO' ? 'selected' : ''}>SUSPENDIDO</option>
+                  <option value="LESIONADO" ${p.status === 'LESIONADO' ? 'selected' : ''}>LESIONADO</option>
+                </select>
+              </div>
             </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Pie Hábil</span>
-              <strong class="text-slate-800">${p.foot || 'Diestro'}</strong>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Altura</span>
-              <strong class="text-slate-800">${p.height || '-'} cm</strong>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Peso</span>
-              <strong class="text-slate-800">${p.weight || '-'} kg</strong>
-            </div>
-          </div>
-        </div>
 
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-          <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">Estadísticas Técnicas Acumuladas</span>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center pt-1">
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Partidos Convocado</span>
-              <strong class="text-slate-900 text-sm font-extrabold">${p.convocados || 0}</strong>
+            <div>
+              <label class="block text-[10px] text-slate-500 font-bold">Club de Procedencia</label>
+              <input type="text" id="edit_club" value="${p.club || 'Mismo Club'}" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900">
             </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Goles Convertidos</span>
-              <strong class="text-emerald-600 text-sm font-extrabold">${p.goles || 0}</strong>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Asistencias</span>
-              <strong class="text-sky-600 text-sm font-extrabold">${p.asistencias || 0}</strong>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Tarjetas Amarillas</span>
-              <strong class="text-amber-600 text-sm font-extrabold">${p.amarillas || 0}</strong>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-slate-200">
-              <span class="text-[10px] text-slate-400 block">Tarjetas Rojas</span>
-              <strong class="text-rose-600 text-sm font-extrabold">${p.rojas || 0}</strong>
-            </div>
-            ${esArquero ? `
-            <div class="bg-amber-100 p-2 rounded-lg border border-amber-300">
-              <span class="text-[10px] text-amber-800 block font-bold">Goles Recibidos</span>
-              <strong class="text-amber-900 text-sm font-black">${p.golesRecibidos || 0}</strong>
-            </div>` : ''}
           </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-            <span class="text-[10px] text-slate-400 uppercase font-bold block">Último RPE</span>
-            <strong class="text-lg text-slate-800 font-black">${rpe} / 10</strong>
+          <!-- IDENTIFICACIÓN Y PARÁMETROS FÍSICOS EDITABLES -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">Identificación y Parámetros Físicos</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center pt-1">
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <span class="text-[10px] text-slate-400 block font-semibold mb-1">Edad (Años)</span>
+                <input type="number" id="edit_age" value="${p.age || ''}" placeholder="Ej: 25" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-0.5 text-xs font-bold text-slate-800 focus:bg-white focus:border-emerald-500">
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <span class="text-[10px] text-slate-400 block font-semibold mb-1">Pie Hábil</span>
+                <select id="edit_foot" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-0.5 text-xs font-bold text-slate-800 focus:bg-white focus:border-emerald-500">
+                  <option value="Diestro" ${(!p.foot || p.foot === 'Diestro') ? 'selected' : ''}>Diestro</option>
+                  <option value="Zurdo" ${p.foot === 'Zurdo' ? 'selected' : ''}>Zurdo</option>
+                  <option value="Ambidiestro" ${p.foot === 'Ambidiestro' ? 'selected' : ''}>Ambidiestro</option>
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <span class="text-[10px] text-slate-400 block font-semibold mb-1">Altura (cm)</span>
+                <input type="number" id="edit_height" value="${p.height || ''}" placeholder="Ej: 175" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-0.5 text-xs font-bold text-slate-800 focus:bg-white focus:border-emerald-500">
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <span class="text-[10px] text-slate-400 block font-semibold mb-1">Peso (kg)</span>
+                <input type="number" id="edit_weight" value="${p.weight || ''}" placeholder="Ej: 72" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-0.5 text-xs font-bold text-slate-800 focus:bg-white focus:border-emerald-500">
+              </div>
+            </div>
           </div>
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-            <span class="text-[10px] text-slate-400 uppercase font-bold block">Carga Unitaria AU</span>
-            <strong class="text-lg text-emerald-600 font-black">${au} AU</strong>
+
+          <!-- ESTADÍSTICAS TÉCNICAS ACUMULADAS CON DESPLEGABLES -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 text-xs block border-b border-slate-200 pb-1">Estadísticas Técnicas Acumuladas</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center pt-1">
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[10px] text-slate-400 block font-semibold mb-1">Partidos Convocado</label>
+                <select id="edit_convocados" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-1 text-xs font-extrabold text-slate-900 focus:bg-white focus:border-emerald-500">
+                  ${optConvocados}
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[10px] text-slate-400 block font-semibold mb-1">Goles Convertidos</label>
+                <select id="edit_goles" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-1 text-xs font-extrabold text-emerald-600 focus:bg-white focus:border-emerald-500">
+                  ${optGoles}
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[10px] text-slate-400 block font-semibold mb-1">Asistencias</label>
+                <select id="edit_asistencias" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-1 text-xs font-extrabold text-sky-600 focus:bg-white focus:border-emerald-500">
+                  ${optAsistencias}
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[10px] text-slate-400 block font-semibold mb-1">Tarjetas Amarillas</label>
+                <select id="edit_amarillas" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-1 text-xs font-extrabold text-amber-600 focus:bg-white focus:border-emerald-500">
+                  ${optAmarillas}
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[10px] text-slate-400 block font-semibold mb-1">Tarjetas Rojas</label>
+                <select id="edit_rojas" class="w-full text-center bg-slate-50 border border-slate-200 rounded px-1 py-1 text-xs font-extrabold text-rose-600 focus:bg-white focus:border-emerald-500">
+                  ${optRojas}
+                </select>
+              </div>
+              <div id="divEditGolesRecibidos" class="bg-amber-50 p-2 rounded-lg border border-amber-200 shadow-sm ${esArquero ? '' : 'hidden'}">
+                <label class="text-[10px] text-amber-800 block font-bold mb-1"><i class="fa-solid fa-shield"></i> Goles Recibidos</label>
+                <select id="edit_golesRecibidos" class="w-full text-center bg-white border border-amber-300 rounded px-1 py-1 text-xs font-black text-amber-900 focus:border-amber-500">
+                  ${optGolesRecibidos}
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <!-- CARGA RPE Y AU RESUMEN -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Último RPE</span>
+              <strong class="text-lg text-slate-800 font-black">${rpe} / 10</strong>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Carga Unitaria AU</span>
+              <strong class="text-lg text-emerald-600 font-black">${au} AU</strong>
+            </div>
+          </div>
+
+          <div class="pt-2 flex justify-end gap-2 border-t border-slate-200">
+            <button type="button" onclick="closeModal('playerDetailModal')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold text-xs">Cancelar</button>
+            <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow-md transition-all flex items-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+            </button>
+          </div>
+        </form>
       `;
 
       openModal('playerDetailModal');
+    }
+
+    // GUARDAR MODIFICACIONES DE LA FICHA INDIVIDUAL
+    function guardarFichaJugador(e, id) {
+      e.preventDefault();
+      if (!playersStore[id]) return;
+
+      playersStore[id].name = document.getElementById('edit_name').value.trim();
+      playersStore[id].num = document.getElementById('edit_num').value;
+      playersStore[id].pos = document.getElementById('edit_pos').value;
+      playersStore[id].posSec = document.getElementById('edit_posSec').value;
+      playersStore[id].status = document.getElementById('edit_status').value;
+      playersStore[id].club = document.getElementById('edit_club').value.trim();
+      playersStore[id].age = document.getElementById('edit_age').value;
+      playersStore[id].foot = document.getElementById('edit_foot').value;
+      playersStore[id].height = document.getElementById('edit_height').value;
+      playersStore[id].weight = document.getElementById('edit_weight').value;
+
+      playersStore[id].convocados = parseInt(document.getElementById('edit_convocados').value) || 0;
+      playersStore[id].goles = parseInt(document.getElementById('edit_goles').value) || 0;
+      playersStore[id].asistencias = parseInt(document.getElementById('edit_asistencias').value) || 0;
+      playersStore[id].amarillas = parseInt(document.getElementById('edit_amarillas').value) || 0;
+      playersStore[id].rojas = parseInt(document.getElementById('edit_rojas').value) || 0;
+
+      const golesRecInput = document.getElementById('edit_golesRecibidos');
+      if (golesRecInput) {
+        playersStore[id].golesRecibidos = parseInt(golesRecInput.value) || 0;
+      }
+
+      localStorage.setItem('EF_PLAYERS_DATA_SHARED', JSON.stringify(playersStore));
+      closeModal('playerDetailModal');
+      cargarPlantel();
     }
 
     function borrarJugador(id) {
