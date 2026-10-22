@@ -136,7 +136,8 @@
               </div>
               <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </button>
-<!-- AGREGAR DEBAJO DE LA LÍNEA 138 -->
+
+            <!-- ENLACE NUEVO: CENTRO DE INFORMES TÁCTICOS PDF (PRO) -->
             <a href="informes.html" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
               <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-file-pdf w-5 text-emerald-400"></i>
@@ -144,6 +145,7 @@
               </div>
               <i class="pro-lock-icon fa-solid fa-lock text-xs text-amber-400"></i>
             </a>
+
             <button onclick="showTab('academia', this)" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition-colors">
               <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-graduation-cap w-5 text-indigo-400"></i>
@@ -342,11 +344,11 @@
       </div>
       <div>
         <h3 class="font-extrabold text-xl text-white">Suscripción PRO Requerida</h3>
-        <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Para acceder a las funciones avanzadas de Control Staff, seguimiento de RPE y Torneos, debes suscribirte a la Licencia PRO.</p>
+        <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Para acceder a las funciones avanzadas de Control Staff, Informes PDF, seguimiento de RPE y Torneos, debes suscribirte a la Licencia PRO.</p>
       </div>
 
       <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-left space-y-2 text-xs">
-        <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Tablero Kanban e Integración Táctica</div>
+        <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Informes Tácticos PDF de Partido</div>
         <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Control de Carga Interna RPE en Pista</div>
         <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-circle-check text-emerald-400"></i> Gestión Completa de Fichas de Jugadores</div>
       </div>
@@ -499,7 +501,6 @@
       return data ? JSON.parse(data) : null;
     }
 
-    // RESOLUCIÓN UNIFICADA DE USUARIO
     function getUserId() {
       const user = getCurrentUser();
       if (!user) return 'default_user';
@@ -719,8 +720,9 @@
     }
 
     function recargarDatosKanban() {
-      const savedKanban = localStorage.getItem(getKanbanStorageKey());
-      kanbanTasks = savedKanban ? JSON.parse(savedKanban) : [];
+      const sharedTasks = JSON.parse(localStorage.getItem('EF_STAFF_SHARED_TASKS') || '[]');
+      const userTasks = JSON.parse(localStorage.getItem(getKanbanStorageKey()) || '[]');
+      kanbanTasks = [...sharedTasks, ...userTasks];
       renderKanban();
     }
 
@@ -732,7 +734,7 @@
     window.addEventListener('pageshow', recargarDatosKanban);
     window.addEventListener('focus', recargarDatosKanban);
     window.addEventListener('storage', (e) => {
-      if (e.key === getKanbanStorageKey()) recargarDatosKanban();
+      if (e.key === getKanbanStorageKey() || e.key === 'EF_STAFF_SHARED_TASKS') recargarDatosKanban();
       if (e.key === 'EF_SESSION_ACTIVE' || e.key === 'EF_CURRENT_USER') verificarSesion();
     });
 
@@ -742,7 +744,6 @@
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // RENDERIZADO DEL TABLERO KANBAN CON SOPORTE DE IMÁGENES Y VIDEOS
     function renderKanban() {
       const colPending = document.getElementById('colPending');
       const colProgress = document.getElementById('colProgress');
@@ -765,9 +766,6 @@
         let previewMedia = '';
         if (task.image) {
           previewMedia += `<img src="${task.image}" class="w-full h-32 object-cover rounded-lg border border-slate-800 my-2">`;
-        }
-        if (task.videoUrl) {
-          previewMedia += `<video src="${task.videoUrl}" controls class="w-full h-32 rounded-lg border border-slate-800 my-2 bg-black"></video>`;
         }
 
         card.innerHTML = `
@@ -825,7 +823,6 @@
       closeModal('addKanbanTaskModal');
     }
 
-    // --- PLANTEL Y RPE ---
     function renderUI() {
       const keys = Object.keys(playersStore);
       const emptyState = document.getElementById('emptyPlayersState');
