@@ -9,7 +9,7 @@
   <!-- FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap');
     
     body {
       font-family: 'Roboto', sans-serif;
@@ -26,6 +26,12 @@
       color: #10b981;
       border-left: 3px solid #10b981;
     }
+
+    /* FILTRO DE MEZCLA PARA ELIMINAR CUALQUIER FONDO BLANCO RESTANTE EN LOGOS EN MODO OSCURO */
+    .logo-transparent {
+      mix-blend-mode: screen;
+      filter: contrast(110%) brightness(105%);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased relative">
@@ -33,7 +39,8 @@
   <!-- TOP HEADER -->
   <header class="bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
     <div class="flex items-center gap-4">
-      <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-base shadow-lg">EF</div>
+      <!-- LOGO DE ENCABEZADO -->
+      <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" class="w-10 h-10 object-contain logo-transparent drop-shadow-md">
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">ENTRENA FUTSAL</h1>
@@ -111,7 +118,8 @@
 
       </div>
 
-      <div class="pt-4 border-t border-slate-800">
+      <!-- PIE DE BARRA LATERAL -->
+      <div class="pt-4 border-t border-slate-800 space-y-2">
         <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs text-slate-400">
           <span>Versión 1.0 (Estable)</span>
           <i class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -122,12 +130,43 @@
     <!-- ÁREA DE CONTENIDO -->
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
-      <!-- TAB 1: PANEL PRINCIPAL -->
+      <!-- TAB 1: PANEL PRINCIPAL (REDISEÑADO CON LOGO Y CRÉDITO) -->
       <div id="principal" class="tab-content space-y-6">
-        <div class="bg-card p-6 rounded-2xl border border-slate-800">
-          <h2 class="text-2xl font-bold text-white">Bienvenido al Staff Hub</h2>
-          <p class="text-slate-400 text-sm mt-1">Selecciona una herramienta del menú lateral para comenzar a trabajar.</p>
+        
+        <!-- TARJETA DE BIENVENIDA CON LOGO Y AUTORÍA -->
+        <div class="bg-card p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <div class="space-y-4 max-w-xl text-center md:text-left z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-shield-halved"></i> Plataforma Oficial
+            </div>
+            
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading leading-tight">
+              Bienvenido a la plataforma de <br>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400">
+                ENTRENA FUTSAL
+              </span>
+            </h2>
+            
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Selecciona cualquier herramienta del menú lateral para comenzar a trabajar en la pizarra táctica, análisis de video, estadísticas o control del equipo.
+            </p>
+
+            <!-- CRÉDITO DE DESARROLLO -->
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-center md:justify-start gap-2 text-xs text-slate-400">
+              <i class="fa-solid fa-code text-amber-400"></i>
+              <span>Desarrollado por <strong class="text-white">Luciano Montiel</strong> — Ushuaia, Tierra del Fuego</span>
+            </div>
+          </div>
+
+          <!-- LOGO DE LA MARCA CON EFECTO DE LUZ -->
+          <div class="relative shrink-0 flex items-center justify-center p-4">
+            <div class="absolute w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" alt="Entrena Futsal Logo" class="w-48 h-48 object-contain logo-transparent drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] relative z-10">
+          </div>
+
         </div>
+
       </div>
 
       <!-- TAB 2: EQUIPO & CARGA RPE -->
@@ -181,9 +220,7 @@
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="text-center space-y-1">
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto mb-2">
-          EF
-        </div>
+        <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" class="w-14 h-14 object-contain mx-auto logo-transparent mb-1">
         <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL</h3>
         <p class="text-xs text-slate-400">Acceso a Plataforma de Staff</p>
       </div>
@@ -299,10 +336,9 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LIGERO Y ESTABLE -->
+  <!-- JAVASCRIPT PRINCIPAL -->
   <script>
     let playersStore = {};
-    const DEV_MASTER_KEY = "EF_DEV_2026";
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
