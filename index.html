@@ -4,16 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entrena Futsal PRO - Staff Hub</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
-    body { font-family: 'Roboto', sans-serif; background-color: #070a12; color: #f3f4f6; }
-    h1, h2, h3, h4, .font-heading { font-family: 'Montserrat', sans-serif; }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #070a12;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
     .bg-sidebar { background-color: #0b101d; }
     .bg-card { background-color: #111827; border: 1px solid #1f293d; }
-    .nav-link.active { background-color: rgba(16, 185, 129, 0.15); color: #10b981; border-left: 3px solid #10b981; }
+    .nav-link.active {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border-left: 3px solid #10b981;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased relative">
@@ -32,6 +46,13 @@
     </div>
 
     <div class="flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-3 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs font-semibold">
+        <span class="text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-trophy"></i> MD-2 vs. Rival Directo</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-emerald-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sesión Activa</span>
+      </div>
+
+      <!-- PERFIL USUARIO DINÁMICO CON CERRAR SESIÓN -->
       <div class="flex items-center gap-3 pl-2 border-l border-slate-800">
         <div id="userInitials" class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white text-xs">--</div>
         <div class="hidden sm:block text-left text-xs">
@@ -115,9 +136,19 @@
         </div>
 
       </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-800">
+        <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+          <div>
+            <div id="sidebarPlanTitle" class="text-xs font-bold text-white">Estado Cuenta</div>
+            <div id="sidebarPlanSubtitle" class="text-[10px] text-amber-400 font-semibold">Licencia Estándar</div>
+          </div>
+          <i id="sidebarPlanIcon" class="fa-solid fa-lock text-amber-400 text-lg"></i>
+        </div>
+      </div>
     </aside>
 
-    <!-- ÁREA DE CONTENIDO -->
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
       <!-- TAB 1: PANEL PRINCIPAL -->
@@ -128,7 +159,7 @@
         </div>
       </div>
 
-      <!-- TAB 2: CONTROL DE PLANTEL REDISEÑADO CON GRILLA COMPLETA Y ESTATÍSTICAS -->
+      <!-- TAB 2: CONTROL DE PLANTEL CON GRILLA COMPLETA -->
       <div id="plantel" class="tab-content hidden space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -173,7 +204,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: CONTROL STAFF (KANBAN PRO CON BORRADO DEFINITIVO) -->
+      <!-- TAB 3: CONTROL STAFF (KANBAN PRO) -->
       <div id="kanban" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -214,6 +245,90 @@
     </main>
   </div>
 
+  <!-- MODAL: VENTANA DE AUTENTICACIÓN (LOGIN Y REGISTRO) -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto mb-2">
+          EF
+        </div>
+        <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL</h3>
+        <p class="text-xs text-slate-400">Acceso a Plataforma de Staff</p>
+      </div>
+
+      <div class="flex border-b border-slate-800 text-xs font-bold text-center">
+        <button id="btnTabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 text-emerald-400 border-b-2 border-emerald-400">Iniciar Sesión</button>
+        <button id="btnTabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white">Registrarse</button>
+      </div>
+
+      <!-- FORMULARIO LOGIN -->
+      <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4 text-left text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Correo Electrónico</label>
+          <input type="email" id="loginEmail" required placeholder="entrenador@club.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Contraseña</label>
+          <input type="password" id="loginPass" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold transition-all shadow-lg shadow-emerald-500/20">
+          Ingresar al Panel
+        </button>
+      </form>
+
+      <!-- FORMULARIO REGISTRO -->
+      <form id="formRegister" onsubmit="handleRegister(event)" class="space-y-3 text-left text-xs hidden">
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Nombre y Apellido</label>
+          <input type="text" id="regName" required placeholder="Ej: Cristian Binderup" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Correo Electrónico</label>
+          <input type="email" id="regEmail" required placeholder="tu@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Contraseña</label>
+          <input type="password" id="regPass" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">Cargo / Rol en el Club</label>
+          <select id="regRole" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+            <option value="Director Técnico">Director Técnico</option>
+            <option value="Preparador Físico">Preparador Físico</option>
+            <option value="Asistente Táctico">Asistente Táctico</option>
+            <option value="Entrenador de Arqueros">Entrenador de Arqueros</option>
+            <option value="Analista de Video">Analista de Video</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold transition-all shadow-lg shadow-emerald-500/20">
+          Crear Cuenta Gratuita
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VENTANA PAYWALL (PRO) -->
+  <div id="paywallModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[120] flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl text-center relative overflow-hidden">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mx-auto shadow-lg">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <div>
+        <h3 class="font-extrabold text-xl text-white">Suscripción PRO Requerida</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Para acceder a las funciones avanzadas de Control Staff, Informes PDF y Plantel Completo, debes suscribirte a la Licencia PRO.</p>
+      </div>
+
+      <div class="pt-2 space-y-2">
+        <button onclick="procesarPagoPro()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-xs transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-credit-card"></i> Abonar Suscripción PRO
+        </button>
+        <button onclick="closeModal('paywallModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-all">
+          Continuar con Licencia Estándar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: REGISTRAR JUGADOR CON FOTO Y STATS -->
   <div id="addPlayerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
@@ -229,7 +344,7 @@
         </div>
         <div>
           <label class="block text-slate-400 mb-1 font-semibold">URL Foto de Rostro / Avatar</label>
-          <input type="url" id="newPPhoto" placeholder="https://... o dejar vacío para foto por defecto" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white">
+          <input type="url" id="newPPhoto" placeholder="https://... o dejar vacío para imagen por defecto" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -276,12 +391,223 @@
     </div>
   </div>
 
+  <!-- JAVASCRIPT COMPLETO CON AUTENTICACIÓN Y MULTI-USUARIO -->
   <script>
     let playersStore = {};
     let kanbanTasks = [];
+    const PRO_TABS = ['kanban', 'plantel'];
+    const DEV_MASTER_KEY = "EF_DEV_2026";
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // GESTIÓN DE SESIONES Y BASE DE USUARIOS
+    function getUsersDB() {
+      const db = localStorage.getItem('EF_USERS_DB');
+      return db ? JSON.parse(db) : {};
+    }
+
+    function saveUsersDB(db) {
+      localStorage.setItem('EF_USERS_DB', JSON.stringify(db));
+    }
+
+    function getCurrentUser() {
+      const data = localStorage.getItem('EF_CURRENT_USER');
+      return data ? JSON.parse(data) : null;
+    }
+
+    function getInitials(fullname) {
+      if (!fullname) return "EF";
+      const parts = fullname.trim().split(" ");
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return fullname.slice(0, 2).toUpperCase();
+    }
+
+    function switchAuthTab(tab) {
+      const btnLogin = document.getElementById('btnTabLogin');
+      const btnReg = document.getElementById('btnTabRegister');
+      const formLogin = document.getElementById('formLogin');
+      const formReg = document.getElementById('formRegister');
+
+      if (tab === 'login') {
+        btnLogin.className = "flex-1 py-2 text-emerald-400 border-b-2 border-emerald-400";
+        btnReg.className = "flex-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        btnReg.className = "flex-1 py-2 text-emerald-400 border-b-2 border-emerald-400";
+        btnLogin.className = "flex-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      }
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('regPass').value;
+      const role = document.getElementById('regRole').value;
+
+      const db = getUsersDB();
+      if (db[email]) {
+        alert("Este correo electrónico ya está registrado. Por favor, inicia sesión.");
+        switchAuthTab('login');
+        return;
+      }
+
+      const isDevAccess = (pass === DEV_MASTER_KEY);
+      const newUser = { 
+        name, 
+        email, 
+        pass, 
+        role: isDevAccess ? "Desarrollador / Admin" : role, 
+        isPro: isDevAccess 
+      };
+
+      db[email] = newUser;
+      saveUsersDB(db);
+
+      localStorage.setItem('EF_CURRENT_USER', JSON.stringify(newUser));
+      localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+      
+      alert(isDevAccess ? "¡Cuenta de Desarrollador Master activada!" : "¡Cuenta registrada con éxito!");
+      verificarSesion();
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value;
+
+      if (email === "admin@entrenafutsal.com" && pass === DEV_MASTER_KEY) {
+        const masterDev = {
+          name: "Desarrollador Master",
+          email: "admin@entrenafutsal.com",
+          pass: DEV_MASTER_KEY,
+          role: "Administrador / Dev",
+          isPro: true
+        };
+        const db = getUsersDB();
+        db[email] = masterDev;
+        saveUsersDB(db);
+        localStorage.setItem('EF_CURRENT_USER', JSON.stringify(masterDev));
+        localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+        verificarSesion();
+        alert("¡Bienvenido Desarrollador Master! Acceso total habilitado.");
+        return;
+      }
+
+      const db = getUsersDB();
+      const user = db[email];
+
+      if (user && pass === DEV_MASTER_KEY) {
+        user.isPro = true;
+        user.role = user.role + " (Dev)";
+        db[email] = user;
+        saveUsersDB(db);
+        localStorage.setItem('EF_CURRENT_USER', JSON.stringify(user));
+        localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+        verificarSesion();
+        alert("¡Acceso de Desarrollador concedido!");
+        return;
+      }
+
+      if (!user || user.pass !== pass) {
+        alert("Correo o contraseña incorrectos.");
+        return;
+      }
+
+      localStorage.setItem('EF_CURRENT_USER', JSON.stringify(user));
+      localStorage.setItem('EF_SESSION_ACTIVE', 'true');
+      verificarSesion();
+    }
+
+    function cerrarSesion() {
+      if (confirm("¿Deseas salir de tu espacio y cerrar la sesión activa?")) {
+        localStorage.setItem('EF_SESSION_ACTIVE', 'false');
+        localStorage.removeItem('EF_CURRENT_USER');
+        verificarSesion();
+      }
+    }
+
+    function procesarPagoPro() {
+      const user = getCurrentUser();
+      if (!user) return;
+
+      user.isPro = true;
+      const db = getUsersDB();
+      db[user.email] = user;
+      saveUsersDB(db);
+
+      localStorage.setItem('EF_CURRENT_USER', JSON.stringify(user));
+      aplicarPerfilUsuario(user);
+      closeModal('paywallModal');
+      alert("¡Pago acreditado! Tu suscripción PRO ha sido activada correctamente.");
+    }
+
+    function verificarSesion() {
+      const sesionActiva = localStorage.getItem('EF_SESSION_ACTIVE');
+      const loginModal = document.getElementById('loginModal');
+      const user = getCurrentUser();
+      
+      if (sesionActiva !== 'true' || !user) {
+        loginModal.classList.remove('hidden');
+      } else {
+        loginModal.classList.add('hidden');
+        aplicarPerfilUsuario(user);
+        cargarPlantel();
+        recargarDatosKanban();
+      }
+    }
+
+    function aplicarPerfilUsuario(user) {
+      document.getElementById('userName').innerText = user.name;
+      document.getElementById('userRole').innerText = user.role;
+      document.getElementById('userInitials').innerText = getInitials(user.name);
+
+      const headerBadge = document.getElementById('userHeaderBadge');
+      const planTitle = document.getElementById('sidebarPlanTitle');
+      const planSubtitle = document.getElementById('sidebarPlanSubtitle');
+      const planIcon = document.getElementById('sidebarPlanIcon');
+      const lockIcons = document.querySelectorAll('.pro-lock-icon');
+
+      if (user.isPro) {
+        headerBadge.innerText = 'STAFF HUB (PRO)';
+        headerBadge.className = 'bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-emerald-500/30 uppercase';
+        planTitle.innerText = 'Suscripción Activa';
+        planSubtitle.innerText = 'Acceso PRO Habilitado';
+        planSubtitle.className = 'text-[10px] text-emerald-400 font-semibold';
+        planIcon.className = 'fa-solid fa-shield-halved text-amber-400 text-lg';
+        lockIcons.forEach(icon => { icon.className = 'pro-lock-icon fa-solid fa-check text-xs text-emerald-400'; });
+      } else {
+        headerBadge.innerText = 'STAFF HUB';
+        headerBadge.className = 'bg-slate-800 text-slate-300 text-[10px] font-extrabold px-2 py-0.5 rounded border border-slate-700 uppercase';
+        planTitle.innerText = 'Estado Cuenta';
+        planSubtitle.innerText = 'Licencia Estándar';
+        planSubtitle.className = 'text-[10px] text-amber-400 font-semibold';
+        planIcon.className = 'fa-solid fa-lock text-amber-400 text-lg';
+        lockIcons.forEach(icon => { icon.className = 'pro-lock-icon fa-solid fa-lock text-xs text-amber-400'; });
+      }
+    }
+
+    function showTab(tabId, buttonElement) {
+      const user = getCurrentUser();
+
+      if (PRO_TABS.includes(tabId) && (!user || !user.isPro)) {
+        openModal('paywallModal');
+        return;
+      }
+
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      if (buttonElement) buttonElement.classList.add('active');
+
+      if (tabId === 'plantel') cargarPlantel();
+      if (tabId === 'kanban') recargarDatosKanban();
+    }
 
     // CARGA DE JUGADORES Y GRILLA COMPLETA
     function cargarPlantel() {
@@ -414,27 +740,4 @@
           </div>
         `;
 
-        if (task.status === 'pending') { colPending.appendChild(card); cPending++; }
-        else if (task.status === 'progress') { colProgress.appendChild(card); cProgress++; }
-        else if (task.status === 'done') { colDone.appendChild(card); cDone++; }
-      });
-
-      document.getElementById('countPending').innerText = cPending;
-      document.getElementById('countProgress').innerText = cProgress;
-      document.getElementById('countDone').innerText = cDone;
-    }
-
-    function showTab(tabId, btn) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
-      if (tabId === 'plantel') cargarPlantel();
-      if (tabId === 'kanban') recargarDatosKanban();
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      cargarPlantel();
-      recargarDatosKanban();
-    });
-  </script>
-</body>
-</html>
+        if (task.status === 'pending') {
