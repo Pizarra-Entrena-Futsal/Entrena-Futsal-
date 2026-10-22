@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrena Futsal PRO - Informe Táctico de Partido</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #070a12;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .bg-sidebar { background-color: #0b101d; }
+    .bg-card { background-color: #111827; border: 1px solid #1f293d; }
+    
+    /* REGLAS DE IMPRESIÓN Y EXPORTACIÓN A PDF HD */
+    @media print {
+      body {
+        background-color: #070a12 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      .bg-card {
+        border: 1px solid #374151 !important;
+        background-color: #111827 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- TOP HEADER (OCULTO EN IMPRESIÓN) -->
+  <header class="no-print bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
+    <div class="flex items-center gap-4">
+      <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 transition-colors" title="Volver al Staff Hub">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">INFORME TÁCTICO DE PARTIDO</h1>
+          <span class="bg-amber-500/20 text-amber-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-amber-500/30 uppercase">PRO EXCLUSIVE</span>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-0.5">Consolidado Ejecutivo de Rendimiento, Video y Pizarra Táctica</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="window.print()" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-file-pdf text-sm"></i> EXPORTAR A PDF HD
+      </button>
+    </div>
+  </header>
+
+  <!-- REPORTE TÁCTICO COMPLETO (PRINT CONTAINER) -->
+  <main class="print-container flex-1 p-6 overflow-y-auto space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- COLUMNA IZQUIERDA Y CENTRAL: DATOS PARTIDO, PIZARRA Y STATS (8 COLS) -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- BLOQUE SUPERIOR: FICHA DE ENCUENTRO Y RESUMEN -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+          
+          <!-- FICHA GENERAL -->
+          <div class="md:col-span-4 bg-card p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xs">EF</div>
+              <span class="font-heading font-bold text-xs text-white">ENTRENA FUTSAL</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span class="text-slate-500 block uppercase font-semibold text-[9px]">FECHA</span>
+                <strong id="repDate" class="text-white">23 OCT 2026</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block uppercase font-semibold text-[9px]">HORA</span>
+                <strong id="repTime" class="text-white">20:30 HS</strong>
+              </div>
+            </div>
+
+            <div class="pt-1 border-t border-slate-800">
+              <span class="text-slate-500 block uppercase font-semibold text-[9px]">RIVAL COMPETITIVO</span>
+              <strong id="repRival" class="text-emerald-400 text-sm">CLUB MERCANTIL</strong>
+              <div class="text-[10px] text-slate-400 font-semibold mt-0.5">Resultado: <span class="text-white">3 - 1 (A Favor)</span></div>
+            </div>
+
+            <div class="pt-1 border-t border-slate-800">
+              <span class="text-slate-500 block uppercase font-semibold text-[9px]">STAFF A CARGO</span>
+              <strong id="repStaff" class="text-white text-xs">CRISTIAN BINDERUP (DT)</strong>
+            </div>
+          </div>
+
+          <!-- RESUMEN TÁCTICO DEL DT -->
+          <div class="md:col-span-8 bg-card p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-2">
+            <div>
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                <i class="fa-solid fa-clipboard-check"></i> RESUMEN DEL PARTIDO
+              </span>
+              <p id="repSummaryText" class="text-xs text-slate-300 leading-relaxed">
+                Excelente respuesta del equipo ante la presión alta rival. Se mantuvo el control posicional con rotaciones dinámicas en sistema 3-1 y repliegues efectivos en zona media. Efectividad destacada en las acciones a balón parado (ABP) y solvencia defensiva en el tramo final 5v4.
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400">
+              <span>Estado: <strong class="text-emerald-400">Informe Finalizado</strong></span>
+              <span>Cuerpo Técnico Entrena Futsal</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PIZARRA TÁCTICA DE CAMPO COMPLETO (40x20m) -->
+        <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h3 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-sky-400"></i> Esquema Táctico General (Pista 40x20m)
+            </h3>
+            <div class="flex items-center gap-3 text-[10px] font-bold">
+              <span class="text-emerald-400">SISTEMA 3-1</span>
+              <span class="text-slate-600">|</span>
+              <span class="text-amber-400">SISTEMA 4-0</span>
+            </div>
+          </div>
+
+          <!-- PISTA DE FUTSAL CON DIAGRAMA SVG DE MUESTRA -->
+          <div class="w-full h-64 bg-emerald-950/30 rounded-xl border border-emerald-800/40 relative overflow-hidden flex items-center justify-center p-3">
+            <svg class="w-full h-full text-emerald-500/40" viewBox="0 0 400 200" fill="none" stroke="currentColor" stroke-width="2">
+              <!-- Líneas de Pista -->
+              <rect x="10" y="10" width="380" height="180" rx="2" />
+              <line x1="200" y1="10" x2="200" y2="190" />
+              <circle cx="200" cy="100" r="30" />
+              <!-- Áreas de 6m -->
+              <path d="M 10 60 A 40 40 0 0 1 10 140" />
+              <path d="M 390 60 A 40 40 0 0 1 390 140" />
+              <!-- Puntos de Penalti y 10m -->
+              <circle cx="70" cy="100" r="2" fill="currentColor" />
+              <circle cx="330" cy="100" r="2" fill="currentColor" />
+
+              <!-- DIBUJO DE BASCULACIÓN Y LÍNEAS TÁCTICAS -->
+              <polygon points="60,60 140,40 140,160 60,140" fill="rgba(234, 179, 8, 0.15)" stroke="#eab308" stroke-dasharray="3,3" />
+              <text x="75" y="50" fill="#eab308" font-size="10" font-weight="bold">Presión Alta</text>
+
+              <polygon points="240,50 320,70 320,130 240,150" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-dasharray="3,3" />
+              <text x="250" y="110" fill="#10b981" font-size="10" font-weight="bold">Zona de Recuperación</text>
+
+              <!-- JUGADORES REGISTRADOS EN PISTA -->
+              <circle cx="25" cy="100" r="8" fill="#10b981" /><text x="22" y="103" fill="#000" font-size="9" font-weight="extrabold">1</text>
+              <circle cx="90" cy="100" r="8" fill="#10b981" /><text x="87" y="103" fill="#000" font-size="9" font-weight="extrabold">2</text>
+              <circle cx="120" cy="50" r="8" fill="#10b981" /><text x="117" y="53" fill="#000" font-size="9" font-weight="extrabold">3</text>
+              <circle cx="120" cy="150" r="8" fill="#10b981" /><text x="117" y="153" fill="#000" font-size="9" font-weight="extrabold">4</text>
+              <circle cx="200" cy="100" r="8" fill="#10b981" /><text x="197" y="103" fill="#000" font-size="9" font-weight="extrabold">8</text>
+
+              <!-- FLECHAS DE BASCULACIÓN -->
+              <line x1="90" y1="100" x2="190" y2="100" stroke="#10b981" stroke-width="2" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- PANEL DE ESTADÍSTICAS Y RENDIMIENTO DEL PARTIDO -->
+        <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-4">
+          <h3 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i> Métricas & Rendimiento del Encuentro
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- BARRAS COMPARATIVAS -->
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span class="text-emerald-400">Posesión de Balón</span>
+                  <span class="text-slate-300">62% vs 38%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden flex">
+                  <div class="bg-emerald-500 h-full" style="width: 62%"></div>
+                  <div class="bg-amber-500 h-full" style="width: 38%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span class="text-sky-400">Remates a Puerta</span>
+                  <span class="text-slate-300">18 / 9</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden flex">
+                  <div class="bg-sky-400 h-full" style="width: 66%"></div>
+                  <div class="bg-slate-700 h-full" style="width: 34%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span class="text-amber-400">Córners & ABP A Favor</span>
+                  <span class="text-slate-300">8 ejecutados</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden flex">
+                  <div class="bg-amber-400 h-full" style="width: 80%"></div>
+                  <div class="bg-slate-700 h-full" style="width: 20%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CUADROS DE RESUMEN NUMÉRICO -->
+            <div class="grid grid-cols-3 gap-3 text-center">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <span class="text-[9px] text-slate-500 uppercase font-bold block">FALTAS REC.</span>
+                <div class="text-xl font-black text-amber-400 mt-1">5</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <span class="text-[9px] text-slate-500 uppercase font-bold block">PÉRDIDAS MED.</span>
+                <div class="text-xl font-black text-rose-400 mt-1">3</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <span class="text-[9px] text-slate-500 uppercase font-bold block">RECUPERAC.</span>
+                <div class="text-xl font-black text-emerald-400 mt-1">14</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: SECUENCIAS Y CLIPS DESTACADOS (4 COLS) -->
+      <div class="lg:col-span-4 space-y-4">
+        
+        <div class="bg-card p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h3 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-film text-purple-400"></i> Secuencias Analizadas
+            </h3>
+            <span id="clipTotalBadge" class="bg-purple-500/20 text-purple-400 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-500/30">
+              3 Clips
+            </span>
+          </div>
+
+          <!-- CONTENEDOR DINÁMICO DE CLIPS (CARGADOS DE LOCALSTORAGE O EJEMPLO) -->
+          <div id="reportClipsContainer" class="space-y-4">
+            
+            <!-- EJEMPLO 1 -->
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <strong class="text-white">Salida de Presión 3-1</strong>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Min 00:45</span>
+              </div>
+              <div class="w-full h-28 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 relative">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+              </div>
+              <p class="text-[11px] text-slate-400">Desmarque en diagonal del ala para romper la primera línea defensiva.</p>
+            </div>
+
+            <!-- EJEMPLO 2 -->
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <strong class="text-white">Presión Alta / Robo</strong>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Min 12:20</span>
+              </div>
+              <div class="w-full h-28 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 relative">
+                <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+              </div>
+              <p class="text-[11px] text-slate-400">Recuperación tras salto agresivo del ala sobre la banda izquierda.</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT DE VALIDACIÓN PRO Y CARGA DINÁMICA DE DATOS -->
+  <script>
+    // 1. VERIFICACIÓN DE CONTROL DE ACCESO EXCLUSIVO PRO
+    function verificarAccesoPro() {
+      const userData = localStorage.getItem('EF_CURRENT_USER');
+      const user = userData ? JSON.parse(userData) : null;
+
+      if (!user || !user.isPro) {
+        alert("🔒 Acceso Restringido: El Centro de Informes Tácticos PDF es una herramienta exclusiva del paquete PRO.");
+        window.location.href = "index.html";
+        return false;
+      }
+
+      // Si es PRO, completar el nombre del DT en la ficha
+      if (user && user.name) {
+        document.getElementById('repStaff').innerText = `${user.name.toUpperCase()} (${user.role || 'DT'})`;
+      }
+      return true;
+    }
+
+    // 2. CARGAR CLIPS REGISTRADOS DESDE EL VIDEOANÁLISIS
+    function cargarClipsGuardados() {
+      const keyCompartida = 'EF_STAFF_SHARED_TASKS';
+      const tareasGuardadas = JSON.parse(localStorage.getItem(keyCompartida) || '[]');
+      const container = document.getElementById('reportClipsContainer');
+
+      if (tareasGuardadas.length > 0) {
+        container.innerHTML = '';
+        let contador = 0;
+
+        tareasGuardadas.forEach(tarea => {
+          if (tarea.module === 'Videoanálisis' || tarea.image) {
+            contador++;
+            const card = document.createElement('div');
+            card.className = "bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2";
+            card.innerHTML = `
+              <div class="flex items-center justify-between text-xs">
+                <strong class="text-white">${tarea.title}</strong>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">${tarea.date}</span>
+              </div>
+              ${tarea.image ? `<img src="${tarea.image}" class="w-full h-28 object-cover rounded-lg border border-slate-800">` : ''}
+              <p class="text-[11px] text-slate-400">${tarea.desc || 'Secuencia recortada en el videoanálisis.'}</p>
+            `;
+            container.appendChild(card);
+          }
+        });
+
+        if (contador > 0) {
+          document.getElementById('clipTotalBadge').innerText = `${contador} Clips`;
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (verificarAccesoPro()) {
+        cargarClipsGuardados();
+      }
+    });
+  </script>
+</body>
+</html>
