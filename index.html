@@ -26,12 +26,6 @@
       color: #10b981;
       border-left: 3px solid #10b981;
     }
-
-    /* FILTRO DE MEZCLA PARA ELIMINAR CUALQUIER FONDO BLANCO RESTANTE EN LOGOS EN MODO OSCURO */
-    .logo-transparent {
-      mix-blend-mode: screen;
-      filter: contrast(110%) brightness(105%);
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased relative">
@@ -39,8 +33,16 @@
   <!-- TOP HEADER -->
   <header class="bg-sidebar border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center gap-4 z-10">
     <div class="flex items-center gap-4">
-      <!-- LOGO DE ENCABEZADO -->
-      <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" class="w-10 h-10 object-contain logo-transparent drop-shadow-md">
+      <!-- LOGO TRANSPARENTE ENCABEZADO -->
+      <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center p-1 shadow-md shrink-0">
+        <svg viewBox="0 0 100 100" class="w-full h-full">
+          <path d="M50,10 L85,25 L85,60 C85,75 50,92 50,92 C50,92 15,75 15,60 L15,25 Z" fill="#0b101d" stroke="#f97316" stroke-width="4"/>
+          <path d="M50,12 L83,26 L83,59 C83,73 50,88 50,88 Z" fill="#f97316"/>
+          <circle cx="68" cy="35" r="2.5" fill="#ffffff"/><circle cx="76" cy="40" r="2.5" fill="#ffffff"/>
+          <circle cx="60" cy="42" r="2.5" fill="#ffffff"/><circle cx="70" cy="48" r="2.5" fill="#ffffff"/>
+          <text x="50" y="80" font-family="Montserrat" font-weight="900" font-size="11" fill="#ffffff" text-anchor="middle">FUTSAL</text>
+        </svg>
+      </div>
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-heading font-extrabold text-base text-white leading-none tracking-wide">ENTRENA FUTSAL</h1>
@@ -130,10 +132,10 @@
     <!-- ÁREA DE CONTENIDO -->
     <main class="flex-1 p-6 overflow-y-auto bg-[#070a12]">
 
-      <!-- TAB 1: PANEL PRINCIPAL (REDISEÑADO CON LOGO Y CRÉDITO) -->
+      <!-- TAB 1: PANEL PRINCIPAL CON LOGO VECTORIAL INCORPORADO NATIVO -->
       <div id="principal" class="tab-content space-y-6">
         
-        <!-- TARJETA DE BIENVENIDA CON LOGO Y AUTORÍA -->
+        <!-- TARJETA DE BIENVENIDA CON LOGO NATIVO Y AUTORÍA -->
         <div class="bg-card p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -159,10 +161,40 @@
             </div>
           </div>
 
-          <!-- LOGO DE LA MARCA CON EFECTO DE LUZ -->
-          <div class="relative shrink-0 flex items-center justify-center p-4">
-            <div class="absolute w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" alt="Entrena Futsal Logo" class="w-48 h-48 object-contain logo-transparent drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] relative z-10">
+          <!-- ESCUDO Y LOGO vector ILUMINADO NATIVO (100% GARANTIZADO) -->
+          <div class="relative shrink-0 flex items-center justify-center p-2">
+            <div class="absolute w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="w-48 h-56 relative z-10 flex flex-col items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)]">
+              <svg viewBox="0 0 200 240" class="w-full h-full">
+                <!-- Arco Superior ENTRENA -->
+                <path d="M 25 45 A 95 95 0 0 1 175 45" fill="none" stroke="#1e293b" stroke-width="26" stroke-linecap="round"/>
+                <text font-family="Montserrat" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">
+                  <textPath href="#textArc" startOffset="50%" text-anchor="middle">ENTRENA</textPath>
+                </text>
+                <path id="textArc" d="M 30 42 A 90 90 0 0 1 170 42" fill="none"/>
+
+                <!-- Anillo Exterior -->
+                <circle cx="100" cy="120" r="78" fill="none" stroke="#0f172a" stroke-width="12"/>
+                
+                <!-- Escudo de Tierra del Fuego (Noche y Fuego) -->
+                <g transform="translate(10, 0)">
+                  <path d="M 50 50 L 130 50 L 130 115 C 130 145 90 170 90 170 C 90 170 50 145 50 115 Z" fill="#0f172a" stroke="#ffffff" stroke-width="3"/>
+                  <!-- Diagonal Naranja / Blanco / Azul -->
+                  <path d="M 50 50 L 130 115 C 130 145 90 170 90 170 C 90 170 50 145 50 115 Z" fill="#ea580c"/>
+                  <path d="M 50 50 L 130 110 L 122 120 L 50 62 Z" fill="#ffffff"/>
+                  <!-- Estrellas Cruz del Sur -->
+                  <circle cx="105" cy="70" r="3" fill="#ffffff"/>
+                  <circle cx="118" cy="80" r="3" fill="#ffffff"/>
+                  <circle cx="95" cy="85" r="3" fill="#ffffff"/>
+                  <circle cx="108" cy="95" r="3" fill="#ffffff"/>
+                </g>
+
+                <!-- Banner Inferior FUTSAL -->
+                <rect x="20" y="172" width="160" height="38" rx="10" fill="#0b101d" stroke="#1e293b" stroke-width="3"/>
+                <text x="100" y="198" font-family="Montserrat" font-weight="900" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="2">FUTSAL</text>
+                <text x="100" y="222" font-family="Roboto" font-weight="700" font-size="8" fill="#94a3b8" text-anchor="middle">TIERRA DEL FUEGO, ARGENTINA</text>
+              </svg>
+            </div>
           </div>
 
         </div>
@@ -220,7 +252,9 @@
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="text-center space-y-1">
-        <img src="logo.png" onerror="this.onerror=null; this.src='Gemini_Generated_Image_v8rws4v8rws4v8rw.png'" class="w-14 h-14 object-contain mx-auto logo-transparent mb-1">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-black text-emerald-400 text-xl mx-auto mb-2">
+          EF
+        </div>
         <h3 class="font-bold text-xl text-white">ENTRENA FUTSAL</h3>
         <p class="text-xs text-slate-400">Acceso a Plataforma de Staff</p>
       </div>
